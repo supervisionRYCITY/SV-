@@ -796,7 +796,10 @@
         btn.classList.replace('bg-brand-green', 'bg-red-600');
         info.classList.remove('hidden');
         document.getElementById('user-name').innerText = currentUser.name;
-        document.getElementById('user-role').innerText = `${currentUser.position} (${currentUser.role})`;
+        
+        // เช็คว่ามีข้อมูลหน่วยงานส่งมาไหม ถ้ามีให้เอามาต่อท้าย ถ้าไม่มีก็ไม่แสดง
+        let unitText = currentUser.unit ? ` ${currentUser.unit}` : '';
+        document.getElementById('user-role').innerText = `${currentUser.position}${unitText} (${currentUser.role})`;
 
         if (currentUser.role === 'ผู้ดูแลระบบ') {
           if (settingsMenu) settingsMenu.classList.remove('hidden');
