@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SuperVision+ | ระบบสารสนเทศเพื่อการนิเทศติดตาม</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts: Sarabun -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Sarabun', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              blue: '#1e3a8a',
+              lightblue: '#2563eb',
+              green: '#15803d',
+              lightgreen: '#22c55e',
+              yellow: '#eab308',
+              accentyellow: '#fde047',
+              bg: '#f8fafc'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Sarabun', sans-serif; background-color: #f8fafc; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 flex h-screen overflow-hidden">
+
+  <!-- MAIN CONTAINER -->
+  <div class="flex-1 flex flex-col h-full overflow-hidden mr-64">
+    
+    <!-- TOP HEADER -->
+    <header class="bg-brand-blue text-white shadow-md px-6 py-4 flex justify-between items-center z-10 border-b-4 border-brand-yellow">
+      <div>
+        <h1 id="header-title" class="text-2xl font-bold tracking-tight">SuperVision+</h1>
+        <p class="text-xs text-blue-200">ระบบสารสนเทศเพื่อการบริหารและการนิเทศการศึกษา</p>
+      </div>
+      <div class="flex items-center space-x-4">
+        <div id="user-info-display" class="text-right hidden">
+          <div id="user-name" class="font-semibold text-sm text-brand-accentyellow"></div>
+          <div id="user-role" class="text-xs text-slate-200"></div>
+        </div>
+        <button id="auth-btn" onclick="toggleAuthModal()" class="bg-brand-green hover:bg-emerald-600 text-white font-medium px-4 py-2 rounded-lg text-sm transition shadow">
+          เข้าสู่ระบบ
+        </button>
+      </div>
+    </header>
+
+    <!-- CONTENT AREA -->
+    <main class="flex-1 overflow-y-auto p-6 bg-slate-100" id="main-content">
+      
+      <!-- PAGE: DASHBOARD -->
+      <section id="page-dashboard" class="space-y-6">
+        <!-- KPI CARDS -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div class="bg-white border-l-4 border-brand-blue p-4 rounded-lg shadow-sm">
+            <p class="text-xs text-slate-500 font-medium">จำนวนสถานศึกษา/หน่วยงาน</p>
+            <h3 id="kpi-units" class="text-2xl font-bold text-brand-blue mt-1">0</h3>
+            <p class="text-xs text-slate-400 mt-2">แห่งในระบบ</p>
+          </div>
+          <div class="bg-white border-l-4 border-brand-green p-4 rounded-lg shadow-sm">
+            <p class="text-xs text-slate-500 font-medium">นักเรียนรวมทั้งหมด</p>
+            <h3 id="kpi-students" class="text-2xl font-bold text-brand-green mt-1">0</h3>
+            <p class="text-xs text-slate-400 mt-2">คน</p>
+          </div>
+          <div class="bg-white border-l-4 border-brand-yellow p-4 rounded-lg shadow-sm">
+            <p class="text-xs text-slate-500 font-medium">บุคลากรรวมทั้งหมด</p>
+            <h3 id="kpi-personnel" class="text-2xl font-bold text-amber-600 mt-1">0</h3>
+            <p class="text-xs text-slate-400 mt-2">คน</p>
+          </div>
+          <div class="bg-white border-l-4 border-brand-lightblue p-4 rounded-lg shadow-sm">
+            <p class="text-xs text-slate-500 font-medium">สัดส่วนบุคลากร : นักเรียน</p>
+            <h3 id="kpi-ratio" class="text-2xl font-bold text-brand-lightblue mt-1">1:-</h3>
+            <p class="text-xs text-slate-400 mt-2">ภาพรวมเชิงสถิติ</p>
+          </div>
+        </div>
+
+        <!-- PROGRESS BAR SECTION -->
+        <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200">
+          <h3 class="text-base font-semibold text-slate-800 mb-3">สัดส่วนนักเรียนแยกตามระดับชั้น (ร้อยละ)</h3>
+          <div class="space-y-3" id="progress-container">
+            <!-- Dynamic Progress Bars -->
+          </div>
+        </div>
+
+        <!-- CHARTS SECTION -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+            <h3 class="text-base font-semibold text-slate-800 mb-4 text-center">สัดส่วนเพศนักเรียน (Pie Chart)</h3>
+            <div class="w-full max-w-xs mx-auto">
+              <canvas id="chartGender"></canvas>
+            </div>
+          </div>
+          <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+            <h3 class="text-base font-semibold text-slate-800 mb-4 text-center">จำนวนบุคลากรแยกตามตำแหน่ง (Bar Chart)</h3>
+            <div class="w-full h-64">
+              <canvas id="chartPersonnel"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PAGE: UNITS CRUD -->
+      <section id="page-units" class="hidden space-y-4">
+        <div class="flex justify-between items-center bg-white p-4 rounded-lg shadow-sm border">
+          <h2 class="text-lg font-bold text-slate-800">จัดการข้อมูลหน่วยงาน / สถานศึกษา</h2>
+          <button onclick="openFormModal('หน่วยงาน')" class="crud-btn bg-brand-green hover:bg-emerald-600 text-white px-4 py-2 rounded text-sm font-medium">
+            + เพิ่มหน่วยงาน
+          </button>
+        </div>
+        <div class="bg-white rounded-lg shadow overflow-x-auto">
+          <table class="w-full text-left border-collapse text-sm">
+            <thead>
+              <tr class="bg-brand-blue text-white">
+                <th class="p-3 border">ลำดับ</th>
+                <th class="p-3 border">รหัสหน่วยงาน</th>
+                <th class="p-3 border">ชื่อหน่วยงาน</th>
+                <th class="p-3 border text-center crud-col">จัดการ</th>
+              </tr>
+            </thead>
+            <tbody id="table-units-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- PAGE: STUDENTS CRUD -->
+      <section id="page-students" class="hidden space-y-4">
+        <div class="flex justify-between items-center bg-white p-4 rounded-lg shadow-sm border">
+          <h2 class="text-lg font-bold text-slate-800">จัดการข้อมูลนักเรียน</h2>
+          <button onclick="openFormModal('นักเรียน')" class="crud-btn bg-brand-green hover:bg-emerald-600 text-white px-4 py-2 rounded text-sm font-medium">
+            + เพิ่มข้อมูลนักเรียน
+          </button>
+        </div>
+        <div class="bg-white rounded-lg shadow overflow-x-auto">
+          <table class="w-full text-left border-collapse text-sm">
+            <thead>
+              <tr class="bg-brand-blue text-white">
+                <th class="p-3 border">ลำดับ</th>
+                <th class="p-3 border">รหัสหน่วยงาน</th>
+                <th class="p-3 border">ระดับชั้น</th>
+                <th class="p-3 border">เพศ</th>
+                <th class="p-3 border">จำนวน</th>
+                <th class="p-3 border text-center crud-col">จัดการ</th>
+              </tr>
+            </thead>
+            <tbody id="table-students-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- PAGE: PERSONNEL CRUD -->
+      <section id="page-personnel" class="hidden space-y-4">
+        <div class="flex justify-between items-center bg-white p-4 rounded-lg shadow-sm border">
+          <h2 class="text-lg font-bold text-slate-800">จัดการข้อมูลบุคลากร</h2>
+          <button onclick="openFormModal('บุคลากร')" class="crud-btn bg-brand-green hover:bg-emerald-600 text-white px-4 py-2 rounded text-sm font-medium">
+            + เพิ่มบุคลากร
+          </button>
+        </div>
+        <div class="bg-white rounded-lg shadow overflow-x-auto">
+          <table class="w-full text-left border-collapse text-sm">
+            <thead>
+              <tr class="bg-brand-blue text-white">
+                <th class="p-3 border">ลำดับ</th>
+                <th class="p-3 border">รหัสหน่วยงาน</th>
+                <th class="p-3 border">ตำแหน่ง</th>
+                <th class="p-3 border">วิทยฐานะ</th>
+                <th class="p-3 border">เพศ</th>
+                <th class="p-3 border text-center crud-col">จัดการ</th>
+              </tr>
+            </thead>
+            <tbody id="table-personnel-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- RIGHT SIDEBAR (NAVBAR FIXED) -->
+  <aside class="w-64 bg-slate-900 text-white fixed right-0 top-0 h-full shadow-2xl flex flex-col z-20 border-l border-slate-700">
+    <div class="p-5 border-b border-slate-800 bg-slate-950">
+      <h2 class="text-lg font-bold text-brand-yellow">เมนูหลัก</h2>
+      <p class="text-xs text-slate-400">SuperVision+ Navigation</p>
+    </div>
+    <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
+      <button onclick="switchTab('dashboard')" class="nav-item w-full text-left px-4 py-3 rounded-lg text-sm font-medium hover:bg-slate-800 transition flex justify-between items-center bg-brand-blue text-white">
+        <span>แดชบอร์ดสรุปผล</span>
+        <span class="text-xs bg-blue-900 px-2 py-0.5 rounded">Home</span>
+      </button>
+      <button onclick="switchTab('units')" class="nav-item w-full text-left px-4 py-3 rounded-lg text-sm font-medium hover:bg-slate-800 text-slate-300 transition flex justify-between items-center">
+        <span>ข้อมูลหน่วยงาน</span>
+        <span class="text-xs bg-slate-800 px-2 py-0.5 rounded">Data</span>
+      </button>
+      <button onclick="switchTab('students')" class="nav-item w-full text-left px-4 py-3 rounded-lg text-sm font-medium hover:bg-slate-800 text-slate-300 transition flex justify-between items-center">
+        <span>ข้อมูลนักเรียน</span>
+        <span class="text-xs bg-slate-800 px-2 py-0.5 rounded">Data</span>
+      </button>
+      <button onclick="switchTab('personnel')" class="nav-item w-full text-left px-4 py-3 rounded-lg text-sm font-medium hover:bg-slate-800 text-slate-300 transition flex justify-between items-center">
+        <span>ข้อมูลบุคลากร</span>
+        <span class="text-xs bg-slate-800 px-2 py-0.5 rounded">Data</span>
+      </button>
+    </nav>
+    <div class="p-4 border-t border-slate-800 text-xs text-slate-400 text-center">
+      SuperVision+ &copy; 2026<br>เทศบาลระยอง / หน่วยงานศึกษา
+    </div>
+  </aside>
+
+  <!-- LOGIN MODAL -->
+  <div id="login-modal" class="fixed inset-0 bg-slate-900 bg-opacity-60 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 w-96 shadow-2xl space-y-4 border-t-4 border-brand-blue">
+      <h3 class="text-lg font-bold text-slate-800">เข้าสู่ระบบภายใน</h3>
+      <div>
+        <label class="block text-xs font-semibold mb-1">Username</label>
+        <input type="text" id="login-username" class="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue">
+      </div>
+      <div>
+        <label class="block text-xs font-semibold mb-1">Password</label>
+        <input type="password" id="login-password" class="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue">
+      </div>
+      <div id="login-error" class="text-xs text-red-500 hidden"></div>
+      <div class="flex justify-end space-x-2 pt-2">
+        <button onclick="toggleAuthModal()" class="px-4 py-2 border rounded text-sm hover:bg-slate-100">ยกเลิก</button>
+        <button onclick="performLogin()" class="px-4 py-2 bg-brand-blue text-white rounded text-sm hover:bg-blue-800">ตกลง</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT APP LOGIC -->
+  <script>
+    // ** กำหนด URL ของ Google Apps Script Web App ที่นี้ **
+    const GAS_API_URL = "ใส่_URL_ของ_GOOGLE_APPS_SCRIPT_WEB_APP_ตรงนี้";
+
+    let dbData = { users: [], units: [], students: [], personnel: [] };
+    let currentUser = null;
+    let genderChart = null;
+    let personnelChart = null;
+
+    window.onload = function() {
+      fetchData();
+      updateAuthUI();
+    };
+
+    // Fetch All Data from GAS
+    function fetchData() {
+      if (GAS_API_URL.includes("ใส่_URL_")) {
+        alert("กรุณาใส่ URL ของ Google Apps Script Web App ในไฟล์ index.html ก่อนใช้งาน");
+        return;
+      }
+
+      fetch(GAS_API_URL + "?action=getAllData")
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === 'success') {
+            dbData = data;
+            renderDashboard();
+            renderTables();
+          }
+        })
+        .catch(err => console.error("Error fetching data:", err));
+    }
+
+    // Tab Switcher
+    function switchTab(tab) {
+      ['dashboard', 'units', 'students', 'personnel'].forEach(t => {
+        document.getElementById(`page-${t}`).classList.add('hidden');
+      });
+      document.getElementById(`page-${tab}`).classList.remove('hidden');
+
+      const titles = {
+        dashboard: 'SuperVision+ | แดชบอร์ดภาพรวม',
+        units: 'จัดการข้อมูลหน่วยงาน',
+        students: 'จัดการข้อมูลนักเรียน',
+        personnel: 'จัดการข้อมูลบุคลากร'
+      };
+      document.getElementById('header-title').innerText = titles[tab];
+    }
+
+    // Auth Control
+    function toggleAuthModal() {
+      if (currentUser) {
+        currentUser = null;
+        updateAuthUI();
+      } else {
+        document.getElementById('login-modal').classList.toggle('flex');
+        document.getElementById('login-modal').classList.toggle('hidden');
+      }
+    }
+
+    function performLogin() {
+      const u = document.getElementById('login-username').value;
+      const p = document.getElementById('login-password').value;
+
+      fetch(GAS_API_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'login', username: u, password: p })
+      })
+      .then(res => res.json())
+      .then(res => {
+        if (res.status === 'success') {
+          currentUser = res.user;
+          document.getElementById('login-modal').classList.add('hidden');
+          document.getElementById('login-modal').classList.remove('flex');
+          updateAuthUI();
+        } else {
+          const errDiv = document.getElementById('login-error');
+          errDiv.innerText = res.message;
+          errDiv.classList.remove('hidden');
+        }
+      });
+    }
+
+    function updateAuthUI() {
+      const btn = document.getElementById('auth-btn');
+      const info = document.getElementById('user-info-display');
+      const crudBtns = document.querySelectorAll('.crud-btn');
+      const crudCols = document.querySelectorAll('.crud-col');
+
+      if (currentUser) {
+        btn.innerText = 'ออกจากระบบ';
+        btn.classList.replace('bg-brand-green', 'bg-red-600');
+        info.classList.remove('hidden');
+        document.getElementById('user-name').innerText = currentUser.name;
+        document.getElementById('user-role').innerText = `${currentUser.position} (${currentUser.role})`;
+
+        crudBtns.forEach(b => b.classList.remove('hidden'));
+        crudCols.forEach(c => c.classList.remove('hidden'));
+      } else {
+        btn.innerText = 'เข้าสู่ระบบ';
+        btn.classList.replace('bg-red-600', 'bg-brand-green');
+        info.classList.add('hidden');
+
+        crudBtns.forEach(b => b.classList.add('hidden'));
+        crudCols.forEach(c => c.classList.add('hidden'));
+      }
+    }
+
+    // Dashboard Rendering & Charts
+    function renderDashboard() {
+      document.getElementById('kpi-units').innerText = dbData.units.length;
+
+      let totalStudents = dbData.students.reduce((acc, curr) => acc + Number(curr['จำนวน'] || 0), 0);
+      document.getElementById('kpi-students').innerText = totalStudents.toLocaleString();
+
+      let totalPersonnel = dbData.personnel.length;
+      document.getElementById('kpi-personnel').innerText = totalPersonnel.toLocaleString();
+
+      let ratio = totalPersonnel > 0 ? (totalStudents / totalPersonnel).toFixed(1) : '-';
+      document.getElementById('kpi-ratio').innerText = `1 : ${ratio}`;
+
+      // Progress Bar Calculations
+      const levelCounts = {};
+      dbData.students.forEach(s => {
+        let lvl = s['ระดับชั้น'] || 'อื่นๆ';
+        levelCounts[lvl] = (levelCounts[lvl] || 0) + Number(s['จำนวน'] || 0);
+      });
+
+      let progressHtml = '';
+      Object.keys(levelCounts).forEach(lvl => {
+        let count = levelCounts[lvl];
+        let pct = totalStudents > 0 ? ((count / totalStudents) * 100).toFixed(1) : 0;
+        progressHtml += `
+          <div>
+            <div class="flex justify-between text-xs font-semibold mb-1">
+              <span>${lvl}</span>
+              <span>${count} คน (${pct}%)</span>
+            </div>
+            <div class="w-full bg-slate-200 rounded-full h-3">
+              <div class="bg-brand-lightblue h-3 rounded-full" style="width: ${pct}%"></div>
+            </div>
+          </div>
+        `;
+      });
+      document.getElementById('progress-container').innerHTML = progressHtml || '<p class="text-xs text-slate-400">ไม่มีข้อมูล</p>';
+
+      // Gender Pie Chart
+      let maleStudents = dbData.students.filter(s => s['เพศ'] === 'ชาย').reduce((a, b) => a + Number(b['จำนวน'] || 0), 0);
+      let femaleStudents = dbData.students.filter(s => s['เพศ'] === 'หญิง').reduce((a, b) => a + Number(b['จำนวน'] || 0), 0);
+
+      if (genderChart) genderChart.destroy();
+      const ctx1 = document.getElementById('chartGender').getContext('2d');
+      genderChart = new Chart(ctx1, {
+        type: 'pie',
+        data: {
+          labels: ['ชาย', 'หญิง'],
+          datasets: [{
+            data: [maleStudents, femaleStudents],
+            backgroundColor: ['#2563eb', '#22c55e']
+          }]
+        }
+      });
+
+      // Personnel Bar Chart
+      const posCounts = {};
+      dbData.personnel.forEach(p => {
+        let pos = p['ตำแหน่ง'] || 'ไม่ระบุ';
+        posCounts[pos] = (posCounts[pos] || 0) + 1;
+      });
+
+      if (personnelChart) personnelChart.destroy();
+      const ctx2 = document.getElementById('chartPersonnel').getContext('2d');
+      personnelChart = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+          labels: Object.keys(posCounts),
+          datasets: [{
+            label: 'จำนวนบุคลากร (คน)',
+            data: Object.values(posCounts),
+            backgroundColor: '#1e3a8a'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false
+        }
+      });
+    }
+
+    // Render Tables
+    function renderTables() {
+      // Units
+      let htmlUnits = '';
+      dbData.units.forEach(u => {
+        htmlUnits += `
+          <tr class="border-b hover:bg-slate-50">
+            <td class="p-3 border">${u['ลำดับ']}</td>
+            <td class="p-3 border font-semibold">${u['รหัสหน่วยงาน']}</td>
+            <td class="p-3 border">${u['ชื่อหน่วยงาน']}</td>
+            <td class="p-3 border text-center crud-col">
+              <button onclick="deleteRow('ข้อมูลหน่วยงาน', '${u['ลำดับ']}')" class="bg-red-500 text-white px-2 py-1 rounded text-xs">ลบ</button>
+            </td>
+          </tr>
+        `;
+      });
+      document.getElementById('table-units-body').innerHTML = htmlUnits;
+
+      // Students
+      let htmlStudents = '';
+      dbData.students.forEach(s => {
+        htmlStudents += `
+          <tr class="border-b hover:bg-slate-50">
+            <td class="p-3 border">${s['ลำดับ']}</td>
+            <td class="p-3 border">${s['รหัสหน่วยงาน']}</td>
+            <td class="p-3 border">${s['ระดับชั้น']}</td>
+            <td class="p-3 border">${s['เพศ']}</td>
+            <td class="p-3 border font-semibold">${s['จำนวน']}</td>
+            <td class="p-3 border text-center crud-col">
+              <button onclick="deleteRow('ข้อมูลนักเรียน', '${s['ลำดับ']}')" class="bg-red-500 text-white px-2 py-1 rounded text-xs">ลบ</button>
+            </td>
+          </tr>
+        `;
+      });
+      document.getElementById('table-students-body').innerHTML = htmlStudents;
+
+      // Personnel
+      let htmlPersonnel = '';
+      dbData.personnel.forEach(p => {
+        htmlPersonnel += `
+          <tr class="border-b hover:bg-slate-50">
+            <td class="p-3 border">${p['ลำดับ']}</td>
+            <td class="p-3 border">${p['รหัสหน่วยงาน']}</td>
+            <td class="p-3 border font-semibold">${p['ตำแหน่ง']}</td>
+            <td class="p-3 border">${p['วิทยฐานะ']}</td>
+            <td class="p-3 border">${p['เพศ']}</td>
+            <td class="p-3 border text-center crud-col">
+              <button onclick="deleteRow('ข้อมูลบุคลากร', '${p['ลำดับ']}')" class="bg-red-500 text-white px-2 py-1 rounded text-xs">ลบ</button>
+            </td>
+          </tr>
+        `;
+      });
+      document.getElementById('table-personnel-body').innerHTML = htmlPersonnel;
+
+      updateAuthUI();
+    }
+
+    // CRUD Delete Function
+    function deleteRow(sheetName, id) {
+      if (!confirm(`คุณต้องการลบรายการลำดับที่ ${id} ใช่หรือไม่?`)) return;
+
+      fetch(GAS_API_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'deleteData', sheetName: sheetName, id: id })
+      })
+      .then(res => res.json())
+      .then(res => {
+        if (res.status === 'success') {
+          alert('ลบข้อมูลเรียบร้อยแล้ว');
+          fetchData();
+        } else {
+          alert('เกิดข้อผิดพลาด: ' + res.message);
+        }
+      });
+    }
+
+    function openFormModal(type) {
+      alert(`ระบบฟอร์มสำหรับเพิ่ม ${type} (สามารถเชื่อมต่อฟอร์มกรอกข้อมูลตามคอลัมน์ของชีทได้)`);
+    }
+  </script>
+</body>
+</html>
