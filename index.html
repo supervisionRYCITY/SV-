@@ -589,15 +589,42 @@
       }
     }
 
-    // ตัวแปรสำหรับเก็บ Instance ของกราฟย่อย เพื่อใช้ destroy() เวลาอัปเดตข้อมูล
+    // Register Plugin DataLabels สำหรับ Chart.js
+    if (typeof ChartDataLabels !== 'undefined') {
+      Chart.register(ChartDataLabels);
+    }
+
     let levelChartInstances = {};
 
     function renderDashboard() {
       if (!document.getElementById('card1-total')) return;
 
-      // --- 1. คำนวณ Card 1: นักเรียน (ชาย/หญิง) ---
+      // 1. อ่านค่าการกรองโรงเรียนจาก Dropdown
+      const schoolSelect = document.getElementById('school-filter');
+      const selectedSchool = schoolSelect ? schoolSelect.value : 'ALL';
+
+      // อัปเดตข้อความแสดงชื่อโรงเรียนที่เลือก
+      const schoolLabel = document.getElementById('selected-school-label');
+      if (schoolLabel) {
+        schoolLabel.innerText = selectedSchool === 'ALL' 
+          ? 'ภาพรวมเทศบาลนครระยอง' 
+          : selectedSchool;
+      }
+
+      // 2. กรองข้อมูลนักเรียนและบุคลากรตามโรงเรียนที่เลือก
+      // *หมายเหตุ: คอลัมน์โรงเรียนใน Sheet สมมติว่าชื่อ 'สังกัด' หรือ 'โรงเรียน'
+      const filterData = (item) => {
+        if (selectedSchool === 'ALL') return true;
+        const schoolName = item['สังกัด'] || item['โรงเรียน'] || '';
+        return schoolName.trim() === selectedSchool.trim();
+      };
+
+      const filteredStudents = dbData.students.filter(filterData);
+      const filteredPersonnel = dbData.personnel.filter(filterData);
+
+      // --- Card 1: นักเรียน ---
       let studentMale = 0, studentFemale = 0;
-      dbData.students.forEach(s => {
+      filteredStudents.forEach(s => {
         let count = Number(s['จำนวน'] || 0);
         if (s['เพศ'] === 'ชาย') studentMale += count;
         else if (s['เพศ'] === 'หญิง') studentFemale += count;
@@ -606,10 +633,10 @@
       document.getElementById('card1-male').innerText = studentMale.toLocaleString();
       document.getElementById('card1-female').innerText = studentFemale.toLocaleString();
 
-      // --- 2. คำนวณ Card 2: ผู้บริหาร (ผอ., รอง ผอ.) ---
+      // --- Card 2: ผู้บริหาร ---
       const execPositions = ['ผู้อำนวยการสถานศึกษา', 'รองผู้อำนวยการสถานศึกษา'];
       let execMale = 0, execFemale = 0;
-      dbData.personnel.forEach(p => {
+      filteredPersonnel.forEach(p => {
         if (execPositions.includes(p['ตำแหน่ง'])) {
           if (p['เพศ'] === 'ชาย') execMale++;
           else if (p['เพศ'] === 'หญิง') execFemale++;
@@ -619,10 +646,10 @@
       document.getElementById('card2-male').innerText = execMale.toLocaleString();
       document.getElementById('card2-female').innerText = execFemale.toLocaleString();
 
-      // --- 3. คำนวณ Card 3: ครู (ครู, ครูผู้ช่วย, ผู้ช่วยครูผู้ช่วย) ---
+      // --- Card 3: ครู ---
       const teacherPositions = ['ครู', 'ครูผู้ช่วย', 'ผู้ช่วยครูผู้ช่วย'];
       let teacherMale = 0, teacherFemale = 0;
-      dbData.personnel.forEach(p => {
+      filteredPersonnel.forEach(p => {
         if (teacherPositions.includes(p['ตำแหน่ง'])) {
           if (p['เพศ'] === 'ชาย') teacherMale++;
           else if (p['เพศ'] === 'หญิง') teacherFemale++;
@@ -632,9 +659,9 @@
       document.getElementById('card3-male').innerText = teacherMale.toLocaleString();
       document.getElementById('card3-female').innerText = teacherFemale.toLocaleString();
 
-      // --- 4. คำนวณ Card 4: บุคลากรทั้งหมด ---
+      // --- Card 4: บุคลากรทั้งหมด ---
       let staffMale = 0, staffFemale = 0;
-      dbData.personnel.forEach(p => {
+      filteredPersonnel.forEach(p => {
         if (p['เพศ'] === 'ชาย') staffMale++;
         else if (p['เพศ'] === 'หญิง') staffFemale++;
       });
@@ -642,9 +669,9 @@
       document.getElementById('card4-male').innerText = staffMale.toLocaleString();
       document.getElementById('card4-female').innerText = staffFemale.toLocaleString();
 
-      // --- 5. คำนวณ Card 5: วิทยฐานะ ---
+      // --- Card 5: วิทยฐานะ ---
       let expert = 0, snrAdv = 0, adv = 0, none = 0;
-      dbData.personnel.forEach(p => {
+      filteredPersonnel.forEach(p => {
         let academic = p['วิทยฐานะ'] || '';
         if (academic.includes('เชี่ยวชาญ')) expert++;
         else if (academic.includes('ชำนาญการพิเศษ')) snrAdv++;
@@ -656,24 +683,23 @@
       document.getElementById('card5-adv').innerText = adv;
       document.getElementById('card5-none').innerText = none;
 
-      // --- 6. สร้าง Mini Pie Chart แยกตามระดับชั้น ---
-      renderStudentLevelCharts();
+      // --- 3. สร้าง Mini Doughnut Chart สำหรับแต่ละระดับชั้น ---
+      renderStudentLevelCharts(filteredStudents);
     }
 
-    // ฟังก์ชันสร้างการ์ด และ Mini Chart แยกรายระดับชั้น
-    function renderStudentLevelCharts() {
+    function renderStudentLevelCharts(studentList) {
       const container = document.getElementById('student-levels-grid');
       if (!container) return;
 
-      // ทำลาย Chart เก่าทั้งหมดก่อนสร้างใหม่
+      // ลบ Chart เก่าออกทั้งหมดก่อนวาดใหม่
       Object.keys(levelChartInstances).forEach(key => {
         if (levelChartInstances[key]) levelChartInstances[key].destroy();
       });
       levelChartInstances = {};
 
-      // จัดกลุ่มข้อมูลนักเรียนตามระดับชั้น
+      // จัดกลุ่มนักเรียนตามระดับชั้น
       const levelGroup = {};
-      dbData.students.forEach(s => {
+      studentList.forEach(s => {
         let lvl = s['ระดับชั้น'] || 'ไม่ระบุ';
         let count = Number(s['จำนวน'] || 0);
         let gender = s['เพศ'];
@@ -688,11 +714,11 @@
 
       const levels = Object.keys(levelGroup);
       if (levels.length === 0) {
-        container.innerHTML = '<p class="text-xs text-slate-400 col-span-full text-center">ไม่มีข้อมูลนักเรียน</p>';
+        container.innerHTML = '<p class="text-xs text-slate-400 col-span-full text-center py-4">ไม่มีข้อมูลนักเรียนสำหรับสถานศึกษานี้</p>';
         return;
       }
 
-      // สร้างโครงสร้าง HTML การ์ดย่อย
+      // สร้าง HTML โครงสร้างการ์ด
       let html = '';
       levels.forEach((lvl, idx) => {
         const canvasId = `miniChartLevel_${idx}`;
@@ -702,16 +728,16 @@
           <div class="bg-slate-50 border border-slate-200 rounded-lg p-2.5 flex flex-col justify-between items-center text-center shadow-sm hover:border-brand-lightblue transition">
             <h4 class="font-bold text-xs text-slate-700 line-clamp-1 w-full border-b pb-1" title="${lvl}">${lvl}</h4>
             
-            <div class="my-2 text-[11px] font-semibold text-slate-800">
+            <div class="my-1.5 text-[11px] font-semibold text-slate-800">
               รวม <span class="text-brand-blue font-bold">${data.total.toLocaleString()}</span> คน
             </div>
 
-            <!-- Canvas สำหรับวาด Mini Chart -->
-            <div class="w-20 h-20 relative my-1">
+            <!-- Canvas สำหรับวาด Doughnut Chart -->
+            <div class="w-24 h-24 relative my-1">
               <canvas id="${canvasId}"></canvas>
             </div>
 
-            <!-- สรุปตัวเลข ชาย / หญิง -->
+            <!-- สรุปตัวเลข ชาย / หญิง ด้านล่าง -->
             <div class="w-full flex justify-between text-[10px] text-slate-500 pt-1 border-t border-slate-200 mt-1">
               <span class="text-blue-600 font-semibold">ช: ${data.male.toLocaleString()}</span>
               <span class="text-pink-600 font-semibold">ญ: ${data.female.toLocaleString()}</span>
@@ -722,7 +748,7 @@
 
       container.innerHTML = html;
 
-      // วาด Chart.js ลงบน Canvas แต่ละการ์ด
+      // วาด Chart.js แบบ Doughnut พร้อมแสดงตัวเลขในกราฟ
       levels.forEach((lvl, idx) => {
         const canvasId = `miniChartLevel_${idx}`;
         const ctx = document.getElementById(canvasId);
@@ -730,25 +756,38 @@
 
         const data = levelGroup[lvl];
         levelChartInstances[canvasId] = new Chart(ctx, {
-          type: 'pie',
+          type: 'doughnut', // ปรับประเภทเป็น โดนัท
           data: {
             labels: ['ชาย', 'หญิง'],
             datasets: [{
               data: [data.male, data.female],
-              backgroundColor: ['#2563eb', '#ec4899'], // สีฟ้า (ชาย) / สีชมพู (หญิง)
-              borderWidth: 1
+              backgroundColor: ['#2563eb', '#ec4899'], // ชาย = ฟ้า / หญิง = ชมพู
+              borderWidth: 2,
+              borderColor: '#ffffff'
             }]
           },
           options: {
             responsive: true,
             maintainAspectRatio: false,
+            cutout: '55%', // กำหนดขนาดรูตรงกลางโดนัท
             plugins: {
-              legend: { display: false }, // ซ่อน Label ด้านบนเพื่อประหยัดพื้นที่
+              legend: { display: false },
               tooltip: {
                 callbacks: {
                   label: function(context) {
                     return ` ${context.label}: ${context.raw.toLocaleString()} คน`;
                   }
+                }
+              },
+              // ตั้งค่า Plugin เพื่อแสดงตัวเลขบนตัวโดนัท
+              datalabels: {
+                color: '#ffffff',
+                font: {
+                  weight: 'bold',
+                  size: 9
+                },
+                formatter: function(value) {
+                  return value > 0 ? value.toLocaleString() : ''; // ถ้าเป็น 0 ไม่ต้องแสดง
                 }
               }
             }
