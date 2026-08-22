@@ -432,6 +432,7 @@
       fetchData();
     };
 
+    // 1. ฟังก์ชัน loadPage
     function loadPage(pageName) {
       currentPage = pageName;
       document.getElementById('header-title').innerText = pageTitles[pageName] || 'SuperVision+';
@@ -439,7 +440,7 @@
       if (pageName === 'home') {
         document.getElementById('main-content').innerHTML = defaultHomeHTML;
         renderDashboard();
-        NewsSystem.renderCards(); // <-- เปลี่ยนมาเรียก NewsSystem
+        NewsSystem.renderCards();
         return;
       }
 
@@ -448,7 +449,14 @@
           if (!res.ok) throw new Error('File not found');
           return res.text();
         })
-        .then(html => { document.getElementById('main-content').innerHTML = html; })
+        .then(html => { 
+          document.getElementById('main-content').innerHTML = html; 
+          
+          // เพิ่มคำสั่ง: ถ้าเปิดหน้าหลักสูตร ให้วาดการ์ดข้อมูลจริงจากฐานข้อมูล
+          if (pageName === 'curriculum') {
+            CurriculumSystem.renderCards();
+          }
+        })
         .catch(err => {
           document.getElementById('main-content').innerHTML = `
             <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200 text-center">
@@ -479,29 +487,38 @@
       }
     }
 
-    // ฟังก์ชันดึงข้อมูลจาก GAS ใหม่
+    // 2. ฟังก์ชัน fetchData
     function fetchData() {
-      showGlobalLoader(); // เปิดวงแหวนหมุนตอนเริ่มดึงข้อมูล
+      showGlobalLoader('กำลังโหลดข้อมูล...'); 
       
       fetch(GAS_API_URL + "?action=getAllData")
         .then(res => res.json())
         .then(data => {
           if (data.status === 'success') {
             dbData = data;
+            
+            // อัปเดตหน้า Dashboard
             if (currentPage === 'home') {
               renderDashboard();
               NewsSystem.renderCards();
             }
+            
+            // อัปเดตหน้าหลักสูตร
+            if (currentPage === 'curriculum') {
+              CurriculumSystem.renderCards();
+            }
+
+            // อัปเดตตารางจัดการข่าวถ้าเปิดอยู่
             const newsModal = document.getElementById('news-list-modal');
             if (newsModal && !newsModal.classList.contains('hidden')) {
               NewsSystem.renderTable();
             }
           }
-          hideGlobalLoader(); // ปิดวงแหวนหมุนเมื่อข้อมูลมาครบและประมวลผลเสร็จแล้ว
+          hideGlobalLoader(); 
         })
         .catch(err => {
           console.error("Error fetching data:", err);
-          hideGlobalLoader(); // ปิดวงแหวนหมุนเช่นกันหากเกิดข้อผิดพลาด
+          hideGlobalLoader(); 
         });
     }
 
