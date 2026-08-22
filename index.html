@@ -566,72 +566,118 @@
     }
 
     function renderDashboard() {
-      const kpiUnits = document.getElementById('kpi-units');
-      if (!kpiUnits) return;
+      if (!document.getElementById('card1-total')) return;
 
-      kpiUnits.innerText = dbData.units.length;
-
-      let totalStudents = dbData.students.reduce((acc, curr) => acc + Number(curr['จำนวน'] || 0), 0);
-      document.getElementById('kpi-students').innerText = totalStudents.toLocaleString();
-
-      let totalPersonnel = dbData.personnel.length;
-      document.getElementById('kpi-personnel').innerText = totalPersonnel.toLocaleString();
-
-      let ratio = totalPersonnel > 0 ? (totalStudents / totalPersonnel).toFixed(1) : '-';
-      document.getElementById('kpi-ratio').innerText = `1 : ${ratio}`;
-
-      const levelCounts = {};
+      // --- 1. คำนวณ Card 1: นักเรียน (ชาย/หญิง) ---
+      let studentMale = 0, studentFemale = 0;
       dbData.students.forEach(s => {
-        let lvl = s['ระดับชั้น'] || 'อื่นๆ';
-        levelCounts[lvl] = (levelCounts[lvl] || 0) + Number(s['จำนวน'] || 0);
+        let count = Number(s['จำนวน'] || 0);
+        if (s['เพศ'] === 'ชาย') studentMale += count;
+        else if (s['เพศ'] === 'หญิง') studentFemale += count;
       });
+      document.getElementById('card1-total').innerText = (studentMale + studentFemale).toLocaleString();
+      document.getElementById('card1-male').innerText = studentMale.toLocaleString();
+      document.getElementById('card1-female').innerText = studentFemale.toLocaleString();
 
-      let progressHtml = '';
-      Object.keys(levelCounts).forEach(lvl => {
-        let count = levelCounts[lvl];
-        let pct = totalStudents > 0 ? ((count / totalStudents) * 100).toFixed(1) : 0;
-        progressHtml += `
-          <div>
-            <div class="flex justify-between text-xs font-semibold mb-1">
-              <span>${lvl}</span>
-              <span>${count} คน (${pct}%)</span>
-            </div>
-            <div class="w-full bg-slate-200 rounded-full h-2.5">
-              <div class="bg-brand-lightblue h-2.5 rounded-full" style="width: ${pct}%"></div>
-            </div>
-          </div>
-        `;
-      });
-      document.getElementById('progress-container').innerHTML = progressHtml || '<p class="text-xs text-slate-400">ไม่มีข้อมูล</p>';
-
-      let maleStudents = dbData.students.filter(s => s['เพศ'] === 'ชาย').reduce((a, b) => a + Number(b['จำนวน'] || 0), 0);
-      let femaleStudents = dbData.students.filter(s => s['เพศ'] === 'หญิง').reduce((a, b) => a + Number(b['จำนวน'] || 0), 0);
-
-      if (genderChart) genderChart.destroy();
-      const ctx1 = document.getElementById('chartGender').getContext('2d');
-      genderChart = new Chart(ctx1, {
-        type: 'pie',
-        data: {
-          labels: ['ชาย', 'หญิง'],
-          datasets: [{ data: [maleStudents, femaleStudents], backgroundColor: ['#2563eb', '#22c55e'] }]
+      // --- 2. คำนวณ Card 2: ผู้บริหาร (ผอ., รอง ผอ.) ---
+      const execPositions = ['ผู้อำนวยการสถานศึกษา', 'รองผู้อำนวยการสถานศึกษา'];
+      let execMale = 0, execFemale = 0;
+      dbData.personnel.forEach(p => {
+        if (execPositions.includes(p['ตำแหน่ง'])) {
+          if (p['เพศ'] === 'ชาย') execMale++;
+          else if (p['เพศ'] === 'หญิง') execFemale++;
         }
       });
+      document.getElementById('card2-total').innerText = (execMale + execFemale).toLocaleString();
+      document.getElementById('card2-male').innerText = execMale.toLocaleString();
+      document.getElementById('card2-female').innerText = execFemale.toLocaleString();
 
-      const posCounts = {};
+      // --- 3. คำนวณ Card 3: ครู (ครู, ครูผู้ช่วย, ผู้ช่วยครูผู้ช่วย) ---
+      const teacherPositions = ['ครู', 'ครูผู้ช่วย', 'ผู้ช่วยครูผู้ช่วย'];
+      let teacherMale = 0, teacherFemale = 0;
       dbData.personnel.forEach(p => {
-        let pos = p['ตำแหน่ง'] || 'ไม่ระบุ';
-        posCounts[pos] = (posCounts[pos] || 0) + 1;
+        if (teacherPositions.includes(p['ตำแหน่ง'])) {
+          if (p['เพศ'] === 'ชาย') teacherMale++;
+          else if (p['เพศ'] === 'หญิง') teacherFemale++;
+        }
+      });
+      document.getElementById('card3-total').innerText = (teacherMale + teacherFemale).toLocaleString();
+      document.getElementById('card3-male').innerText = teacherMale.toLocaleString();
+      document.getElementById('card3-female').innerText = teacherFemale.toLocaleString();
+
+      // --- 4. คำนวณ Card 4: บุคลากรทั้งหมด ---
+      let staffMale = 0, staffFemale = 0;
+      dbData.personnel.forEach(p => {
+        if (p['เพศ'] === 'ชาย') staffMale++;
+        else if (p['เพศ'] === 'หญิง') staffFemale++;
+      });
+      document.getElementById('card4-total').innerText = (staffMale + staffFemale).toLocaleString();
+      document.getElementById('card4-male').innerText = staffMale.toLocaleString();
+      document.getElementById('card4-female').innerText = staffFemale.toLocaleString();
+
+      // --- 5. คำนวณ Card 5: วิทยฐานะ ---
+      let expert = 0, snrAdv = 0, adv = 0, none = 0;
+      dbData.personnel.forEach(p => {
+        let academic = p['วิทยฐานะ'] || '';
+        if (academic.includes('เชี่ยวชาญ')) expert++;
+        else if (academic.includes('ชำนาญการพิเศษ')) snrAdv++;
+        else if (academic.includes('ชำนาญการ')) adv++;
+        else none++;
+      });
+      document.getElementById('card5-expert').innerText = expert;
+      document.getElementById('card5-snr-adv').innerText = snrAdv;
+      document.getElementById('card5-adv').innerText = adv;
+      document.getElementById('card5-none').innerText = none;
+
+      // --- 6. แผนภูมิวงกลม: สัดส่วนนักเรียนแต่ละระดับชั้น ---
+      const levelData = {}; // เก็บโครงสร้าง: { 'ประถมศึกษาปีที่ 1': { total: 0, male: 0, female: 0 } }
+
+      dbData.students.forEach(s => {
+        let lvl = s['ระดับชั้น'] || 'ไม่ระบุ';
+        let count = Number(s['จำนวน'] || 0);
+        let gender = s['เพศ'];
+
+        if (!levelData[lvl]) {
+          levelData[lvl] = { total: 0, male: 0, female: 0 };
+        }
+        levelData[lvl].total += count;
+        if (gender === 'ชาย') levelData[lvl].male += count;
+        else if (gender === 'หญิง') levelData[lvl].female += count;
       });
 
-      if (personnelChart) personnelChart.destroy();
-      const ctx2 = document.getElementById('chartPersonnel').getContext('2d');
-      personnelChart = new Chart(ctx2, {
-        type: 'bar',
+      const labels = Object.keys(levelData);
+      const totals = labels.map(l => levelData[l].total);
+
+      // สร้างแผนภูมิ Chart.js
+      if (genderChart) genderChart.destroy(); // ทำลายกราฟเดิมก่อนวาดใหม่
+      const ctx = document.getElementById('chartStudentLevels').getContext('2d');
+      genderChart = new Chart(ctx, {
+        type: 'pie',
         data: {
-          labels: Object.keys(posCounts),
-          datasets: [{ label: 'จำนวนบุคลากร (คน)', data: Object.values(posCounts), backgroundColor: '#1e3a8a' }]
+          labels: labels,
+          datasets: [{
+            data: totals,
+            backgroundColor: [
+              '#2563eb', '#16a34a', '#d97706', '#dc2626', '#9333ea', 
+              '#0891b2', '#4f46e5', '#ca8a04', '#059669', '#e11d48'
+            ]
+          }]
         },
-        options: { responsive: true, maintainAspectRatio: false }
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  let lvl = context.label;
+                  let info = levelData[lvl];
+                  return ` ${lvl}: รวม ${info.total.toLocaleString()} คน (ชาย ${info.male.toLocaleString()}, หญิง ${info.female.toLocaleString()})`;
+                }
+              }
+            }
+          }
+        }
       });
     }
   </script>
