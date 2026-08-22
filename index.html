@@ -838,11 +838,20 @@
       openForm: function(id = null) {
         document.getElementById('curriculum-form').reset();
         document.getElementById('curriculum-file-hint').classList.add('hidden');
+        
+        // ซ่อนกล่อง Error เก่า
+        const errMsg = document.getElementById('curriculum-error-msg');
+        if(errMsg) errMsg.classList.add('hidden');
+
         document.getElementById('curriculum-id').value = id || '';
         document.getElementById('curriculum-form-header').innerText = id ? 'แก้ไขข้อมูลหลักสูตร' : 'เพิ่มหลักสูตรใหม่';
         
-        // ดึงรหัสสถานศึกษาจาก currentUser มาใส่โดยอัตโนมัติ
-        document.getElementById('curriculum-school-id').value = currentUser ? currentUser.unitId : '';
+        // ดึงรหัสหน่วยงานแบบชัวร์ๆ (ดึงจากรหัสใน Object ผู้ใช้งานโดยตรง)
+        let safeUnitId = '';
+        if (currentUser) {
+           safeUnitId = currentUser['รหัสหน่วยงาน'] || currentUser.unitId || '';
+        }
+        document.getElementById('curriculum-school-id').value = safeUnitId;
 
         if (id) {
           const item = dbData.curriculum.find(n => String(n['ลำดับ']) === String(id));
@@ -857,8 +866,6 @@
         document.getElementById('curriculum-form-modal').classList.replace('hidden', 'flex');
       },
 
-      closeForm: () => document.getElementById('curriculum-form-modal').classList.replace('flex', 'hidden'),
-
       saveData: function(btn) {
         const id = document.getElementById('curriculum-id').value;
         const schoolId = document.getElementById('curriculum-school-id').value;
@@ -866,11 +873,18 @@
         const level = document.getElementById('curriculum-level').value;
         const year = document.getElementById('curriculum-year').value;
         const fileInput = document.getElementById('curriculum-file');
+        
+        const errMsg = document.getElementById('curriculum-error-msg');
+        errMsg.classList.add('hidden'); // ปิดกล่อง error ไว้ก่อน
 
-        if (!title || !level || !year) return alert('กรุณากรอกข้อมูลให้ครบถ้วน');
+        if (!title || !level || !year) {
+           errMsg.innerText = 'กรุณากรอกข้อมูลให้ครบถ้วน';
+           errMsg.classList.remove('hidden');
+           return;
+        }
 
         const originalText = btn.innerText;
-        btn.innerText = 'กำลังบันทึก (อาจใช้เวลาอัปโหลด PDF สักครู่)...';
+        btn.innerText = 'กำลังบันทึก PDF...';
         btn.disabled = true;
         btn.classList.add('opacity-70', 'cursor-not-allowed');
 
@@ -894,13 +908,19 @@
             if (res.status === 'success') {
               this.closeForm();
               fetchData(); 
-            } else alert('Error: ' + res.message);
+            } else {
+              errMsg.innerText = 'Error: ' + res.message;
+              errMsg.classList.remove('hidden');
+            }
             btn.innerText = originalText;
             btn.disabled = false;
             btn.classList.remove('opacity-70', 'cursor-not-allowed');
-          }).catch(() => {
-            this.closeForm();
-            fetchData();
+          }).catch((err) => {
+            errMsg.innerText = 'เกิดข้อผิดพลาดในการเชื่อมต่อ: ' + err.toString();
+            errMsg.classList.remove('hidden');
+            btn.innerText = originalText;
+            btn.disabled = false;
+            btn.classList.remove('opacity-70', 'cursor-not-allowed');
           });
         };
 
