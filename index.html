@@ -104,7 +104,7 @@
     </div>
   </div>
 
-<!-- Card 2: ผู้บริหาร -->
+  <!-- Card 2: ผู้บริหาร -->
   <div class="bg-white border-l-4 border-purple-600 p-3 rounded-lg shadow-sm">
     <p class="text-[11px] text-slate-500 font-semibold">ผู้บริหารสถานศึกษา</p>
     <h3 id="card2-total" class="text-xl font-bold text-purple-600 mt-0.5">0</h3>
@@ -113,7 +113,7 @@
       <span>หญิง: <strong id="card2-female" class="text-slate-700">0</strong></span>
     </div>
   </div>
-  
+
   <!-- Card 3: พนักงานครู -->
   <div class="bg-white border-l-4 border-brand-green p-3 rounded-lg shadow-sm">
     <p class="text-[11px] text-slate-500 font-semibold">พนักงานครู</p>
@@ -659,8 +659,9 @@
       let execMale = 0, execFemale = 0;
       filteredPersonnel.forEach(p => {
         if (execPositions.includes(p['ตำแหน่ง'])) {
-          if (p['เพศ'] === 'ชาย') execMale++;
-          else if (p['เพศ'] === 'หญิง') execFemale++;
+          let count = Number(p['จำนวน'] || 0);
+          if (p['เพศ'] === 'ชาย') execMale += count;
+          else if (p['เพศ'] === 'หญิง') execFemale += count;
         }
       });
       document.getElementById('card2-total').innerText = (execMale + execFemale).toLocaleString();
@@ -672,8 +673,9 @@
       let teacherMale = 0, teacherFemale = 0;
       filteredPersonnel.forEach(p => {
         if (teacherPositions.includes(p['ตำแหน่ง'])) {
-          if (p['เพศ'] === 'ชาย') teacherMale++;
-          else if (p['เพศ'] === 'หญิง') teacherFemale++;
+          let count = Number(p['จำนวน'] || 0);
+          if (p['เพศ'] === 'ชาย') teacherMale += count;
+          else if (p['เพศ'] === 'หญิง') teacherFemale += count;
         }
       });
       document.getElementById('card3-total').innerText = (teacherMale + teacherFemale).toLocaleString();
@@ -681,13 +683,13 @@
       document.getElementById('card3-female').innerText = teacherFemale.toLocaleString();
 
       // --- Card 4: บุคลากรทางการศึกษา ---
-      // ผมเพิ่มตำแหน่งอื่นๆ ที่ปรากฏในฐานข้อมูลตามภาพเข้าไปด้วย หากในอนาคตมีตำแหน่ง 'บุคลากร' สามารถใส่เพิ่มใน Array นี้ได้เลยครับ
       const eduStaffPositions = ['บุคลากร', 'ผู้ช่วยครูผู้ช่วย', 'ผู้ช่วยเจ้าพนักงานธุรการ'];
       let staffMale = 0, staffFemale = 0;
       filteredPersonnel.forEach(p => {
         if (eduStaffPositions.includes(p['ตำแหน่ง'])) {
-          if (p['เพศ'] === 'ชาย') staffMale++;
-          else if (p['เพศ'] === 'หญิง') staffFemale++;
+          let count = Number(p['จำนวน'] || 0);
+          if (p['เพศ'] === 'ชาย') staffMale += count;
+          else if (p['เพศ'] === 'หญิง') staffFemale += count;
         }
       });
       document.getElementById('card4-total').innerText = (staffMale + staffFemale).toLocaleString();
@@ -698,10 +700,11 @@
       let expert = 0, snrAdv = 0, adv = 0, none = 0;
       filteredPersonnel.forEach(p => {
         let academic = p['วิทยฐานะ'] || '';
-        if (academic.includes('เชี่ยวชาญ')) expert++;
-        else if (academic.includes('ชำนาญการพิเศษ')) snrAdv++;
-        else if (academic.includes('ชำนาญการ')) adv++;
-        else none++;
+        let count = Number(p['จำนวน'] || 0);
+        if (academic.includes('เชี่ยวชาญ')) expert += count;
+        else if (academic.includes('ชำนาญการพิเศษ')) snrAdv += count;
+        else if (academic.includes('ชำนาญการ')) adv += count;
+        else none += count;
       });
       document.getElementById('card5-expert').innerText = expert;
       document.getElementById('card5-snr-adv').innerText = snrAdv;
