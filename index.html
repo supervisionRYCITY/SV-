@@ -676,12 +676,11 @@
         this.closeList();
         document.getElementById('news-form-modal').classList.replace('hidden', 'flex');
       },
-      
-
       closeForm: function() {
-        document.getElementById('curriculum-form-modal').classList.replace('flex', 'hidden');
+        document.getElementById('news-form-modal').classList.replace('flex', 'hidden');
+        this.openList();
       },
-      
+
       saveData: function(btn) {
         const id = document.getElementById('news-id').value;
         const title = document.getElementById('news-title').value;
