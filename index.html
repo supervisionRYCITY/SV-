@@ -681,6 +681,10 @@
         this.openList();
       },
 
+      closeForm: function() {
+        document.getElementById('curriculum-form-modal').classList.replace('flex', 'hidden');
+      },
+      
       saveData: function(btn) {
         const id = document.getElementById('news-id').value;
         const title = document.getElementById('news-title').value;
