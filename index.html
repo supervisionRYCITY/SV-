@@ -1,403 +1,155 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SuperVision+ | เทศบาลนครระยอง</title>
-  
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Google Fonts: Sarabun -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
-  
-  <!-- Chart.js CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+/**
+ * SuperVision+ Backend API
+ * เพิ่มการรองรับข้อมูลข่าวประชาสัมพันธ์
+ */
 
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: { sans: ['Sarabun', 'sans-serif'] },
-          colors: {
-            brand: {
-              blue: '#1e3a8a',
-              lightblue: '#2563eb',
-              green: '#15803d',
-              lightgreen: '#22c55e',
-              yellow: '#eab308',
-              accentyellow: '#fde047'
-            }
-          }
-        }
-      }
-    }
-  </script>
-  <style>
-    body { font-family: 'Sarabun', sans-serif; background-color: #f8fafc; }
-  </style>
-</head>
-<body class="bg-slate-50 text-slate-800 flex h-screen overflow-hidden">
+function doGet(e) {
+  var action = e ? e.parameter.action : '';
+  if (action === 'getAllData') {
+    return createJsonResponse(getAllData());
+  }
+  return createJsonResponse({ status: 'error', message: 'Invalid Action' });
+}
 
-  <!-- MAIN CONTAINER AREA -->
-  <div class="flex-1 flex flex-col h-full overflow-hidden mr-64">
+function doPost(e) {
+  try {
+    var data = JSON.parse(e.postData.contents);
+    var action = data.action;
     
-    <!-- TOP HEADER -->
-    <header class="bg-brand-blue text-white shadow-md px-6 py-4 flex justify-between items-center z-10 border-b-4 border-brand-yellow">
-      <div>
-        <h1 id="header-title" class="text-2xl font-bold tracking-tight">หน้าแรก</h1>
-        <p class="text-xs text-blue-200">SuperVision+ ระบบสารสนเทศเพื่อการบริหารและการนิเทศการศึกษา</p>
-      </div>
-      <div class="flex items-center space-x-4">
-        <div id="user-info-display" class="text-right hidden">
-          <div id="user-name" class="font-semibold text-sm text-brand-accentyellow"></div>
-          <div id="user-role" class="text-xs text-slate-200"></div>
-        </div>
-        <button id="auth-btn" onclick="toggleAuthModal()" class="bg-brand-green hover:bg-emerald-600 text-white font-medium px-4 py-2 rounded-lg text-sm transition shadow">
-          เข้าสู่ระบบ
-        </button>
-      </div>
-    </header>
+    if (action === 'login') {
+      return createJsonResponse(handleLogin(data.username, data.password));
+    }
+    if (action === 'saveData') {
+      return createJsonResponse(saveData(data.sheetName, data.rowObj));
+    }
+    if (action === 'deleteData') {
+      return createJsonResponse(deleteData(data.sheetName, data.id));
+    }
+    
+    return createJsonResponse({ status: 'error', message: 'Unknown Action' });
+  } catch (err) {
+    return createJsonResponse({ status: 'error', message: err.toString() });
+  }
+}
 
-    <!-- DYNAMIC MAIN CONTENT VIEW (DEFAULT: HOME DASHBOARD) -->
-    <main class="flex-1 overflow-y-auto p-6 bg-slate-100" id="main-content">
-      <div class="space-y-6">
-        <!-- KPI Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div class="bg-white border-l-4 border-brand-blue p-4 rounded-lg shadow-sm">
-            <p class="text-xs text-slate-500 font-medium">จำนวนสถานศึกษา/หน่วยงาน</p>
-            <h3 id="kpi-units" class="text-2xl font-bold text-brand-blue mt-1">0</h3>
-            <p class="text-xs text-slate-400 mt-2">แห่งในสังกัด</p>
-          </div>
-          <div class="bg-white border-l-4 border-brand-green p-4 rounded-lg shadow-sm">
-            <p class="text-xs text-slate-500 font-medium">นักเรียนรวมทั้งหมด</p>
-            <h3 id="kpi-students" class="text-2xl font-bold text-brand-green mt-1">0</h3>
-            <p class="text-xs text-slate-400 mt-2">คน</p>
-          </div>
-          <div class="bg-white border-l-4 border-brand-yellow p-4 rounded-lg shadow-sm">
-            <p class="text-xs text-slate-500 font-medium">บุคลากรรวมทั้งหมด</p>
-            <h3 id="kpi-personnel" class="text-2xl font-bold text-amber-600 mt-1">0</h3>
-            <p class="text-xs text-slate-400 mt-2">คน</p>
-          </div>
-          <div class="bg-white border-l-4 border-brand-lightblue p-4 rounded-lg shadow-sm">
-            <p class="text-xs text-slate-500 font-medium">อัตราส่วน ครู : นักเรียน</p>
-            <h3 id="kpi-ratio" class="text-2xl font-bold text-brand-lightblue mt-1">1:-</h3>
-            <p class="text-xs text-slate-400 mt-2">ภาพรวมเชิงสถิติ</p>
-          </div>
-        </div>
+function createJsonResponse(data) {
+  return ContentService.createTextOutput(JSON.stringify(data))
+    .setMimeType(ContentService.MimeType.JSON);
+}
 
-        <!-- Progress Bars -->
-        <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200">
-          <h3 class="text-base font-semibold text-slate-800 mb-3">สัดส่วนนักเรียนแยกตามระดับชั้น (ร้อยละ)</h3>
-          <div class="space-y-3" id="progress-container"></div>
-        </div>
+function sheetToObjects(sheet) {
+  if (!sheet) return [];
+  var data = sheet.getDataRange().getValues();
+  if (data.length <= 1) return [];
+  var headers = data[0];
+  var rows = [];
+  
+  for (var i = 1; i < data.length; i++) {
+    var row = data[i];
+    if (row[0] === "" || row[0] === null || row[0] === undefined) continue;
+    var obj = {};
+    for (var j = 0; j < headers.length; j++) {
+      obj[headers[j]] = row[j];
+    }
+    rows.push(obj);
+  }
+  return rows;
+}
 
-        <!-- Charts -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
-            <h3 class="text-base font-semibold text-slate-800 mb-4 text-center">สัดส่วนเพศนักเรียน</h3>
-            <div class="w-full max-w-xs mx-auto">
-              <canvas id="chartGender"></canvas>
-            </div>
-          </div>
-          <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
-            <h3 class="text-base font-semibold text-slate-800 mb-4 text-center">จำนวนบุคลากรแยกตามตำแหน่ง</h3>
-            <div class="w-full h-64">
-              <canvas id="chartPersonnel"></canvas>
-            </div>
-          </div>
-        </div>
-      </div>
-    </main>
-  </div>
+function getAllData() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  return {
+    status: 'success',
+    users: sheetToObjects(ss.getSheetByName('ผู้ใช้งาน')),
+    units: sheetToObjects(ss.getSheetByName('ข้อมูลหน่วยงาน')),
+    students: sheetToObjects(ss.getSheetByName('ข้อมูลนักเรียน')),
+    personnel: sheetToObjects(ss.getSheetByName('ข้อมูลบุคลากร')),
+    news: sheetToObjects(ss.getSheetByName('ข่าวประชาสัมพันธ์')) // ดึงข้อมูลข่าวสารเพิ่ม
+  };
+}
 
-  <!-- RIGHT SIDEBAR FIXED -->
-  <aside class="w-64 bg-slate-900 text-white fixed right-0 top-0 h-full shadow-2xl flex flex-col z-20 border-l border-slate-700">
-    <div class="p-4 border-b border-slate-800 bg-slate-950 flex justify-between items-center">
-      <span class="font-bold text-sm text-brand-yellow tracking-wide">SUPERVISION+</span>
-      <span class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded">v1.0</span>
-    </div>
-
-    <nav class="flex-1 p-3 space-y-4 overflow-y-auto text-sm">
-      <!-- กลุ่มที่ 1: เมนูหลัก -->
-      <div class="space-y-1">
-        <button onclick="loadPage('home')" class="nav-btn w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-white transition bg-brand-blue">
-          <span>หน้าแรก</span>
-        </button>
-        <button onclick="loadPage('executives')" class="nav-btn w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">
-          <span>ผู้บริหารเทศบาลนครระยอง</span>
-        </button>
-        <button onclick="loadPage('working-team')" class="nav-btn w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">
-          <span>คณะทำงาน</span>
-        </button>
-      </div>
-
-      <!-- กลุ่มที่ 2: ระบบงานหลัก -->
-      <div class="space-y-1 border-t border-slate-800 pt-3">
-        <div class="px-3 pb-1 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-          ระบบงานหลัก
-        </div>
-        <button onclick="loadPage('supervision')" class="nav-btn w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">
-          <span>ระบบงานนิเทศ</span>
-        </button>
-        <button onclick="loadPage('curriculum')" class="nav-btn w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">
-          <span>ระบบงานหลักสูตร</span>
-        </button>
-        <button onclick="loadPage('qa')" class="nav-btn w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">
-          <span>ระบบงานประกันคุณภาพการศึกษา</span>
-        </button>
-        <button onclick="loadPage('evaluation')" class="nav-btn w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">
-          <span>ระบบงานวัดและประเมินผล</span>
-        </button>
-        <button onclick="loadPage('media-tech')" class="nav-btn w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">
-          <span>ระบบงานสื่อและเทคโนโลยี</span>
-        </button>
-      </div>
-
-      <!-- กลุ่มที่ 3: ระบบงานรอง -->
-      <div class="space-y-1 border-t border-slate-800 pt-3">
-        <button onclick="loadPage('news')" class="nav-btn w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">
-          <span>ข่าวประชาสัมพันธ์</span>
-        </button>
-        <button onclick="loadPage('about')" class="nav-btn w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">
-          <span>เกี่ยวกับเรา</span>
-        </button>
-        <button id="menu-settings" onclick="loadPage('settings')" class="nav-btn hidden w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-amber-400 transition">
-          <span>ตั้งค่าการใช้งาน</span>
-        </button>
-      </div>
-    </nav>
-
-    <div class="p-3 border-t border-slate-800 text-[11px] text-slate-400 text-center">
-      เทศบาลนครระยอง &copy; 2026
-    </div>
-  </aside>
-
-  <!-- LOGIN MODAL -->
-  <div id="login-modal" class="fixed inset-0 bg-slate-900 bg-opacity-60 hidden items-center justify-center z-50">
-    <div class="bg-white rounded-lg p-6 w-80 shadow-2xl space-y-4 border-t-4 border-brand-blue">
-      <h3 class="text-base font-bold text-slate-800">เข้าสู่ระบบภายใน</h3>
-      <div>
-        <label class="block text-xs font-semibold mb-1">Username</label>
-        <input type="text" id="login-username" class="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue">
-      </div>
-      <div>
-        <label class="block text-xs font-semibold mb-1">Password</label>
-        <input type="password" id="login-password" class="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue">
-      </div>
-      <div id="login-error" class="text-xs text-red-500 hidden"></div>
-      <div class="flex justify-end space-x-2 pt-2">
-        <button onclick="toggleAuthModal()" class="px-3 py-1.5 border rounded text-xs hover:bg-slate-100">ยกเลิก</button>
-        <button onclick="performLogin()" class="px-3 py-1.5 bg-brand-blue text-white rounded text-xs hover:bg-blue-800">ตกลง</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- JAVASCRIPT APPLICATION LOGIC -->
-  <script>
-    const GAS_API_URL = "https://script.google.com/macros/s/AKfycbyUbL4Aq6p4CP2u4KdWurx42-r75eSzAZeLVhAeL8xBBblseSv7IOUEZ31b8XVHtqA/exec";
-
-    let dbData = { users: [], units: [], students: [], personnel: [] };
-    let currentUser = null;
-    let genderChart = null;
-    let personnelChart = null;
-    let currentPage = 'home';
-    let defaultHomeHTML = '';
-
-    const pageTitles = {
-      'home': 'หน้าแรก',
-      'executives': 'ผู้บริหารเทศบาลนครระยอง',
-      'working-team': 'คณะทำงาน',
-      'supervision': 'ระบบงานนิเทศ',
-      'curriculum': 'ระบบงานหลักสูตร',
-      'qa': 'ระบบงานประกันคุณภาพการศึกษา',
-      'evaluation': 'ระบบงานวัดและประเมินผล',
-      'media-tech': 'ระบบงานสื่อและเทคโนโลยี',
-      'news': 'ข่าวประชาสัมพันธ์',
-      'about': 'เกี่ยวกับเรา',
-      'settings': 'ตั้งค่าการใช้งาน'
+function handleLogin(username, password) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var users = sheetToObjects(ss.getSheetByName('ผู้ใช้งาน'));
+  
+  var user = users.find(function(u) {
+    return String(u['Username']) === String(username) && String(u['Password']) === String(password);
+  });
+  
+  if (user) {
+    return {
+      status: 'success',
+      user: {
+        name: user['ชื่อผู้ใช้งาน'],
+        role: user['สิทธิ์การใช้งาน'],
+        position: user['ตำแหน่ง'],
+        unit: user['หน่วยงาน']
+      }
     };
+  } else {
+    return { status: 'error', message: 'ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง' };
+  }
+}
 
-    window.onload = function() {
-      // บันทึกโครงสร้างหน้าแรกไว้ในหน่วยความจำ
-      defaultHomeHTML = document.getElementById('main-content').innerHTML;
-      fetchData();
-      updateAuthUI();
-    };
-
-    // Dynamic Loader Function
-    function loadPage(pageName) {
-      currentPage = pageName;
-      document.getElementById('header-title').innerText = pageTitles[pageName] || 'SuperVision+';
-
-      if (pageName === 'home') {
-        // คืนค่าหน้าแรกจากหน่วยความจำ
-        document.getElementById('main-content').innerHTML = defaultHomeHTML;
-        renderDashboard();
-        return;
-      }
-
-      // ดึงไฟล์ HTML ย่อยจากโฟลเดอร์ pages/
-      fetch(`pages/${pageName}.html`)
-        .then(res => {
-          if (!res.ok) throw new Error('File not found');
-          return res.text();
-        })
-        .then(html => {
-          document.getElementById('main-content').innerHTML = html;
-        })
-        .catch(err => {
-          document.getElementById('main-content').innerHTML = `
-            <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200 text-center">
-              <p class="text-slate-600 font-semibold">อยู่ระหว่างการพัฒนาหน้า pages/${pageName}.html</p>
-              <p class="text-xs text-slate-400 mt-1">สามารถสร้างไฟล์นี้ในโฟลเดอร์ pages เพื่อเพิ่มเนื้อหาได้ทันที</p>
-            </div>
-          `;
-        });
-    }
-
-    function fetchData() {
-      fetch(GAS_API_URL + "?action=getAllData")
-        .then(res => res.json())
-        .then(data => {
-          if (data.status === 'success') {
-            dbData = data;
-            if (currentPage === 'home') renderDashboard();
-          }
-        })
-        .catch(err => console.error("Error fetching data:", err));
-    }
-
-    function toggleAuthModal() {
-      if (currentUser) {
-        currentUser = null;
-        updateAuthUI();
-        loadPage('home');
-      } else {
-        document.getElementById('login-modal').classList.toggle('flex');
-        document.getElementById('login-modal').classList.toggle('hidden');
+function saveData(sheetName, rowObj) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName(sheetName);
+  
+  // ถ้ายังไม่มีชีท ข่าวประชาสัมพันธ์ ให้สร้างอัตโนมัติ
+  if (!sheet && sheetName === 'ข่าวประชาสัมพันธ์') {
+    sheet = ss.insertSheet('ข่าวประชาสัมพันธ์');
+    sheet.appendRow(['ลำดับ', 'พาดหัวข่าว', 'เนื้อหาข่าว', 'ภาพข่าว', 'วันที่']);
+  }
+  
+  if (!sheet) return { status: 'error', message: 'ไม่พบชีท: ' + sheetName };
+  
+  var data = sheet.getDataRange().getValues();
+  var headers = data[0];
+  var targetRowIndex = -1;
+  var id = rowObj['ลำดับ'];
+  
+  if (id !== undefined && id !== '' && id !== null) {
+    for (var i = 1; i < data.length; i++) {
+      if (String(data[i][0]) === String(id)) {
+        targetRowIndex = i + 1;
+        break;
       }
     }
-
-    function performLogin() {
-      const u = document.getElementById('login-username').value;
-      const p = document.getElementById('login-password').value;
-
-      fetch(GAS_API_URL, {
-        method: 'POST',
-        body: JSON.stringify({ action: 'login', username: u, password: p })
-      })
-      .then(res => res.json())
-      .then(res => {
-        if (res.status === 'success') {
-          currentUser = res.user;
-          document.getElementById('login-modal').classList.add('hidden');
-          document.getElementById('login-modal').classList.remove('flex');
-          updateAuthUI();
-        } else {
-          const errDiv = document.getElementById('login-error');
-          errDiv.innerText = res.message;
-          errDiv.classList.remove('hidden');
-        }
-      });
-    }
-
-    function updateAuthUI() {
-      const btn = document.getElementById('auth-btn');
-      const info = document.getElementById('user-info-display');
-      const settingsMenu = document.getElementById('menu-settings');
-
-      if (currentUser) {
-        btn.innerText = 'ออกจากระบบ';
-        btn.classList.replace('bg-brand-green', 'bg-red-600');
-        info.classList.remove('hidden');
-        document.getElementById('user-name').innerText = currentUser.name;
-        document.getElementById('user-role').innerText = `${currentUser.position} (${currentUser.role})`;
-
-        if (currentUser.role === 'ผู้ดูแลระบบ') {
-          settingsMenu.classList.remove('hidden');
-        } else {
-          settingsMenu.classList.add('hidden');
-        }
-      } else {
-        btn.innerText = 'เข้าสู่ระบบ';
-        btn.classList.replace('bg-red-600', 'bg-brand-green');
-        info.classList.add('hidden');
-        settingsMenu.classList.add('hidden');
+  }
+  
+  var rowValues = [];
+  headers.forEach(function(h) {
+    rowValues.push(rowObj[h] !== undefined ? rowObj[h] : '');
+  });
+  
+  if (targetRowIndex > 0) {
+    sheet.getRange(targetRowIndex, 1, 1, headers.length).setValues([rowValues]);
+  } else {
+    var maxId = 0;
+    for (var j = 1; j < data.length; j++) {
+      var currentId = Number(data[j][0]);
+      if (!isNaN(currentId) && currentId > maxId) {
+        maxId = currentId;
       }
     }
+    rowValues[0] = maxId + 1;
+    sheet.appendRow(rowValues);
+  }
+  
+  return { status: 'success' };
+}
 
-    function renderDashboard() {
-      const kpiUnits = document.getElementById('kpi-units');
-      if (!kpiUnits) return;
-
-      kpiUnits.innerText = dbData.units.length;
-
-      let totalStudents = dbData.students.reduce((acc, curr) => acc + Number(curr['จำนวน'] || 0), 0);
-      document.getElementById('kpi-students').innerText = totalStudents.toLocaleString();
-
-      let totalPersonnel = dbData.personnel.length;
-      document.getElementById('kpi-personnel').innerText = totalPersonnel.toLocaleString();
-
-      let ratio = totalPersonnel > 0 ? (totalStudents / totalPersonnel).toFixed(1) : '-';
-      document.getElementById('kpi-ratio').innerText = `1 : ${ratio}`;
-
-      const levelCounts = {};
-      dbData.students.forEach(s => {
-        let lvl = s['ระดับชั้น'] || 'อื่นๆ';
-        levelCounts[lvl] = (levelCounts[lvl] || 0) + Number(s['จำนวน'] || 0);
-      });
-
-      let progressHtml = '';
-      Object.keys(levelCounts).forEach(lvl => {
-        let count = levelCounts[lvl];
-        let pct = totalStudents > 0 ? ((count / totalStudents) * 100).toFixed(1) : 0;
-        progressHtml += `
-          <div>
-            <div class="flex justify-between text-xs font-semibold mb-1">
-              <span>${lvl}</span>
-              <span>${count} คน (${pct}%)</span>
-            </div>
-            <div class="w-full bg-slate-200 rounded-full h-2.5">
-              <div class="bg-brand-lightblue h-2.5 rounded-full" style="width: ${pct}%"></div>
-            </div>
-          </div>
-        `;
-      });
-      document.getElementById('progress-container').innerHTML = progressHtml || '<p class="text-xs text-slate-400">ไม่มีข้อมูล</p>';
-
-      let maleStudents = dbData.students.filter(s => s['เพศ'] === 'ชาย').reduce((a, b) => a + Number(b['จำนวน'] || 0), 0);
-      let femaleStudents = dbData.students.filter(s => s['เพศ'] === 'หญิง').reduce((a, b) => a + Number(b['จำนวน'] || 0), 0);
-
-      if (genderChart) genderChart.destroy();
-      const ctx1 = document.getElementById('chartGender').getContext('2d');
-      genderChart = new Chart(ctx1, {
-        type: 'pie',
-        data: {
-          labels: ['ชาย', 'หญิง'],
-          datasets: [{ data: [maleStudents, femaleStudents], backgroundColor: ['#2563eb', '#22c55e'] }]
-        }
-      });
-
-      const posCounts = {};
-      dbData.personnel.forEach(p => {
-        let pos = p['ตำแหน่ง'] || 'ไม่ระบุ';
-        posCounts[pos] = (posCounts[pos] || 0) + 1;
-      });
-
-      if (personnelChart) personnelChart.destroy();
-      const ctx2 = document.getElementById('chartPersonnel').getContext('2d');
-      personnelChart = new Chart(ctx2, {
-        type: 'bar',
-        data: {
-          labels: Object.keys(posCounts),
-          datasets: [{ label: 'จำนวนบุคลากร (คน)', data: Object.values(posCounts), backgroundColor: '#1e3a8a' }]
-        },
-        options: { responsive: true, maintainAspectRatio: false }
-      });
+function deleteData(sheetName, id) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName(sheetName);
+  if (!sheet) return { status: 'error', message: 'ไม่พบชีท' };
+  
+  var data = sheet.getDataRange().getValues();
+  for (var i = 1; i < data.length; i++) {
+    if (String(data[i][0]) === String(id)) {
+      sheet.deleteRow(i + 1);
+      return { status: 'success' };
     }
-  </script>
-</body>
-</html>
+  }
+  return { status: 'error', message: 'ไม่พบรายการที่ต้องการลบ' };
+}
