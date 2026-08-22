@@ -3,222 +3,647 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SuperVision+ ระบบสารสนเทศเพื่อการบริหารและการนิเทศการศึกษา</title>
+  <title>SuperVision+ | เทศบาลนครระยอง</title>
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts: Sarabun -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Plugin สำหรับแสดงตัวเลขบน Chart -->
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+  
   <script>
     tailwind.config = {
       theme: {
         extend: {
+          fontFamily: { sans: ['Sarabun', 'sans-serif'] },
           colors: {
             brand: {
-              blue: '#1e40af',
-              lightblue: '#3b82f6',
-              green: '#10b981',
-              dark: '#0f172a'
+              blue: '#1e3a8a',
+              lightblue: '#2563eb',
+              green: '#15803d',
+              lightgreen: '#22c55e',
+              yellow: '#eab308',
+              accentyellow: '#fde047'
             }
           }
         }
       }
     }
   </script>
-
-  <!-- Google Fonts: Prompt -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-  <!-- Chart.js CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- Chart.js DataLabels Plugin CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
-
   <style>
-    body {
-      font-family: 'Prompt', sans-serif;
-    }
+    body { font-family: 'Sarabun', sans-serif; background-color: #f8fafc; }
   </style>
 </head>
-<body class="bg-slate-100 text-slate-800 antialiased min-h-screen">
+<body class="bg-slate-50 text-slate-800 flex h-screen overflow-hidden">
 
-  <div class="p-4 md:p-6 max-w-[1600px] mx-auto space-y-4">
-
-    <!-- ==================== HEADER SECTION ==================== -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+  <!-- MAIN CONTAINER AREA -->
+  <div class="flex-1 flex flex-col h-full overflow-hidden mr-64">
+    
+    <!-- TOP HEADER -->
+    <header class="bg-brand-blue text-white shadow-md px-6 py-4 flex justify-between items-center z-10 border-b-4 border-brand-yellow">
       <div>
-        <h1 class="text-xl font-bold text-slate-800">หน้าแรก</h1>
-        <p class="text-xs text-slate-500">SuperVision+ ระบบสารสนเทศเพื่อการบริหารและการนิเทศการศึกษา</p>
+        <h1 id="header-title" class="text-2xl font-bold tracking-tight">หน้าแรก</h1>
+        <p class="text-xs text-blue-200">SuperVision+ ระบบสารสนเทศเพื่อการบริหารและการนิเทศการศึกษา</p>
       </div>
+      <div class="flex items-center space-x-4">
+        <div id="user-info-display" class="text-right hidden">
+          <div id="user-name" class="font-semibold text-sm text-brand-accentyellow"></div>
+          <div id="user-role" class="text-xs text-slate-200"></div>
+        </div>
+        <button id="auth-btn" onclick="toggleAuthModal()" class="bg-brand-green hover:bg-emerald-600 text-white font-medium px-4 py-2 rounded-lg text-sm transition shadow">
+          เข้าสู่ระบบ
+        </button>
+      </div>
+    </header>
 
-      <!-- Dropdown สำหรับกรองข้อมูลตามหน่วยงาน/สถานศึกษา -->
-      <div class="flex items-center gap-2">
-        <label for="school-filter" class="text-xs font-bold text-slate-700 whitespace-nowrap">
-          เลือกสถานศึกษา:
-        </label>
-        <select id="school-filter" onchange="renderDashboard()" class="text-xs border border-slate-300 rounded-md p-2 bg-slate-50 font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-blue min-w-[260px]">
-          <option value="ALL">ภาพรวมเทศบาลนครระยอง (แสดงทั้งหมด)</option>
-        </select>
-      </div>
+    <!-- DYNAMIC MAIN CONTENT VIEW (DEFAULT: HOME DASHBOARD) -->
+    <main class="flex-1 overflow-y-auto p-6 bg-slate-100" id="main-content">
+      <div class="space-y-6">
+        
+        <!-- SECTION 1: ข่าวประชาสัมพันธ์ (บนสุด) -->
+        <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+          <div class="flex justify-between items-center mb-3">
+            <h3 class="text-base font-bold text-brand-blue flex items-center">
+              <span class="w-2 h-2 bg-red-500 rounded-full mr-2 animate-pulse"></span>
+              ข่าวประชาสัมพันธ์ล่าสุด
+            </h3>
+            <span class="text-xs text-slate-400">เรียงตามลำดับวันที่ล่าสุด</span>
+          </div>
+          
+          <div id="news-container" class="flex space-x-4 overflow-x-auto pb-2">
+            <p class="text-xs text-slate-400 p-2">กำลังโหลดข่าวประชาสัมพันธ์...</p>
+          </div>
+        </div>
+
+        <!-- Dropdown สำหรับกรองข้อมูลตามหน่วยงาน/สถานศึกษา -->
+<div class="bg-white p-3 rounded-lg shadow-sm border border-slate-200 mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+  <label for="school-filter" class="text-xs font-bold text-slate-700 flex items-center gap-1">
+    <span>เลือกสถานศึกษา / หน่วยงาน:</span>
+  </label>
+  <select id="school-filter" onchange="renderDashboard()" class="text-xs border border-slate-300 rounded-md p-1.5 bg-slate-50 font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-blue">
+    <!-- รายชื่อจะถูกเติมโดยอัตโนมัติจากชีท "ข้อมูลหน่วยงาน" -->
+  </select>
+</div>
+
+<!-- SECTION 2: KPI Cards (5 Cards) -->
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3">
+  <!-- Card 1: นักเรียน -->
+  <div class="bg-white border-l-4 border-brand-blue p-3 rounded-lg shadow-sm">
+    <p class="text-[11px] text-slate-500 font-semibold">จำนวนนักเรียน</p>
+    <h3 id="card1-total" class="text-xl font-bold text-brand-blue mt-0.5">0</h3>
+    <div class="flex justify-between text-[10px] text-slate-500 mt-1 pt-1 border-t border-slate-100">
+      <span>ชาย: <strong id="card1-male" class="text-slate-700">0</strong></span>
+      <span>หญิง: <strong id="card1-female" class="text-slate-700">0</strong></span>
     </div>
-
-    <!-- ==================== SECTION 1: 5 KPI CARDS ==================== -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-      
-      <!-- Card 1: จำนวนนักเรียน -->
-      <div class="bg-white border-l-4 border-blue-600 p-4 rounded-lg shadow-sm hover:shadow-md transition">
-        <p class="text-xs text-slate-500 font-semibold">จำนวนนักเรียน</p>
-        <h3 id="card1-total" class="text-2xl font-bold text-blue-600 my-1">0</h3>
-        <div class="flex justify-between text-xs text-slate-500 pt-2 border-t border-slate-100 mt-1">
-          <span>ชาย: <strong id="card1-male" class="text-slate-700">0</strong></span>
-          <span>หญิง: <strong id="card1-female" class="text-slate-700">0</strong></span>
-        </div>
-      </div>
-
-      <!-- Card 2: ผู้บริหารสถานศึกษา -->
-      <div class="bg-white border-l-4 border-purple-600 p-4 rounded-lg shadow-sm hover:shadow-md transition">
-        <p class="text-xs text-slate-500 font-semibold">ผู้บริหารสถานศึกษา</p>
-        <h3 id="card2-total" class="text-2xl font-bold text-purple-600 my-1">0</h3>
-        <div class="flex justify-between text-xs text-slate-500 pt-2 border-t border-slate-100 mt-1">
-          <span>ชาย: <strong id="card2-male" class="text-slate-700">0</strong></span>
-          <span>หญิง: <strong id="card2-female" class="text-slate-700">0</strong></span>
-        </div>
-      </div>
-
-      <!-- Card 3: จำนวนครู -->
-      <div class="bg-white border-l-4 border-emerald-500 p-4 rounded-lg shadow-sm hover:shadow-md transition">
-        <p class="text-xs text-slate-500 font-semibold">จำนวนครู</p>
-        <h3 id="card3-total" class="text-2xl font-bold text-emerald-600 my-1">0</h3>
-        <div class="flex justify-between text-xs text-slate-500 pt-2 border-t border-slate-100 mt-1">
-          <span>ชาย: <strong id="card3-male" class="text-slate-700">0</strong></span>
-          <span>หญิง: <strong id="card3-female" class="text-slate-700">0</strong></span>
-        </div>
-      </div>
-
-      <!-- Card 4: บุคลากรทั้งหมด -->
-      <div class="bg-white border-l-4 border-amber-500 p-4 rounded-lg shadow-sm hover:shadow-md transition">
-        <p class="text-xs text-slate-500 font-semibold">บุคลากรทั้งหมด</p>
-        <h3 id="card4-total" class="text-2xl font-bold text-amber-600 my-1">0</h3>
-        <div class="flex justify-between text-xs text-slate-500 pt-2 border-t border-slate-100 mt-1">
-          <span>ชาย: <strong id="card4-male" class="text-slate-700">0</strong></span>
-          <span>หญิง: <strong id="card4-female" class="text-slate-700">0</strong></span>
-        </div>
-      </div>
-
-      <!-- Card 5: วิทยฐานะบุคลากร -->
-      <div class="bg-white border-l-4 border-rose-500 p-4 rounded-lg shadow-sm hover:shadow-md transition">
-        <p class="text-xs text-slate-500 font-semibold mb-1">วิทยฐานะบุคลากร</p>
-        <div class="space-y-0.5 text-xs text-slate-600">
-          <div class="flex justify-between"><span>เชี่ยวชาญ:</span> <strong id="card5-expert" class="text-slate-800">0</strong></div>
-          <div class="flex justify-between"><span>ชำนาญการพิเศษ:</span> <strong id="card5-snr-adv" class="text-slate-800">0</strong></div>
-          <div class="flex justify-between"><span>ชำนาญการ:</span> <strong id="card5-adv" class="text-slate-800">0</strong></div>
-          <div class="flex justify-between"><span>ไม่มีวิทยฐานะ:</span> <strong id="card5-none" class="text-slate-800">0</strong></div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- ==================== SECTION 2: DOUGHNUT CHARTS GRID ==================== -->
-    <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200">
-      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 pb-2 border-b gap-2">
-        <div>
-          <h3 class="text-base font-bold text-slate-800">สัดส่วนจำนวนนักเรียนแยกตามระดับชั้น (รวม ชาย/หญิง)</h3>
-          <p class="text-xs text-slate-400">แสดงแผนภูมิโดนัทแยก 1 แผนภูมิ ต่อ 1 ระดับชั้นเรียน</p>
-        </div>
-        <span id="selected-school-label" class="text-xs font-semibold px-2.5 py-1 bg-blue-50 text-blue-700 rounded-full border border-blue-200">
-          ภาพรวมเทศบาลนครระยอง
-        </span>
-      </div>
-      
-      <!-- Container การ์ด Mini Doughnut Chart สไตล์ Responsive Grid -->
-      <div id="student-levels-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-        <p class="text-xs text-slate-400 col-span-full text-center py-8">กำลังประมวลผลข้อมูล...</p>
-      </div>
-    </div>
-
   </div>
 
-  <!-- ==================== JAVASCRIPT LOGIC ==================== -->
+  <!-- Card 2: ผู้บริหาร -->
+  <div class="bg-white border-l-4 border-purple-600 p-3 rounded-lg shadow-sm">
+    <p class="text-[11px] text-slate-500 font-semibold">ผู้บริหารสถานศึกษา</p>
+    <h3 id="card2-total" class="text-xl font-bold text-purple-600 mt-0.5">0</h3>
+    <div class="flex justify-between text-[10px] text-slate-500 mt-1 pt-1 border-t border-slate-100">
+      <span>ชาย: <strong id="card2-male" class="text-slate-700">0</strong></span>
+      <span>หญิง: <strong id="card2-female" class="text-slate-700">0</strong></span>
+    </div>
+  </div>
+
+  <!-- Card 3: ครู -->
+  <div class="bg-white border-l-4 border-brand-green p-3 rounded-lg shadow-sm">
+    <p class="text-[11px] text-slate-500 font-semibold">จำนวนครู</p>
+    <h3 id="card3-total" class="text-xl font-bold text-brand-green mt-0.5">0</h3>
+    <div class="flex justify-between text-[10px] text-slate-500 mt-1 pt-1 border-t border-slate-100">
+      <span>ชาย: <strong id="card3-male" class="text-slate-700">0</strong></span>
+      <span>หญิง: <strong id="card3-female" class="text-slate-700">0</strong></span>
+    </div>
+  </div>
+
+  <!-- Card 4: บุคลากรทั้งหมด -->
+  <div class="bg-white border-l-4 border-amber-500 p-3 rounded-lg shadow-sm">
+    <p class="text-[11px] text-slate-500 font-semibold">บุคลากรทั้งหมด</p>
+    <h3 id="card4-total" class="text-xl font-bold text-amber-600 mt-0.5">0</h3>
+    <div class="flex justify-between text-[10px] text-slate-500 mt-1 pt-1 border-t border-slate-100">
+      <span>ชาย: <strong id="card4-male" class="text-slate-700">0</strong></span>
+      <span>หญิง: <strong id="card4-female" class="text-slate-700">0</strong></span>
+    </div>
+  </div>
+
+  <!-- Card 5: วิทยฐานะ -->
+  <div class="bg-white border-l-4 border-rose-500 p-3 rounded-lg shadow-sm">
+    <p class="text-[11px] text-slate-500 font-semibold mb-1">วิทยฐานะบุคลากร</p>
+    <div class="space-y-0.5 text-[10px] text-slate-600">
+      <div class="flex justify-between"><span>เชี่ยวชาญ:</span> <strong id="card5-expert">0</strong></div>
+      <div class="flex justify-between"><span>ชำนาญการพิเศษ:</span> <strong id="card5-snr-adv">0</strong></div>
+      <div class="flex justify-between"><span>ชำนาญการ:</span> <strong id="card5-adv">0</strong></div>
+      <div class="flex justify-between"><span>ไม่มีวิทยฐานะ:</span> <strong id="card5-none">0</strong></div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 3: สัดส่วนนักเรียนแยกตามระดับชั้น (Doughnut Chart) -->
+<div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 mt-4">
+  <div class="flex justify-between items-center mb-4 pb-2 border-b">
+    <h3 class="text-sm font-bold text-slate-800">สัดส่วนจำนวนนักเรียนแยกตามระดับชั้น (แยก ชาย/หญิง)</h3>
+    <span id="selected-school-label" class="text-xs text-brand-blue font-semibold">ภาพรวมเทศบาลนครระยอง</span>
+  </div>
+  
+  <!-- Container สำหรับการ์ด Mini Doughnut Chart -->
+  <div id="student-levels-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+    <p class="text-xs text-slate-400 col-span-full text-center py-4">กำลังประมวลผลข้อมูล...</p>
+  </div>
+</div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- RIGHT SIDEBAR FIXED -->
+  <aside class="w-64 bg-slate-900 text-white fixed right-0 top-0 h-full shadow-2xl flex flex-col z-20 border-l border-slate-700">
+    <div class="p-4 border-b border-slate-800 bg-slate-950 flex justify-between items-center">
+      <span class="font-bold text-sm text-brand-yellow tracking-wide">SUPERVISION+</span>
+      <span class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded">v1.0</span>
+    </div>
+
+    <nav class="flex-1 p-3 space-y-4 overflow-y-auto text-sm">
+      <div class="space-y-1">
+        <button onclick="loadPage('home')" class="nav-btn w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-white transition bg-brand-blue">
+          <span>หน้าแรก</span>
+        </button>
+        <button onclick="loadPage('executives')" class="nav-btn w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">
+          <span>ผู้บริหารเทศบาลนครระยอง</span>
+        </button>
+        <button onclick="loadPage('working-team')" class="nav-btn w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">
+          <span>คณะทำงาน</span>
+        </button>
+      </div>
+
+      <div class="space-y-1 border-t border-slate-800 pt-3">
+        <div class="px-3 pb-1 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+          ระบบงานหลัก
+        </div>
+        <button onclick="loadPage('supervision')" class="nav-btn w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">
+          <span>ระบบงานนิเทศ</span>
+        </button>
+        <button onclick="loadPage('curriculum')" class="nav-btn w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">
+          <span>ระบบงานหลักสูตร</span>
+        </button>
+        <button onclick="loadPage('qa')" class="nav-btn w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">
+          <span>ระบบงานประกันคุณภาพการศึกษา</span>
+        </button>
+        <button onclick="loadPage('evaluation')" class="nav-btn w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">
+          <span>ระบบงานวัดและประเมินผล</span>
+        </button>
+        <button onclick="loadPage('media-tech')" class="nav-btn w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">
+          <span>ระบบงานสื่อและเทคโนโลยี</span>
+        </button>
+      </div>
+
+      <div class="space-y-1 border-t border-slate-800 pt-3">
+        <button id="menu-news" onclick="openNewsAdminModal()" class="nav-btn hidden w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-amber-400 transition">
+          <span>ข่าวประชาสัมพันธ์ (ผู้ดูแล)</span>
+        </button>
+        <button onclick="loadPage('about')" class="nav-btn w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">
+          <span>เกี่ยวกับเรา</span>
+        </button>
+        <button id="menu-settings" onclick="loadPage('settings')" class="nav-btn hidden w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-amber-400 transition">
+          <span>ตั้งค่าการใช้งาน</span>
+        </button>
+      </div>
+    </nav>
+
+    <div class="p-3 border-t border-slate-800 text-[11px] text-slate-400 text-center">
+      เทศบาลนครระยอง &copy; 2026
+    </div>
+  </aside>
+
+  <!-- LOGIN MODAL -->
+  <div id="login-modal" class="fixed inset-0 bg-slate-900 bg-opacity-60 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 w-80 shadow-2xl space-y-4 border-t-4 border-brand-blue">
+      <h3 class="text-base font-bold text-slate-800">เข้าสู่ระบบภายใน</h3>
+      <div>
+        <label class="block text-xs font-semibold mb-1">Username</label>
+        <input type="text" id="login-username" class="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue">
+      </div>
+      <div>
+        <label class="block text-xs font-semibold mb-1">Password</label>
+        <input type="password" id="login-password" class="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue">
+      </div>
+      <div id="login-error" class="text-xs text-red-500 hidden"></div>
+      <div class="flex justify-end space-x-2 pt-2">
+        <button onclick="toggleAuthModal()" class="px-3 py-1.5 border rounded text-xs hover:bg-slate-100">ยกเลิก</button>
+        <button onclick="performLogin()" class="px-3 py-1.5 bg-brand-blue text-white rounded text-xs hover:bg-blue-800">ตกลง</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ฟอร์มอัปเดตข่าวประชาสัมพันธ์ (ผู้ดูแลระบบ) -->
+  <div id="news-admin-modal" class="fixed inset-0 bg-slate-900 bg-opacity-60 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 w-full max-w-md shadow-2xl space-y-4 border-t-4 border-amber-500 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b pb-2">
+        <h3 class="text-base font-bold text-slate-800">เพิ่ม/อัปเดต ข่าวประชาสัมพันธ์</h3>
+        <button onclick="closeNewsAdminModal()" class="text-slate-400 hover:text-slate-600 font-bold">X</button>
+      </div>
+      
+      <form id="news-form" class="space-y-3" onsubmit="event.preventDefault();">
+        <div>
+          <label class="block text-xs font-semibold mb-1">พาดหัวข่าว</label>
+          <input type="text" id="news-title" class="w-full border rounded px-3 py-1.5 text-xs focus:ring-2 focus:ring-brand-blue" required>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold mb-1">เนื้อหาข่าว</label>
+          <textarea id="news-content" rows="4" class="w-full border rounded px-3 py-1.5 text-xs focus:ring-2 focus:ring-brand-blue" required></textarea>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold mb-1">ภาพข่าว (ไฟล์ .jpg)</label>
+          <input type="file" id="news-image" accept="image/jpeg, image/jpg" class="w-full border rounded px-3 py-1.5 text-xs">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold mb-1">วันเดือนปีของข่าว</label>
+          <input type="date" id="news-date" class="w-full border rounded px-3 py-1.5 text-xs focus:ring-2 focus:ring-brand-blue" required>
+        </div>
+      </form>
+
+      <div class="flex justify-end space-x-2 pt-3 border-t">
+        <button onclick="closeNewsAdminModal()" class="px-3 py-1.5 border rounded text-xs hover:bg-slate-100">ยกเลิก</button>
+        <button onclick="submitNewsData()" class="px-3 py-1.5 bg-brand-green text-white rounded text-xs hover:bg-emerald-700">บันทึกข่าว</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ดูข่าวสารฉบับเต็ม -->
+  <div id="news-detail-modal" class="fixed inset-0 bg-slate-900 bg-opacity-60 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 w-full max-w-lg shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-start border-b pb-2">
+        <h3 id="detail-news-title" class="text-base font-bold text-brand-blue pr-4"></h3>
+        <button onclick="closeNewsDetailModal()" class="text-slate-400 hover:text-slate-600 font-bold">X</button>
+      </div>
+      <p id="detail-news-date" class="text-xs text-slate-400"></p>
+      <div id="detail-news-image-container" class="w-full rounded overflow-hidden"></div>
+      <div id="detail-news-content" class="text-xs text-slate-700 leading-relaxed whitespace-pre-line"></div>
+      <div class="flex justify-end pt-3 border-t">
+        <button onclick="closeNewsDetailModal()" class="px-4 py-1.5 bg-slate-600 text-white rounded text-xs hover:bg-slate-700">ปิด</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT APPLICATION LOGIC -->
   <script>
-    // ลงทะเบียน Plugin ChartDataLabels
+    const GAS_API_URL = "https://script.google.com/macros/s/AKfycbyUbL4Aq6p4CP2u4KdWurx42-r75eSzAZeLVhAeL8xBBblseSv7IOUEZ31b8XVHtqA/exec";
+
+    let dbData = { users: [], units: [], students: [], personnel: [], news: [] };
+    let currentUser = null;
+    let genderChart = null;
+    let personnelChart = null;
+    let currentPage = 'home';
+    let defaultHomeHTML = '';
+
+    const pageTitles = {
+      'home': 'หน้าแรก',
+      'executives': 'ผู้บริหารเทศบาลนครระยอง',
+      'working-team': 'คณะทำงาน',
+      'supervision': 'ระบบงานนิเทศ',
+      'curriculum': 'ระบบงานหลักสูตร',
+      'qa': 'ระบบงานประกันคุณภาพการศึกษา',
+      'evaluation': 'ระบบงานวัดและประเมินผล',
+      'media-tech': 'ระบบงานสื่อและเทคโนโลยี',
+      'about': 'เกี่ยวกับเรา',
+      'settings': 'ตั้งค่าการใช้งาน'
+    };
+
+    window.onload = function() {
+      defaultHomeHTML = document.getElementById('main-content').innerHTML;
+      
+      // ดึงสถานะ Login เดิมจาก LocalStorage
+      const savedUser = localStorage.getItem('supervision_user');
+      if (savedUser) {
+        try {
+          currentUser = JSON.parse(savedUser);
+        } catch(e) {
+          localStorage.removeItem('supervision_user');
+        }
+      }
+
+      updateAuthUI();
+      fetchData();
+    };
+
+    function loadPage(pageName) {
+      currentPage = pageName;
+      document.getElementById('header-title').innerText = pageTitles[pageName] || 'SuperVision+';
+
+      if (pageName === 'home') {
+        document.getElementById('main-content').innerHTML = defaultHomeHTML;
+        renderDashboard();
+        renderNewsCards();
+        return;
+      }
+
+      fetch(`pages/${pageName}.html`)
+        .then(res => {
+          if (!res.ok) throw new Error('File not found');
+          return res.text();
+        })
+        .then(html => {
+          document.getElementById('main-content').innerHTML = html;
+        })
+        .catch(err => {
+          document.getElementById('main-content').innerHTML = `
+            <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200 text-center">
+              <p class="text-slate-600 font-semibold">อยู่ระหว่างการพัฒนาหน้า pages/${pageName}.html</p>
+            </div>
+          `;
+        });
+    }
+
+    function fetchData() {
+      fetch(GAS_API_URL + "?action=getAllData")
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === 'success') {
+            dbData = data;
+            if (currentPage === 'home') {
+              renderDashboard();
+              renderNewsCards();
+            }
+          }
+        })
+        .catch(err => console.error("Error fetching data:", err));
+    }
+
+    // ฟังก์ชัน Render ข่าวประชาสัมพันธ์ (เลย์เอาต์แนวนอน: ภาพซ้าย ข้อมูลขวา)
+    function renderNewsCards() {
+      const container = document.getElementById('news-container');
+      if (!container) return;
+
+      if (!dbData.news || dbData.news.length === 0) {
+        container.innerHTML = '<p class="text-xs text-slate-400 p-2">ไม่มีข่าวประชาสัมพันธ์ในขณะนี้</p>';
+        return;
+      }
+
+      // เรียงลำดับข่าวตามวันที่ล่าสุด
+      const sortedNews = [...dbData.news].sort((a, b) => new Date(b['วันที่']) - new Date(a['วันที่']));
+
+      let html = '';
+      sortedNews.forEach((item, index) => {
+        const imgSrc = (item['ภาพข่าว'] && item['ภาพข่าว'].length > 10) 
+          ? item['ภาพข่าว'] 
+          : 'https://via.placeholder.com/300x160?text=SuperVision%2B';
+        
+        let formattedDate = 'ไม่ระบุวันที่';
+        if (item['วันที่']) {
+          const d = new Date(item['วันที่']);
+          if (!isNaN(d.getTime())) {
+            formattedDate = d.toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' });
+          }
+        }
+
+        html += `
+          <div class="min-w-[280px] max-w-[280px] h-20 bg-slate-50 rounded-lg border border-slate-200 overflow-hidden flex flex-row shadow-sm hover:shadow transition">
+            <!-- ฝั่งซ้าย: ภาพข่าวขนาดกะทัดรัด -->
+            <div class="w-24 h-full flex-shrink-0 bg-slate-200">
+              <img src="${imgSrc}" class="w-full h-full object-cover" alt="ภาพข่าว" onerror="this.src='https://via.placeholder.com/300x160?text=No+Image'">
+            </div>
+            
+            <!-- ฝั่งขวา: ข้อมูลย่อและปุ่มกด -->
+            <div class="flex-1 p-2 flex flex-col justify-between overflow-hidden">
+              <div>
+                <span class="text-[9px] text-brand-lightblue font-semibold block leading-none">${formattedDate}</span>
+                <h4 class="font-bold text-[11px] text-slate-800 line-clamp-1 mt-1 leading-tight" title="${item['พาดหัวข่าว'] || ''}">
+                  ${item['พาดหัวข่าว'] || 'ไม่มีหัวข้อ'}
+                </h4>
+                <p class="text-[10px] text-slate-500 line-clamp-1 mt-0.5 leading-tight">
+                  ${item['เนื้อหาข่าว'] || ''}
+                </p>
+              </div>
+              <div class="text-right mt-1">
+                <button onclick="openNewsDetailModal(${index})" class="text-brand-blue hover:text-blue-800 text-[10px] font-bold transition underline">
+                  อ่านเพิ่มเติม &rarr;
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    // Modal Control Functions
+    function openNewsDetailModal(sortedIndex) {
+      const sortedNews = [...dbData.news].sort((a, b) => new Date(b['วันที่']) - new Date(a['วันที่']));
+      const news = sortedNews[sortedIndex];
+      if (!news) return;
+
+      document.getElementById('detail-news-title').innerText = news['พาดหัวข่าว'] || '';
+      document.getElementById('detail-news-date').innerText = news['วันที่'] ? 'วันที่ประกาศ: ' + new Date(news['วันที่']).toLocaleDateString('th-TH') : '';
+      document.getElementById('detail-news-content').innerText = news['เนื้อหาข่าว'] || '';
+      
+      const imgContainer = document.getElementById('detail-news-image-container');
+      if (news['ภาพข่าว']) {
+        imgContainer.innerHTML = `<img src="${news['ภาพข่าว']}" class="w-full max-h-60 object-cover rounded shadow">`;
+      } else {
+        imgContainer.innerHTML = '';
+      }
+
+      document.getElementById('news-detail-modal').classList.remove('hidden');
+      document.getElementById('news-detail-modal').classList.add('flex');
+    }
+
+    function closeNewsDetailModal() {
+      document.getElementById('news-detail-modal').classList.add('hidden');
+      document.getElementById('news-detail-modal').classList.remove('flex');
+    }
+
+    function openNewsAdminModal() {
+      document.getElementById('news-form').reset();
+      document.getElementById('news-admin-modal').classList.remove('hidden');
+      document.getElementById('news-admin-modal').classList.add('flex');
+    }
+
+    function closeNewsAdminModal() {
+      document.getElementById('news-admin-modal').classList.add('hidden');
+      document.getElementById('news-admin-modal').classList.remove('flex');
+    }
+
+    function submitNewsData() {
+      const title = document.getElementById('news-title').value;
+      const content = document.getElementById('news-content').value;
+      const date = document.getElementById('news-date').value;
+      const fileInput = document.getElementById('news-image');
+
+      if (!title || !content || !date) {
+        alert('กรุณากรอกข้อมูลให้ครบถ้วน');
+        return;
+      }
+
+      const savePayload = (base64Img) => {
+        const rowObj = {
+          'พาดหัวข่าว': title,
+          'เนื้อหาข่าว': content,
+          'ภาพข่าว': base64Img,
+          'วันที่': date
+        };
+
+        fetch(GAS_API_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'saveData', sheetName: 'ข่าวประชาสัมพันธ์', rowObj: rowObj })
+        })
+        .then(res => res.json())
+        .then(res => {
+          if (res.status === 'success') {
+            alert('บันทึกข่าวประชาสัมพันธ์เรียบร้อยแล้ว');
+            closeNewsAdminModal();
+            fetchData();
+          } else {
+            alert('เกิดข้อผิดพลาด: ' + res.message);
+          }
+        });
+      };
+
+      if (fileInput.files && fileInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          savePayload(e.target.result);
+        };
+        reader.readAsDataURL(fileInput.files[0]);
+      } else {
+        savePayload('');
+      }
+    }
+
+    function toggleAuthModal() {
+      if (currentUser) {
+        currentUser = null;
+        localStorage.removeItem('supervision_user');
+        updateAuthUI();
+        loadPage('home');
+      } else {
+        document.getElementById('login-modal').classList.toggle('flex');
+        document.getElementById('login-modal').classList.toggle('hidden');
+      }
+    }
+
+    function performLogin() {
+      const u = document.getElementById('login-username').value;
+      const p = document.getElementById('login-password').value;
+
+      fetch(GAS_API_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'login', username: u, password: p })
+      })
+      .then(res => res.json())
+      .then(res => {
+        if (res.status === 'success') {
+          currentUser = res.user;
+          localStorage.setItem('supervision_user', JSON.stringify(currentUser));
+          document.getElementById('login-modal').classList.add('hidden');
+          document.getElementById('login-modal').classList.remove('flex');
+          updateAuthUI();
+        } else {
+          const errDiv = document.getElementById('login-error');
+          errDiv.innerText = res.message;
+          errDiv.classList.remove('hidden');
+        }
+      });
+    }
+
+    function updateAuthUI() {
+      const btn = document.getElementById('auth-btn');
+      const info = document.getElementById('user-info-display');
+      const settingsMenu = document.getElementById('menu-settings');
+      const newsMenu = document.getElementById('menu-news');
+
+      if (currentUser) {
+        btn.innerText = 'ออกจากระบบ';
+        btn.classList.replace('bg-brand-green', 'bg-red-600');
+        info.classList.remove('hidden');
+        document.getElementById('user-name').innerText = currentUser.name;
+        document.getElementById('user-role').innerText = `${currentUser.position} (${currentUser.role})`;
+
+        if (currentUser.role === 'ผู้ดูแลระบบ') {
+          if (settingsMenu) settingsMenu.classList.remove('hidden');
+          if (newsMenu) newsMenu.classList.remove('hidden');
+        } else {
+          if (settingsMenu) settingsMenu.classList.add('hidden');
+          if (newsMenu) newsMenu.classList.add('hidden');
+        }
+      } else {
+        btn.innerText = 'เข้าสู่ระบบ';
+        btn.classList.replace('bg-red-600', 'bg-brand-green');
+        info.classList.add('hidden');
+        if (settingsMenu) settingsMenu.classList.add('hidden');
+        if (newsMenu) newsMenu.classList.add('hidden');
+      }
+    }
+
+    // Register Plugin DataLabels สำหรับ Chart.js
     if (typeof ChartDataLabels !== 'undefined') {
       Chart.register(ChartDataLabels);
     }
 
-    // ตัวแปรสมมติรับข้อมูลจาก Google Apps Script (ถ้ามี) หรือใช้โครงสร้างข้อมูลหลัก
-    window.dbData = window.dbData || {
-      'ข้อมูลหน่วยงาน': [],
-      'ข้อมูลนักเรียน': [],
-      'ข้อมูลบุคลากร': []
-    };
-
-    // ตัวแปรเก็บ Instance ของ Chart แต่ละการ์ดเพื่อจัดการ destroy()
     let levelChartInstances = {};
 
-    // 1. ฟังก์ชันสร้างตัวเลือก Dropdown จากชีท "ข้อมูลหน่วยงาน" (อ้างอิง รหัสหน่วยงาน)
+    // ฟังก์ชันสร้างตัวเลือกใน Dropdown จากชีท "ข้อมูลหน่วยงาน"
     function renderSchoolDropdown() {
       const select = document.getElementById('school-filter');
       if (!select) return;
 
+      // ตัวเลือกแรกสำหรับแสดงภาพรวมทั้งหมด
       let html = '<option value="ALL">ภาพรวมเทศบาลนครระยอง (แสดงทั้งหมด)</option>';
 
-      // ดึงข้อมูลหน่วยงาน
+      // ดึงข้อมูลจากชีท "ข้อมูลหน่วยงาน" (ตรวจสอบชื่อ Key ใน dbData)
       const unitData = dbData['ข้อมูลหน่วยงาน'] || dbData.units || [];
 
       unitData.forEach(item => {
-        const unitCode = (item['รหัสหน่วยงาน'] || '').toString().trim(); // เช่น ท.1, ท.2, ศพด.
-        const unitName = (item['ชื่อหน่วยงาน'] || '').toString().trim(); // เช่น โรงเรียนเทศบาลวัดปากน้ำ
-
-        if (unitCode !== '' && unitName !== '') {
-          html += `<option value="${unitCode}">${unitName}</option>`;
+        const unitName = item['ชื่อหน่วยงาน'] || item['หน่วยงาน'] || '';
+        if (unitName.trim() !== '') {
+          html += `<option value="${unitName.trim()}">${unitName.trim()}</option>`;
         }
       });
 
       select.innerHTML = html;
     }
 
-    // 2. ฟังก์ชันหลักสำหรับคำนวณและแสดงผล Dashboard
+    // ฟังก์ชัน Render Dashboard
     function renderDashboard() {
       if (!document.getElementById('card1-total')) return;
 
-      // สร้าง Dropdown หากยังไม่มีตัวเลือก
+      // 1. ตรวจสอบและสร้าง Dropdown หากยังไม่มีตัวเลือก
       const schoolSelect = document.getElementById('school-filter');
       if (schoolSelect && schoolSelect.options.length <= 1) {
         renderSchoolDropdown();
       }
 
-      const selectedCode = schoolSelect ? schoolSelect.value : 'ALL';
+      const selectedSchool = schoolSelect ? schoolSelect.value : 'ALL';
 
-      // อัปเดต Label แสดงชื่อสถานศึกษาที่เลือก
+      // อัปเดตข้อความแสดงชื่อโรงเรียน/หน่วยงานปัจจุบัน
       const schoolLabel = document.getElementById('selected-school-label');
       if (schoolLabel) {
-        if (selectedCode === 'ALL') {
-          schoolLabel.innerText = 'ภาพรวมเทศบาลนครระยอง';
-        } else {
-          const selectedOption = schoolSelect.options[schoolSelect.selectedIndex];
-          schoolLabel.innerText = selectedOption ? selectedOption.text : selectedCode;
-        }
+        schoolLabel.innerText = selectedSchool === 'ALL' 
+          ? 'ภาพรวมเทศบาลนครระยอง' 
+          : selectedSchool;
       }
 
-      // ฟังก์ชันกรองข้อมูลตาม "รหัสหน่วยงาน"
-      const filterByUnitCode = (item) => {
-        if (selectedCode === 'ALL') return true;
-        const itemCode = (
-          item['รหัสหน่วยงาน'] || 
-          item['หน่วยงาน'] || 
-          item['สังกัด'] || 
-          ''
-        ).toString().trim();
-
-        return itemCode === selectedCode;
+      // 2. ฟังก์ชันกรองข้อมูลนักเรียนและบุคลากรตามหน่วยงานที่เลือก
+      const filterData = (item) => {
+        if (selectedSchool === 'ALL') return true;
+        // เช็คชื่อคอลัมน์สังกัด หรือ ชื่อหน่วยงาน ในชีทข้อมูลนักเรียน/บุคลากร
+        const schoolName = item['สังกัด'] || item['หน่วยงาน'] || item['ชื่อหน่วยงาน'] || item['โรงเรียน'] || '';
+        return schoolName.trim() === selectedSchool.trim();
       };
 
-      const students = (dbData['ข้อมูลนักเรียน'] || dbData.students || []).filter(filterByUnitCode);
-      const personnel = (dbData['ข้อมูลบุคลากร'] || dbData.personnel || []).filter(filterByUnitCode);
+      const filteredStudents = (dbData.students || dbData['ข้อมูลนักเรียน'] || []).filter(filterData);
+      const filteredPersonnel = (dbData.personnel || dbData['ข้อมูลบุคลากร'] || []).filter(filterData);
 
       // --- Card 1: นักเรียน ---
       let studentMale = 0, studentFemale = 0;
-      students.forEach(s => {
+      filteredStudents.forEach(s => {
         let count = Number(s['จำนวน'] || 0);
         if (s['เพศ'] === 'ชาย') studentMale += count;
         else if (s['เพศ'] === 'หญิง') studentFemale += count;
@@ -227,10 +652,10 @@
       document.getElementById('card1-male').innerText = studentMale.toLocaleString();
       document.getElementById('card1-female').innerText = studentFemale.toLocaleString();
 
-      // --- Card 2: ผู้บริหารสถานศึกษา ---
+      // --- Card 2: ผู้บริหาร ---
       const execPositions = ['ผู้อำนวยการสถานศึกษา', 'รองผู้อำนวยการสถานศึกษา'];
       let execMale = 0, execFemale = 0;
-      personnel.forEach(p => {
+      filteredPersonnel.forEach(p => {
         if (execPositions.includes(p['ตำแหน่ง'])) {
           if (p['เพศ'] === 'ชาย') execMale++;
           else if (p['เพศ'] === 'หญิง') execFemale++;
@@ -243,7 +668,7 @@
       // --- Card 3: ครู ---
       const teacherPositions = ['ครู', 'ครูผู้ช่วย', 'ผู้ช่วยครูผู้ช่วย'];
       let teacherMale = 0, teacherFemale = 0;
-      personnel.forEach(p => {
+      filteredPersonnel.forEach(p => {
         if (teacherPositions.includes(p['ตำแหน่ง'])) {
           if (p['เพศ'] === 'ชาย') teacherMale++;
           else if (p['เพศ'] === 'หญิง') teacherFemale++;
@@ -255,7 +680,7 @@
 
       // --- Card 4: บุคลากรทั้งหมด ---
       let staffMale = 0, staffFemale = 0;
-      personnel.forEach(p => {
+      filteredPersonnel.forEach(p => {
         if (p['เพศ'] === 'ชาย') staffMale++;
         else if (p['เพศ'] === 'หญิง') staffFemale++;
       });
@@ -265,7 +690,7 @@
 
       // --- Card 5: วิทยฐานะ ---
       let expert = 0, snrAdv = 0, adv = 0, none = 0;
-      personnel.forEach(p => {
+      filteredPersonnel.forEach(p => {
         let academic = p['วิทยฐานะ'] || '';
         if (academic.includes('เชี่ยวชาญ')) expert++;
         else if (academic.includes('ชำนาญการพิเศษ')) snrAdv++;
@@ -277,16 +702,15 @@
       document.getElementById('card5-adv').innerText = adv;
       document.getElementById('card5-none').innerText = none;
 
-      // --- 3. วาด Mini Doughnut Charts แยกตามระดับชั้น ---
-      renderStudentLevelCharts(students);
+      // --- Render Mini Doughnut Charts ---
+      renderStudentLevelCharts(filteredStudents);
     }
 
-    // 3. ฟังก์ชันวาด Mini Doughnut Charts แยกระดับชั้น
     function renderStudentLevelCharts(studentList) {
       const container = document.getElementById('student-levels-grid');
       if (!container) return;
 
-      // ลบ Chart เก่าทั้งหมดออกจาก Memory
+      // ลบ Chart เก่าออกทั้งหมดก่อนวาดใหม่
       Object.keys(levelChartInstances).forEach(key => {
         if (levelChartInstances[key]) levelChartInstances[key].destroy();
       });
@@ -309,31 +733,31 @@
 
       const levels = Object.keys(levelGroup);
       if (levels.length === 0) {
-        container.innerHTML = '<p class="text-xs text-slate-400 col-span-full text-center py-8">ไม่มีข้อมูลนักเรียนสำหรับสถานศึกษานี้</p>';
+        container.innerHTML = '<p class="text-xs text-slate-400 col-span-full text-center py-4">ไม่มีข้อมูลนักเรียนสำหรับสถานศึกษานี้</p>';
         return;
       }
 
-      // สร้างองค์ประกอบ HTML สำหรับแต่ละระดับชั้น
+      // สร้าง HTML โครงสร้างการ์ด
       let html = '';
       levels.forEach((lvl, idx) => {
         const canvasId = `miniChartLevel_${idx}`;
         const data = levelGroup[lvl];
 
         html += `
-          <div class="bg-slate-50 border border-slate-200 rounded-lg p-3 flex flex-col justify-between items-center text-center shadow-sm hover:border-blue-400 transition">
-            <h4 class="font-bold text-xs text-slate-700 truncate w-full border-b pb-1.5" title="${lvl}">${lvl}</h4>
+          <div class="bg-slate-50 border border-slate-200 rounded-lg p-2.5 flex flex-col justify-between items-center text-center shadow-sm hover:border-brand-lightblue transition">
+            <h4 class="font-bold text-xs text-slate-700 line-clamp-1 w-full border-b pb-1" title="${lvl}">${lvl}</h4>
             
-            <div class="my-1 text-xs font-medium text-slate-600">
-              รวม <span class="text-blue-700 font-bold">${data.total.toLocaleString()}</span> คน
+            <div class="my-1.5 text-[11px] font-semibold text-slate-800">
+              รวม <span class="text-brand-blue font-bold">${data.total.toLocaleString()}</span> คน
             </div>
 
-            <!-- Canvas สำหรับกราฟโดนัท -->
+            <!-- Canvas สำหรับวาด Doughnut Chart -->
             <div class="w-24 h-24 relative my-1">
               <canvas id="${canvasId}"></canvas>
             </div>
 
-            <!-- สรุปตัวเลข ชาย/หญิง ด้านล่าง -->
-            <div class="w-full flex justify-between text-[11px] pt-1.5 border-t border-slate-200 mt-1">
+            <!-- สรุปตัวเลข ชาย / หญิง ด้านล่าง -->
+            <div class="w-full flex justify-between text-[10px] text-slate-500 pt-1 border-t border-slate-200 mt-1">
               <span class="text-blue-600 font-semibold">ช: ${data.male.toLocaleString()}</span>
               <span class="text-pink-600 font-semibold">ญ: ${data.female.toLocaleString()}</span>
             </div>
@@ -343,7 +767,7 @@
 
       container.innerHTML = html;
 
-      // วาด Chart.js แบบ Doughnut
+      // วาด Chart.js แบบ Doughnut พร้อมแสดงตัวเลขในกราฟ
       levels.forEach((lvl, idx) => {
         const canvasId = `miniChartLevel_${idx}`;
         const ctx = document.getElementById(canvasId);
@@ -351,12 +775,12 @@
 
         const data = levelGroup[lvl];
         levelChartInstances[canvasId] = new Chart(ctx, {
-          type: 'doughnut',
+          type: 'doughnut', // ปรับประเภทเป็น โดนัท
           data: {
             labels: ['ชาย', 'หญิง'],
             datasets: [{
               data: [data.male, data.female],
-              backgroundColor: ['#2563eb', '#ec4899'], // ชาย = ฟ้า (#2563eb), หญิง = ชมพู (#ec4899)
+              backgroundColor: ['#2563eb', '#ec4899'], // ชาย = ฟ้า / หญิง = ชมพู
               borderWidth: 2,
               borderColor: '#ffffff'
             }]
@@ -364,7 +788,7 @@
           options: {
             responsive: true,
             maintainAspectRatio: false,
-            cutout: '55%',
+            cutout: '55%', // กำหนดขนาดรูตรงกลางโดนัท
             plugins: {
               legend: { display: false },
               tooltip: {
@@ -374,16 +798,15 @@
                   }
                 }
               },
-              // ตั้งค่า Plugin DataLabels แสดงตัวเลขบนกราฟ
+              // ตั้งค่า Plugin เพื่อแสดงตัวเลขบนตัวโดนัท
               datalabels: {
                 color: '#ffffff',
                 font: {
-                  family: 'Prompt',
                   weight: 'bold',
-                  size: 10
+                  size: 9
                 },
                 formatter: function(value) {
-                  return value > 0 ? value.toLocaleString() : '';
+                  return value > 0 ? value.toLocaleString() : ''; // ถ้าเป็น 0 ไม่ต้องแสดง
                 }
               }
             }
@@ -391,11 +814,6 @@
         });
       });
     }
-
-    // เรียกทำงานเมื่อโหลดหน้าเว็บเรียบร้อยแล้ว
-    document.addEventListener('DOMContentLoaded', () => {
-      renderDashboard();
-    });
   </script>
 </body>
 </html>
