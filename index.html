@@ -13,9 +13,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
   
-  <!-- Chart.js CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Plugin สำหรับแสดงตัวเลขบน Chart -->
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+  
   <script>
     tailwind.config = {
       theme: {
@@ -80,8 +82,25 @@
           </div>
         </div>
 
-        <!-- SECTION 2: KPI Cards (5 Cards) -->
-<div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+        <!-- Dropdown สำหรับกรองข้อมูลตามสถานศึกษา -->
+<div class="bg-white p-3 rounded-lg shadow-sm border border-slate-200 mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+  <label for="school-filter" class="text-xs font-bold text-slate-700 flex items-center gap-1">
+    <span>เลือกสถานศึกษา:</span>
+  </label>
+  <select id="school-filter" onchange="renderDashboard()" class="text-xs border border-slate-300 rounded-md p-1.5 bg-slate-50 font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-blue">
+    <option value="ALL">ภาพรวมเทศบาลนครระยอง (แสดงทั้งหมด)</option>
+    <option value="โรงเรียนเทศบาลวัดปากน้ำ">โรงเรียนเทศบาลวัดปากน้ำ</option>
+    <option value="โรงเรียนเทศบาลบ้านปากคลอง">โรงเรียนเทศบาลบ้านปากคลอง</option>
+    <option value="โรงเรียนเทศบาลวัดโขดทิมทาราม">โรงเรียนเทศบาลวัดโขดทิมทาราม</option>
+    <option value="โรงเรียนเทศบาลวัดลุ่มมหาชัยชุมพล">โรงเรียนเทศบาลวัดลุ่มมหาชัยชุมพล</option>
+    <option value="โรงเรียนสาธิตเทศบาลนครระยอง (วัดตรีรัตนาราม)">โรงเรียนสาธิตเทศบาลนครระยอง (วัดตรีรัตนาราม)</option>
+    <option value="โรงเรียนนครระยองวิทยาคม (วัดโขดใต้)">โรงเรียนนครระยองวิทยาคม (วัดโขดใต้)</option>
+    <option value="ศูนย์พัฒนาเด็กเล็กวัดป่าประดู่">ศูนย์พัฒนาเด็กเล็กวัดป่าประดู่</option>
+  </select>
+</div>
+
+<!-- SECTION 2: KPI Cards (5 Cards) -->
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3">
   <!-- Card 1: นักเรียน -->
   <div class="bg-white border-l-4 border-brand-blue p-3 rounded-lg shadow-sm">
     <p class="text-[11px] text-slate-500 font-semibold">จำนวนนักเรียน</p>
@@ -134,16 +153,16 @@
   </div>
 </div>
 
-<!-- SECTION 3: สัดส่วนนักเรียนแยกตามระดับชั้น (การ์ด + Mini Pie Chart แบบแยกชั้น) -->
+<!-- SECTION 3: สัดส่วนนักเรียนแยกตามระดับชั้น (Doughnut Chart) -->
 <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 mt-4">
   <div class="flex justify-between items-center mb-4 pb-2 border-b">
     <h3 class="text-sm font-bold text-slate-800">สัดส่วนจำนวนนักเรียนแยกตามระดับชั้น (แยก ชาย/หญิง)</h3>
-    <span class="text-xs text-slate-400">แสดงผลแยกตามระดับชั้นเรียน</span>
+    <span id="selected-school-label" class="text-xs text-brand-blue font-semibold">ภาพรวมเทศบาลนครระยอง</span>
   </div>
   
-  <!-- Container สำหรับใส่การ์ดของแต่ละระดับชั้น (สร้างผ่าน JS) -->
+  <!-- Container สำหรับการ์ด Mini Doughnut Chart -->
   <div id="student-levels-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-    <p class="text-xs text-slate-400 col-span-full text-center py-4">กำลังประมวลผลข้อมูลระดับชั้น...</p>
+    <p class="text-xs text-slate-400 col-span-full text-center py-4">กำลังประมวลผลข้อมูล...</p>
   </div>
 </div>
 
