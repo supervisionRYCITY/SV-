@@ -476,10 +476,16 @@
 
       // แปลง ISO -> ไทย (สำหรับแสดงผล)
       isoToThai: function(isoStr) {
-        if (!isoStr || !isoStr.includes('-')) return isoStr;
-        const parts = isoStr.split('T')[0].split('-');
+        if (!isoStr || !String(isoStr).includes('-')) return isoStr;
+        const parts = String(isoStr).split('T')[0].split('-');
         if (parts.length !== 3) return isoStr;
-        const y = parseInt(parts[0]) + 543;
+        
+        let y = parseInt(parts[0]);
+        // ป้องกันการบวก 543 ซ้ำ หากปีเป็น พ.ศ. อยู่แล้ว (เช่น 2569)
+        if (y < 2500) {
+          y += 543;
+        }
+        
         const m = THAI_MONTHS[parseInt(parts[1]) - 1];
         const d = parseInt(parts[2]);
         return `${d} ${m} ${y}`;
@@ -488,20 +494,29 @@
       // แปลง ไทย -> ISO (สำหรับลง Input Date)
       thaiToIso: function(thaiStr) {
         if (!thaiStr) return '';
-        if (thaiStr.includes('-')) return thaiStr.split('T')[0]; 
-        const parts = thaiStr.split(' ');
+        
+        // กรณีดึงมาจากชีทแล้วเป็น format แบบ 2026-08-12 หรือ 2569-08-12 อยู่แล้ว
+        if (String(thaiStr).includes('-')) {
+          const parts = String(thaiStr).split('T')[0].split('-');
+          let y = parseInt(parts[0]);
+          if (y > 2500) y -= 543; // บังคับกลับเป็น ค.ศ. เสมอ สำหรับกล่อง input date
+          return `${y}-${parts[1]}-${parts[2]}`;
+        } 
+        
+        const parts = String(thaiStr).split(' ');
         if (parts.length !== 3) return thaiStr;
         const d = parts[0].padStart(2, '0');
         const mIndex = THAI_MONTHS.indexOf(parts[1]);
         const m = String(mIndex + 1).padStart(2, '0');
-        const y = parseInt(parts[2]) - 543;
+        let y = parseInt(parts[2]);
+        if (y > 2500) y -= 543;
         return `${y}-${m}-${d}`;
       },
 
       // ดึงวันที่พร้อมแสดงผลให้ชัวร์
       getDisplayDate: function(rawDate) {
         if(!rawDate) return 'ไม่ระบุวันที่';
-        if(rawDate.includes('-')) return this.isoToThai(rawDate);
+        if(String(rawDate).includes('-')) return this.isoToThai(rawDate);
         return rawDate; 
       },
 
