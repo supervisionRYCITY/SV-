@@ -80,51 +80,67 @@
           </div>
         </div>
 
-        <!-- SECTION 2: KPI Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div class="bg-white border-l-4 border-brand-blue p-4 rounded-lg shadow-sm">
-            <p class="text-xs text-slate-500 font-medium">จำนวนสถานศึกษา/หน่วยงาน</p>
-            <h3 id="kpi-units" class="text-2xl font-bold text-brand-blue mt-1">0</h3>
-            <p class="text-xs text-slate-400 mt-2">แห่งในสังกัด</p>
-          </div>
-          <div class="bg-white border-l-4 border-brand-green p-4 rounded-lg shadow-sm">
-            <p class="text-xs text-slate-500 font-medium">นักเรียนรวมทั้งหมด</p>
-            <h3 id="kpi-students" class="text-2xl font-bold text-brand-green mt-1">0</h3>
-            <p class="text-xs text-slate-400 mt-2">คน</p>
-          </div>
-          <div class="bg-white border-l-4 border-brand-yellow p-4 rounded-lg shadow-sm">
-            <p class="text-xs text-slate-500 font-medium">บุคลากรรวมทั้งหมด</p>
-            <h3 id="kpi-personnel" class="text-2xl font-bold text-amber-600 mt-1">0</h3>
-            <p class="text-xs text-slate-400 mt-2">คน</p>
-          </div>
-          <div class="bg-white border-l-4 border-brand-lightblue p-4 rounded-lg shadow-sm">
-            <p class="text-xs text-slate-500 font-medium">อัตราส่วน ครู : นักเรียน</p>
-            <h3 id="kpi-ratio" class="text-2xl font-bold text-brand-lightblue mt-1">1:-</h3>
-            <p class="text-xs text-slate-400 mt-2">ภาพรวมเชิงสถิติ</p>
-          </div>
-        </div>
+        <!-- SECTION 2: KPI Cards (5 Cards) -->
+<div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+  <!-- Card 1: นักเรียน -->
+  <div class="bg-white border-l-4 border-brand-blue p-3 rounded-lg shadow-sm">
+    <p class="text-[11px] text-slate-500 font-semibold">จำนวนนักเรียน</p>
+    <h3 id="card1-total" class="text-xl font-bold text-brand-blue mt-0.5">0</h3>
+    <div class="flex justify-between text-[10px] text-slate-500 mt-1 pt-1 border-t border-slate-100">
+      <span>ชาย: <strong id="card1-male" class="text-slate-700">0</strong></span>
+      <span>หญิง: <strong id="card1-female" class="text-slate-700">0</strong></span>
+    </div>
+  </div>
 
-        <!-- SECTION 3: Progress Bars -->
-        <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200">
-          <h3 class="text-base font-semibold text-slate-800 mb-3">สัดส่วนนักเรียนแยกตามระดับชั้น (ร้อยละ)</h3>
-          <div class="space-y-3" id="progress-container"></div>
-        </div>
+  <!-- Card 2: ผู้บริหาร -->
+  <div class="bg-white border-l-4 border-purple-600 p-3 rounded-lg shadow-sm">
+    <p class="text-[11px] text-slate-500 font-semibold">ผู้บริหารสถานศึกษา</p>
+    <h3 id="card2-total" class="text-xl font-bold text-purple-600 mt-0.5">0</h3>
+    <div class="flex justify-between text-[10px] text-slate-500 mt-1 pt-1 border-t border-slate-100">
+      <span>ชาย: <strong id="card2-male" class="text-slate-700">0</strong></span>
+      <span>หญิง: <strong id="card2-female" class="text-slate-700">0</strong></span>
+    </div>
+  </div>
 
-        <!-- SECTION 4: Charts -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
-            <h3 class="text-base font-semibold text-slate-800 mb-4 text-center">สัดส่วนเพศนักเรียน</h3>
-            <div class="w-full max-w-xs mx-auto">
-              <canvas id="chartGender"></canvas>
-            </div>
-          </div>
-          <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
-            <h3 class="text-base font-semibold text-slate-800 mb-4 text-center">จำนวนบุคลากรแยกตามตำแหน่ง</h3>
-            <div class="w-full h-64">
-              <canvas id="chartPersonnel"></canvas>
-            </div>
-          </div>
-        </div>
+  <!-- Card 3: ครู -->
+  <div class="bg-white border-l-4 border-brand-green p-3 rounded-lg shadow-sm">
+    <p class="text-[11px] text-slate-500 font-semibold">จำนวนครู</p>
+    <h3 id="card3-total" class="text-xl font-bold text-brand-green mt-0.5">0</h3>
+    <div class="flex justify-between text-[10px] text-slate-500 mt-1 pt-1 border-t border-slate-100">
+      <span>ชาย: <strong id="card3-male" class="text-slate-700">0</strong></span>
+      <span>หญิง: <strong id="card3-female" class="text-slate-700">0</strong></span>
+    </div>
+  </div>
+
+  <!-- Card 4: บุคลากรทั้งหมด -->
+  <div class="bg-white border-l-4 border-amber-500 p-3 rounded-lg shadow-sm">
+    <p class="text-[11px] text-slate-500 font-semibold">บุคลากรทั้งหมด</p>
+    <h3 id="card4-total" class="text-xl font-bold text-amber-600 mt-0.5">0</h3>
+    <div class="flex justify-between text-[10px] text-slate-500 mt-1 pt-1 border-t border-slate-100">
+      <span>ชาย: <strong id="card4-male" class="text-slate-700">0</strong></span>
+      <span>หญิง: <strong id="card4-female" class="text-slate-700">0</strong></span>
+    </div>
+  </div>
+
+  <!-- Card 5: วิทยฐานะ -->
+  <div class="bg-white border-l-4 border-rose-500 p-3 rounded-lg shadow-sm">
+    <p class="text-[11px] text-slate-500 font-semibold mb-1">วิทยฐานะบุคลากร</p>
+    <div class="space-y-0.5 text-[10px] text-slate-600">
+      <div class="flex justify-between"><span>เชี่ยวชาญ:</span> <strong id="card5-expert">0</strong></div>
+      <div class="flex justify-between"><span>ชำนาญการพิเศษ:</span> <strong id="card5-snr-adv">0</strong></div>
+      <div class="flex justify-between"><span>ชำนาญการ:</span> <strong id="card5-adv">0</strong></div>
+      <div class="flex justify-between"><span>ไม่มีวิทยฐานะ:</span> <strong id="card5-none">0</strong></div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 3: Chart นักเรียนแต่ละระดับชั้น -->
+<div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200 mt-4">
+  <h3 class="text-sm font-bold text-slate-800 mb-2 text-center">สัดส่วนจำนวนนักเรียนแต่ละระดับชั้น (รวม ชาย/หญิง)</h3>
+  <div class="w-full max-w-md mx-auto h-72">
+    <canvas id="chartStudentLevels"></canvas>
+  </div>
+</div>
 
       </div>
     </main>
