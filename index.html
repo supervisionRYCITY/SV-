@@ -787,13 +787,21 @@
       const select = document.getElementById('school-filter');
       if (!select) return;
 
-      let html = '<option value="ALL">ภาพรวมเทศบาลนครระยอง (แสดงทั้งหมด)</option>';
+      let html = '<option value="ALL">ภาพรวมสถานศึกษา (ท.1-ท.6 และ ศพด.)</option>';
       const unitData = dbData['ข้อมูลหน่วยงาน'] || dbData.units || [];
 
       unitData.forEach(item => {
         const unitId = item['รหัสหน่วยงาน'] || '';
         const unitName = item['ชื่อหน่วยงาน'] || '';
-        if (unitId.trim() !== '' && unitName.trim() !== '') {
+        
+        // เช็คว่าชื่อหน่วยงานมีคำที่บ่งบอกว่าเป็นสถานศึกษาหรือไม่ (คัดกรอง ท.1-ท.6 และ ศพด.)
+        const isSchool = unitName.includes('โรงเรียน') || 
+                         unitName.includes('ท.') || 
+                         unitName.includes('ศพด') || 
+                         unitName.includes('ศูนย์พัฒนา');
+
+        // แสดงใน Dropdown เฉพาะหน่วยงานที่ผ่านเงื่อนไขสถานศึกษา
+        if (unitId.trim() !== '' && unitName.trim() !== '' && isSchool) {
           html += `<option value="${unitId.trim()}">${unitName.trim()}</option>`;
         }
       });
@@ -812,20 +820,40 @@
       const schoolLabel = document.getElementById('selected-school-label');
       if (schoolLabel) {
         schoolLabel.innerText = selectedSchoolId === 'ALL' 
-          ? 'ภาพรวมเทศบาลนครระยอง' 
+          ? 'ภาพรวมสถานศึกษา (ท.1-ท.6 และ ศพด.)' 
           : schoolSelect.options[schoolSelect.selectedIndex].text;
       }
 
+      // ดึงรหัสหน่วยงานที่จัดว่าเป็น "สถานศึกษา" (ท.1-ท.6 และ ศพด.) เก็บไว้เป็นลิสต์
+      const unitData = dbData['ข้อมูลหน่วยงาน'] || dbData.units || [];
+      const validSchoolIds = [];
+      unitData.forEach(item => {
+        const unitId = String(item['รหัสหน่วยงาน'] || '').trim();
+        const unitName = String(item['ชื่อหน่วยงาน'] || '').trim();
+        const isSchool = unitName.includes('โรงเรียน') || 
+                         unitName.includes('ท.') || 
+                         unitName.includes('ศพด') || 
+                         unitName.includes('ศูนย์พัฒนา');
+                         
+        if (unitId && isSchool) {
+          validSchoolIds.push(unitId);
+        }
+      });
+
+      // ฟังก์ชันตัวกรองข้อมูล
       const filterData = (item) => {
-        if (selectedSchoolId === 'ALL') return true;
-        const itemId = item['รหัสหน่วยงาน'] || '';
-        return String(itemId).trim() === String(selectedSchoolId).trim();
+        const itemId = String(item['รหัสหน่วยงาน'] || '').trim();
+        if (selectedSchoolId === 'ALL') {
+          // ถ้าเลือกภาพรวม ให้นับสถิติ "เฉพาะ" รหัสหน่วยงานที่เป็นสถานศึกษาเท่านั้น
+          return validSchoolIds.includes(itemId);
+        }
+        return itemId === String(selectedSchoolId).trim();
       };
 
       const filteredStudents = (dbData.students || dbData['ข้อมูลนักเรียน'] || []).filter(filterData);
       const filteredPersonnel = (dbData.personnel || dbData['ข้อมูลบุคลากร'] || []).filter(filterData);
 
-      // Card 1
+      // Card 1: นักเรียน
       let studentMale = 0, studentFemale = 0;
       filteredStudents.forEach(s => {
         let count = Number(s['จำนวน'] || 0);
@@ -836,7 +864,7 @@
       document.getElementById('card1-male').innerText = studentMale.toLocaleString();
       document.getElementById('card1-female').innerText = studentFemale.toLocaleString();
 
-      // Card 2
+      // Card 2: ผู้บริหาร
       const execPositions = ['ผู้อำนวยการสถานศึกษา', 'รองผู้อำนวยการสถานศึกษา'];
       let execMale = 0, execFemale = 0;
       filteredPersonnel.forEach(p => {
@@ -850,7 +878,7 @@
       document.getElementById('card2-male').innerText = execMale.toLocaleString();
       document.getElementById('card2-female').innerText = execFemale.toLocaleString();
 
-      // Card 3
+      // Card 3: พนักงานครู
       const teacherPositions = ['ครู', 'ครูผู้ช่วย'];
       let teacherMale = 0, teacherFemale = 0;
       filteredPersonnel.forEach(p => {
@@ -864,7 +892,7 @@
       document.getElementById('card3-male').innerText = teacherMale.toLocaleString();
       document.getElementById('card3-female').innerText = teacherFemale.toLocaleString();
 
-      // Card 4
+      // Card 4: บุคลากรทางการศึกษา
       const eduStaffPositions = ['บุคลากร', 'ผู้ช่วยครูผู้ช่วย', 'ผู้ช่วยเจ้าพนักงานธุรการ'];
       let staffMale = 0, staffFemale = 0;
       filteredPersonnel.forEach(p => {
@@ -878,7 +906,7 @@
       document.getElementById('card4-male').innerText = staffMale.toLocaleString();
       document.getElementById('card4-female').innerText = staffFemale.toLocaleString();
 
-      // Card 5
+      // Card 5: วิทยฐานะ
       let expert = 0, snrAdv = 0, adv = 0, none = 0;
       filteredPersonnel.forEach(p => {
         let academic = p['วิทยฐานะ'] || '';
@@ -893,9 +921,8 @@
       document.getElementById('card5-adv').innerText = adv;
       document.getElementById('card5-none').innerText = none;
 
-      // สั่งวาดกราฟทั้งหมด
       renderStudentLevelCharts(filteredStudents);
-      renderPersonnelBarChart(filteredPersonnel); // ฟังก์ชันใหม่สำหรับวาดกราฟบุคลากร
+      renderPersonnelBarChart(filteredPersonnel);
     }
 
     function renderStudentLevelCharts(studentList) {
