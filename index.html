@@ -75,7 +75,6 @@
             <span class="text-xs text-slate-400">เรียงตามลำดับวันที่ล่าสุด</span>
           </div>
           
-          <!-- News Cards Container (Scrollable Horizontally) -->
           <div id="news-container" class="flex space-x-4 overflow-x-auto pb-2">
             <p class="text-xs text-slate-400 p-2">กำลังโหลดข่าวประชาสัมพันธ์...</p>
           </div>
@@ -139,7 +138,6 @@
     </div>
 
     <nav class="flex-1 p-3 space-y-4 overflow-y-auto text-sm">
-      <!-- กลุ่มที่ 1: เมนูหลัก -->
       <div class="space-y-1">
         <button onclick="loadPage('home')" class="nav-btn w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-white transition bg-brand-blue">
           <span>หน้าแรก</span>
@@ -152,7 +150,6 @@
         </button>
       </div>
 
-      <!-- กลุ่มที่ 2: ระบบงานหลัก -->
       <div class="space-y-1 border-t border-slate-800 pt-3">
         <div class="px-3 pb-1 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
           ระบบงานหลัก
@@ -174,9 +171,7 @@
         </button>
       </div>
 
-      <!-- กลุ่มที่ 3: ระบบงานรอง -->
       <div class="space-y-1 border-t border-slate-800 pt-3">
-        <!-- ปุ่มข่าวประชาสัมพันธ์ (ซ่อนไว้ เริ่มแสดงเมื่อเป็นผู้ดูแลระบบ) -->
         <button id="menu-news" onclick="openNewsAdminModal()" class="nav-btn hidden w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-amber-400 transition">
           <span>ข่าวประชาสัมพันธ์ (ผู้ดูแล)</span>
         </button>
@@ -214,7 +209,7 @@
     </div>
   </div>
 
-  <!-- MODAL 1: ฟอร์มอัปเดตข่าวประชาสัมพันธ์ (เฉพาะผู้ดูแลระบบ) -->
+  <!-- MODAL: ฟอร์มอัปเดตข่าวประชาสัมพันธ์ (ผู้ดูแลระบบ) -->
   <div id="news-admin-modal" class="fixed inset-0 bg-slate-900 bg-opacity-60 hidden items-center justify-center z-50">
     <div class="bg-white rounded-lg p-6 w-full max-w-md shadow-2xl space-y-4 border-t-4 border-amber-500 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-2">
@@ -222,7 +217,7 @@
         <button onclick="closeNewsAdminModal()" class="text-slate-400 hover:text-slate-600 font-bold">X</button>
       </div>
       
-      <form id="news-form" class="space-y-3">
+      <form id="news-form" class="space-y-3" onsubmit="event.preventDefault();">
         <div>
           <label class="block text-xs font-semibold mb-1">พาดหัวข่าว</label>
           <input type="text" id="news-title" class="w-full border rounded px-3 py-1.5 text-xs focus:ring-2 focus:ring-brand-blue" required>
@@ -234,7 +229,6 @@
         <div>
           <label class="block text-xs font-semibold mb-1">ภาพข่าว (ไฟล์ .jpg)</label>
           <input type="file" id="news-image" accept="image/jpeg, image/jpg" class="w-full border rounded px-3 py-1.5 text-xs">
-          <p class="text-[10px] text-slate-400 mt-1">* รองรับไฟล์รูปภาพ JPG</p>
         </div>
         <div>
           <label class="block text-xs font-semibold mb-1">วันเดือนปีของข่าว</label>
@@ -249,7 +243,7 @@
     </div>
   </div>
 
-  <!-- MODAL 2: ดูข่าวสารฉบับเต็ม -->
+  <!-- MODAL: ดูข่าวสารฉบับเต็ม -->
   <div id="news-detail-modal" class="fixed inset-0 bg-slate-900 bg-opacity-60 hidden items-center justify-center z-50">
     <div class="bg-white rounded-lg p-6 w-full max-w-lg shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-start border-b pb-2">
@@ -265,7 +259,7 @@
     </div>
   </div>
 
-  <!-- JAVASCRIPT LOGIC -->
+  <!-- JAVASCRIPT APPLICATION LOGIC -->
   <script>
     const GAS_API_URL = "https://script.google.com/macros/s/AKfycbyUbL4Aq6p4CP2u4KdWurx42-r75eSzAZeLVhAeL8xBBblseSv7IOUEZ31b8XVHtqA/exec";
 
@@ -292,7 +286,7 @@
     window.onload = function() {
       defaultHomeHTML = document.getElementById('main-content').innerHTML;
       
-      // 1. ดึงข้อมูล User จาก LocalStorage เพื่อคงสถานะ Login เมื่อรีเฟรชหน้า
+      // ดึงสถานะ Login เดิมจาก LocalStorage
       const savedUser = localStorage.getItem('supervision_user');
       if (savedUser) {
         try {
@@ -349,7 +343,7 @@
         .catch(err => console.error("Error fetching data:", err));
     }
 
-    // ฟังก์ชัน Render ข่าวประชาสัมพันธ์ (ปรับปรุงการจัดการวันที่)
+    // Render ข่าวสาร
     function renderNewsCards() {
       const container = document.getElementById('news-container');
       if (!container) return;
@@ -359,7 +353,6 @@
         return;
       }
 
-      // เรียงลำดับข่าวตามวันที่ล่าสุด
       const sortedNews = [...dbData.news].sort((a, b) => new Date(b['วันที่']) - new Date(a['วันที่']));
 
       let html = '';
@@ -398,6 +391,101 @@
       container.innerHTML = html;
     }
 
+    // Modal Control Functions
+    function openNewsDetailModal(sortedIndex) {
+      const sortedNews = [...dbData.news].sort((a, b) => new Date(b['วันที่']) - new Date(a['วันที่']));
+      const news = sortedNews[sortedIndex];
+      if (!news) return;
+
+      document.getElementById('detail-news-title').innerText = news['พาดหัวข่าว'] || '';
+      document.getElementById('detail-news-date').innerText = news['วันที่'] ? 'วันที่ประกาศ: ' + new Date(news['วันที่']).toLocaleDateString('th-TH') : '';
+      document.getElementById('detail-news-content').innerText = news['เนื้อหาข่าว'] || '';
+      
+      const imgContainer = document.getElementById('detail-news-image-container');
+      if (news['ภาพข่าว']) {
+        imgContainer.innerHTML = `<img src="${news['ภาพข่าว']}" class="w-full max-h-60 object-cover rounded shadow">`;
+      } else {
+        imgContainer.innerHTML = '';
+      }
+
+      document.getElementById('news-detail-modal').classList.remove('hidden');
+      document.getElementById('news-detail-modal').classList.add('flex');
+    }
+
+    function closeNewsDetailModal() {
+      document.getElementById('news-detail-modal').classList.add('hidden');
+      document.getElementById('news-detail-modal').classList.remove('flex');
+    }
+
+    function openNewsAdminModal() {
+      document.getElementById('news-form').reset();
+      document.getElementById('news-admin-modal').classList.remove('hidden');
+      document.getElementById('news-admin-modal').classList.add('flex');
+    }
+
+    function closeNewsAdminModal() {
+      document.getElementById('news-admin-modal').classList.add('hidden');
+      document.getElementById('news-admin-modal').classList.remove('flex');
+    }
+
+    function submitNewsData() {
+      const title = document.getElementById('news-title').value;
+      const content = document.getElementById('news-content').value;
+      const date = document.getElementById('news-date').value;
+      const fileInput = document.getElementById('news-image');
+
+      if (!title || !content || !date) {
+        alert('กรุณากรอกข้อมูลให้ครบถ้วน');
+        return;
+      }
+
+      const savePayload = (base64Img) => {
+        const rowObj = {
+          'พาดหัวข่าว': title,
+          'เนื้อหาข่าว': content,
+          'ภาพข่าว': base64Img,
+          'วันที่': date
+        };
+
+        fetch(GAS_API_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'saveData', sheetName: 'ข่าวประชาสัมพันธ์', rowObj: rowObj })
+        })
+        .then(res => res.json())
+        .then(res => {
+          if (res.status === 'success') {
+            alert('บันทึกข่าวประชาสัมพันธ์เรียบร้อยแล้ว');
+            closeNewsAdminModal();
+            fetchData();
+          } else {
+            alert('เกิดข้อผิดพลาด: ' + res.message);
+          }
+        });
+      };
+
+      if (fileInput.files && fileInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          savePayload(e.target.result);
+        };
+        reader.readAsDataURL(fileInput.files[0]);
+      } else {
+        savePayload('');
+      }
+    }
+
+    function toggleAuthModal() {
+      if (currentUser) {
+        currentUser = null;
+        localStorage.removeItem('supervision_user');
+        updateAuthUI();
+        loadPage('home');
+      } else {
+        document.getElementById('login-modal').classList.toggle('flex');
+        document.getElementById('login-modal').classList.toggle('hidden');
+      }
+    }
+
     function performLogin() {
       const u = document.getElementById('login-username').value;
       const p = document.getElementById('login-password').value;
@@ -410,9 +498,7 @@
       .then(res => {
         if (res.status === 'success') {
           currentUser = res.user;
-          // บันทึกลง LocalStorage
           localStorage.setItem('supervision_user', JSON.stringify(currentUser));
-          
           document.getElementById('login-modal').classList.add('hidden');
           document.getElementById('login-modal').classList.remove('flex');
           updateAuthUI();
@@ -422,19 +508,6 @@
           errDiv.classList.remove('hidden');
         }
       });
-    }
-
-    function toggleAuthModal() {
-      if (currentUser) {
-        currentUser = null;
-        // ลบข้อมูลจาก LocalStorage เมื่อออกจากระบบ
-        localStorage.removeItem('supervision_user');
-        updateAuthUI();
-        loadPage('home');
-      } else {
-        document.getElementById('login-modal').classList.toggle('flex');
-        document.getElementById('login-modal').classList.toggle('hidden');
-      }
     }
 
     function updateAuthUI() {
@@ -464,6 +537,76 @@
         if (settingsMenu) settingsMenu.classList.add('hidden');
         if (newsMenu) newsMenu.classList.add('hidden');
       }
+    }
+
+    function renderDashboard() {
+      const kpiUnits = document.getElementById('kpi-units');
+      if (!kpiUnits) return;
+
+      kpiUnits.innerText = dbData.units.length;
+
+      let totalStudents = dbData.students.reduce((acc, curr) => acc + Number(curr['จำนวน'] || 0), 0);
+      document.getElementById('kpi-students').innerText = totalStudents.toLocaleString();
+
+      let totalPersonnel = dbData.personnel.length;
+      document.getElementById('kpi-personnel').innerText = totalPersonnel.toLocaleString();
+
+      let ratio = totalPersonnel > 0 ? (totalStudents / totalPersonnel).toFixed(1) : '-';
+      document.getElementById('kpi-ratio').innerText = `1 : ${ratio}`;
+
+      const levelCounts = {};
+      dbData.students.forEach(s => {
+        let lvl = s['ระดับชั้น'] || 'อื่นๆ';
+        levelCounts[lvl] = (levelCounts[lvl] || 0) + Number(s['จำนวน'] || 0);
+      });
+
+      let progressHtml = '';
+      Object.keys(levelCounts).forEach(lvl => {
+        let count = levelCounts[lvl];
+        let pct = totalStudents > 0 ? ((count / totalStudents) * 100).toFixed(1) : 0;
+        progressHtml += `
+          <div>
+            <div class="flex justify-between text-xs font-semibold mb-1">
+              <span>${lvl}</span>
+              <span>${count} คน (${pct}%)</span>
+            </div>
+            <div class="w-full bg-slate-200 rounded-full h-2.5">
+              <div class="bg-brand-lightblue h-2.5 rounded-full" style="width: ${pct}%"></div>
+            </div>
+          </div>
+        `;
+      });
+      document.getElementById('progress-container').innerHTML = progressHtml || '<p class="text-xs text-slate-400">ไม่มีข้อมูล</p>';
+
+      let maleStudents = dbData.students.filter(s => s['เพศ'] === 'ชาย').reduce((a, b) => a + Number(b['จำนวน'] || 0), 0);
+      let femaleStudents = dbData.students.filter(s => s['เพศ'] === 'หญิง').reduce((a, b) => a + Number(b['จำนวน'] || 0), 0);
+
+      if (genderChart) genderChart.destroy();
+      const ctx1 = document.getElementById('chartGender').getContext('2d');
+      genderChart = new Chart(ctx1, {
+        type: 'pie',
+        data: {
+          labels: ['ชาย', 'หญิง'],
+          datasets: [{ data: [maleStudents, femaleStudents], backgroundColor: ['#2563eb', '#22c55e'] }]
+        }
+      });
+
+      const posCounts = {};
+      dbData.personnel.forEach(p => {
+        let pos = p['ตำแหน่ง'] || 'ไม่ระบุ';
+        posCounts[pos] = (posCounts[pos] || 0) + 1;
+      });
+
+      if (personnelChart) personnelChart.destroy();
+      const ctx2 = document.getElementById('chartPersonnel').getContext('2d');
+      personnelChart = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+          labels: Object.keys(posCounts),
+          datasets: [{ label: 'จำนวนบุคลากร (คน)', data: Object.values(posCounts), backgroundColor: '#1e3a8a' }]
+        },
+        options: { responsive: true, maintainAspectRatio: false }
+      });
     }
   </script>
 </body>
