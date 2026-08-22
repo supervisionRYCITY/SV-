@@ -82,20 +82,13 @@
           </div>
         </div>
 
-        <!-- Dropdown สำหรับกรองข้อมูลตามสถานศึกษา -->
+        <!-- Dropdown สำหรับกรองข้อมูลตามหน่วยงาน/สถานศึกษา -->
 <div class="bg-white p-3 rounded-lg shadow-sm border border-slate-200 mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
   <label for="school-filter" class="text-xs font-bold text-slate-700 flex items-center gap-1">
-    <span>เลือกสถานศึกษา:</span>
+    <span>เลือกสถานศึกษา / หน่วยงาน:</span>
   </label>
   <select id="school-filter" onchange="renderDashboard()" class="text-xs border border-slate-300 rounded-md p-1.5 bg-slate-50 font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-blue">
-    <option value="ALL">ภาพรวมเทศบาลนครระยอง (แสดงทั้งหมด)</option>
-    <option value="โรงเรียนเทศบาลวัดปากน้ำ">โรงเรียนเทศบาลวัดปากน้ำ</option>
-    <option value="โรงเรียนเทศบาลบ้านปากคลอง">โรงเรียนเทศบาลบ้านปากคลอง</option>
-    <option value="โรงเรียนเทศบาลวัดโขดทิมทาราม">โรงเรียนเทศบาลวัดโขดทิมทาราม</option>
-    <option value="โรงเรียนเทศบาลวัดลุ่มมหาชัยชุมพล">โรงเรียนเทศบาลวัดลุ่มมหาชัยชุมพล</option>
-    <option value="โรงเรียนสาธิตเทศบาลนครระยอง (วัดตรีรัตนาราม)">โรงเรียนสาธิตเทศบาลนครระยอง (วัดตรีรัตนาราม)</option>
-    <option value="โรงเรียนนครระยองวิทยาคม (วัดโขดใต้)">โรงเรียนนครระยองวิทยาคม (วัดโขดใต้)</option>
-    <option value="ศูนย์พัฒนาเด็กเล็กวัดป่าประดู่">ศูนย์พัฒนาเด็กเล็กวัดป่าประดู่</option>
+    <!-- รายชื่อจะถูกเติมโดยอัตโนมัติจากชีท "ข้อมูลหน่วยงาน" -->
   </select>
 </div>
 
@@ -596,14 +589,40 @@
 
     let levelChartInstances = {};
 
+    // ฟังก์ชันสร้างตัวเลือกใน Dropdown จากชีท "ข้อมูลหน่วยงาน"
+    function renderSchoolDropdown() {
+      const select = document.getElementById('school-filter');
+      if (!select) return;
+
+      // ตัวเลือกแรกสำหรับแสดงภาพรวมทั้งหมด
+      let html = '<option value="ALL">ภาพรวมเทศบาลนครระยอง (แสดงทั้งหมด)</option>';
+
+      // ดึงข้อมูลจากชีท "ข้อมูลหน่วยงาน" (ตรวจสอบชื่อ Key ใน dbData)
+      const unitData = dbData['ข้อมูลหน่วยงาน'] || dbData.units || [];
+
+      unitData.forEach(item => {
+        const unitName = item['ชื่อหน่วยงาน'] || item['หน่วยงาน'] || '';
+        if (unitName.trim() !== '') {
+          html += `<option value="${unitName.trim()}">${unitName.trim()}</option>`;
+        }
+      });
+
+      select.innerHTML = html;
+    }
+
+    // ฟังก์ชัน Render Dashboard
     function renderDashboard() {
       if (!document.getElementById('card1-total')) return;
 
-      // 1. อ่านค่าการกรองโรงเรียนจาก Dropdown
+      // 1. ตรวจสอบและสร้าง Dropdown หากยังไม่มีตัวเลือก
       const schoolSelect = document.getElementById('school-filter');
+      if (schoolSelect && schoolSelect.options.length <= 1) {
+        renderSchoolDropdown();
+      }
+
       const selectedSchool = schoolSelect ? schoolSelect.value : 'ALL';
 
-      // อัปเดตข้อความแสดงชื่อโรงเรียนที่เลือก
+      // อัปเดตข้อความแสดงชื่อโรงเรียน/หน่วยงานปัจจุบัน
       const schoolLabel = document.getElementById('selected-school-label');
       if (schoolLabel) {
         schoolLabel.innerText = selectedSchool === 'ALL' 
@@ -611,16 +630,16 @@
           : selectedSchool;
       }
 
-      // 2. กรองข้อมูลนักเรียนและบุคลากรตามโรงเรียนที่เลือก
-      // *หมายเหตุ: คอลัมน์โรงเรียนใน Sheet สมมติว่าชื่อ 'สังกัด' หรือ 'โรงเรียน'
+      // 2. ฟังก์ชันกรองข้อมูลนักเรียนและบุคลากรตามหน่วยงานที่เลือก
       const filterData = (item) => {
         if (selectedSchool === 'ALL') return true;
-        const schoolName = item['สังกัด'] || item['โรงเรียน'] || '';
+        // เช็คชื่อคอลัมน์สังกัด หรือ ชื่อหน่วยงาน ในชีทข้อมูลนักเรียน/บุคลากร
+        const schoolName = item['สังกัด'] || item['หน่วยงาน'] || item['ชื่อหน่วยงาน'] || item['โรงเรียน'] || '';
         return schoolName.trim() === selectedSchool.trim();
       };
 
-      const filteredStudents = dbData.students.filter(filterData);
-      const filteredPersonnel = dbData.personnel.filter(filterData);
+      const filteredStudents = (dbData.students || dbData['ข้อมูลนักเรียน'] || []).filter(filterData);
+      const filteredPersonnel = (dbData.personnel || dbData['ข้อมูลบุคลากร'] || []).filter(filterData);
 
       // --- Card 1: นักเรียน ---
       let studentMale = 0, studentFemale = 0;
@@ -683,7 +702,7 @@
       document.getElementById('card5-adv').innerText = adv;
       document.getElementById('card5-none').innerText = none;
 
-      // --- 3. สร้าง Mini Doughnut Chart สำหรับแต่ละระดับชั้น ---
+      // --- Render Mini Doughnut Charts ---
       renderStudentLevelCharts(filteredStudents);
     }
 
