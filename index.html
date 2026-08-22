@@ -20,9 +20,7 @@
     tailwind.config = {
       theme: {
         extend: {
-          fontFamily: {
-            sans: ['Sarabun', 'sans-serif'],
-          },
+          fontFamily: { sans: ['Sarabun', 'sans-serif'] },
           colors: {
             brand: {
               blue: '#1e3a8a',
@@ -63,11 +61,10 @@
       </div>
     </header>
 
-    <!-- MAIN CONTENT VIEW -->
+    <!-- DYNAMIC MAIN CONTENT VIEW (DEFAULT: HOME DASHBOARD) -->
     <main class="flex-1 overflow-y-auto p-6 bg-slate-100" id="main-content">
-      
-      <!-- PAGE 1: HOME / DASHBOARD -->
-      <section id="page-home" class="space-y-6">
+      <div class="space-y-6">
+        <!-- KPI Cards -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div class="bg-white border-l-4 border-brand-blue p-4 rounded-lg shadow-sm">
             <p class="text-xs text-slate-500 font-medium">จำนวนสถานศึกษา/หน่วยงาน</p>
@@ -91,11 +88,13 @@
           </div>
         </div>
 
+        <!-- Progress Bars -->
         <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200">
           <h3 class="text-base font-semibold text-slate-800 mb-3">สัดส่วนนักเรียนแยกตามระดับชั้น (ร้อยละ)</h3>
           <div class="space-y-3" id="progress-container"></div>
         </div>
 
+        <!-- Charts -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
             <h3 class="text-base font-semibold text-slate-800 mb-4 text-center">สัดส่วนเพศนักเรียน</h3>
@@ -110,161 +109,7 @@
             </div>
           </div>
         </div>
-      </section>
-
-      <!-- PAGE 2: EXECUTIVES -->
-      <section id="page-executives" class="hidden space-y-4">
-        <div class="bg-white p-6 rounded-lg shadow-sm border">
-          <h2 class="text-xl font-bold text-brand-blue mb-4">คณะผู้บริหารเทศบาลนครระยอง</h2>
-          <p class="text-slate-600 text-sm">ส่วนแสดงข้อมูลคณะผู้บริหารเทศบาลนครระยอง</p>
-        </div>
-      </section>
-
-      <!-- PAGE 3: WORKING TEAM -->
-      <section id="page-working-team" class="hidden space-y-4">
-        <div class="bg-white p-6 rounded-lg shadow-sm border">
-          <h2 class="text-xl font-bold text-brand-blue mb-4">คณะทำงาน SuperVision+</h2>
-          <p class="text-slate-600 text-sm">ส่วนแสดงรายชื่อและข้อมูลคณะทำงานนิเทศการศึกษา</p>
-        </div>
-      </section>
-
-      <!-- PAGE 4: SUPERVISION -->
-      <section id="page-supervision" class="hidden space-y-4">
-        <div class="bg-white p-6 rounded-lg shadow-sm border">
-          <h2 class="text-xl font-bold text-brand-blue mb-2">ระบบงานนิเทศ</h2>
-          <p class="text-slate-600 text-sm">การติดตาม วางแผน และประเมินผลการนิเทศการศึกษา</p>
-        </div>
-      </section>
-
-      <!-- PAGE 5: CURRICULUM -->
-      <section id="page-curriculum" class="hidden space-y-4">
-        <div class="bg-white p-6 rounded-lg shadow-sm border">
-          <h2 class="text-xl font-bold text-brand-blue mb-2">ระบบงานหลักสูตร</h2>
-          <p class="text-slate-600 text-sm">การจัดการและพัฒนากลุ่มสาระการเรียนรู้และหลักสูตรท้องถิ่น</p>
-        </div>
-      </section>
-
-      <!-- PAGE 6: QA -->
-      <section id="page-qa" class="hidden space-y-4">
-        <div class="bg-white p-6 rounded-lg shadow-sm border">
-          <h2 class="text-xl font-bold text-brand-blue mb-2">ระบบงานประกันคุณภาพการศึกษา</h2>
-          <p class="text-slate-600 text-sm">การติดตามมาตรฐานและรายงานการประเมินตนเองของสถานศึกษา (SAR)</p>
-        </div>
-      </section>
-
-      <!-- PAGE 7: EVALUATION -->
-      <section id="page-evaluation" class="hidden space-y-4">
-        <div class="bg-white p-6 rounded-lg shadow-sm border">
-          <h2 class="text-xl font-bold text-brand-blue mb-2">ระบบงานวัดและประเมินผล</h2>
-          <p class="text-slate-600 text-sm">คลังข้อมูลผลสัมฤทธิ์ทางการเรียนและการทดสอบระดับชาติ</p>
-        </div>
-      </section>
-
-      <!-- PAGE 8: MEDIA TECH -->
-      <section id="page-media-tech" class="hidden space-y-4">
-        <div class="bg-white p-6 rounded-lg shadow-sm border">
-          <h2 class="text-xl font-bold text-brand-blue mb-2">ระบบงานสื่อและเทคโนโลยี</h2>
-          <p class="text-slate-600 text-sm">แหล่งรวบรวมสื่อการสอน นวัตกรรม และเทคโนโลยีทางการศึกษา</p>
-        </div>
-      </section>
-
-      <!-- PAGE 9: NEWS -->
-      <section id="page-news" class="hidden space-y-4">
-        <div class="bg-white p-6 rounded-lg shadow-sm border">
-          <h2 class="text-xl font-bold text-brand-blue mb-2">ข่าวประชาสัมพันธ์</h2>
-          <p class="text-slate-600 text-sm">จดหมายข่าว ประกาศ และกิจกรรมล่าสุด</p>
-        </div>
-      </section>
-
-      <!-- PAGE 10: ABOUT -->
-      <section id="page-about" class="hidden space-y-4">
-        <div class="bg-white p-6 rounded-lg shadow-sm border">
-          <h2 class="text-xl font-bold text-brand-blue mb-2">เกี่ยวกับเรา</h2>
-          <p class="text-slate-600 text-sm">ข้อมูลวัตถุประสงค์โครงการ SuperVision+ เทศบาลนครระยอง</p>
-        </div>
-      </section>
-
-      <!-- PAGE 11: SETTINGS (ADMIN ONLY) -->
-      <section id="page-settings" class="hidden space-y-6">
-        <div class="bg-white p-4 rounded-lg shadow-sm border border-amber-300 bg-amber-50">
-          <h2 class="text-lg font-bold text-amber-900">ตั้งค่าการใช้งานระบบ (เฉพาะผู้ดูแลระบบ)</h2>
-          <p class="text-xs text-amber-700">จัดการข้อมูลพื้นฐานในระบบสารสนเทศ</p>
-        </div>
-
-        <!-- CRUD UNITS -->
-        <div class="bg-white p-4 rounded-lg shadow border space-y-3">
-          <div class="flex justify-between items-center">
-            <h3 class="font-bold text-slate-800">1. ข้อมูลหน่วยงาน / สถานศึกษา</h3>
-            <button onclick="openFormModal('ข้อมูลหน่วยงาน')" class="crud-btn bg-brand-green hover:bg-emerald-600 text-white px-3 py-1.5 rounded text-xs">
-              + เพิ่มหน่วยงาน
-            </button>
-          </div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse text-xs">
-              <thead>
-                <tr class="bg-brand-blue text-white">
-                  <th class="p-2 border">ลำดับ</th>
-                  <th class="p-2 border">รหัสหน่วยงาน</th>
-                  <th class="p-2 border">ชื่อหน่วยงาน</th>
-                  <th class="p-2 border text-center crud-col">จัดการ</th>
-                </tr>
-              </thead>
-              <tbody id="table-units-body"></tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- CRUD STUDENTS -->
-        <div class="bg-white p-4 rounded-lg shadow border space-y-3">
-          <div class="flex justify-between items-center">
-            <h3 class="font-bold text-slate-800">2. ข้อมูลนักเรียน</h3>
-            <button onclick="openFormModal('ข้อมูลนักเรียน')" class="crud-btn bg-brand-green hover:bg-emerald-600 text-white px-3 py-1.5 rounded text-xs">
-              + เพิ่มข้อมูลนักเรียน
-            </button>
-          </div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse text-xs">
-              <thead>
-                <tr class="bg-brand-blue text-white">
-                  <th class="p-2 border">ลำดับ</th>
-                  <th class="p-2 border">รหัสหน่วยงาน</th>
-                  <th class="p-2 border">ระดับชั้น</th>
-                  <th class="p-2 border">เพศ</th>
-                  <th class="p-2 border">จำนวน</th>
-                  <th class="p-2 border text-center crud-col">จัดการ</th>
-                </tr>
-              </thead>
-              <tbody id="table-students-body"></tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- CRUD PERSONNEL -->
-        <div class="bg-white p-4 rounded-lg shadow border space-y-3">
-          <div class="flex justify-between items-center">
-            <h3 class="font-bold text-slate-800">3. ข้อมูลบุคลากร</h3>
-            <button onclick="openFormModal('ข้อมูลบุคลากร')" class="crud-btn bg-brand-green hover:bg-emerald-600 text-white px-3 py-1.5 rounded text-xs">
-              + เพิ่มบุคลากร
-            </button>
-          </div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse text-xs">
-              <thead>
-                <tr class="bg-brand-blue text-white">
-                  <th class="p-2 border">ลำดับ</th>
-                  <th class="p-2 border">รหัสหน่วยงาน</th>
-                  <th class="p-2 border">ตำแหน่ง</th>
-                  <th class="p-2 border">วิทยฐานะ</th>
-                  <th class="p-2 border">เพศ</th>
-                  <th class="p-2 border text-center crud-col">จัดการ</th>
-                </tr>
-              </thead>
-              <tbody id="table-personnel-body"></tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
+      </div>
     </main>
   </div>
 
@@ -278,13 +123,13 @@
     <nav class="flex-1 p-3 space-y-4 overflow-y-auto text-sm">
       <!-- กลุ่มที่ 1: เมนูหลัก -->
       <div class="space-y-1">
-        <button onclick="switchTab('home')" class="nav-item w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-white transition bg-brand-blue flex items-center justify-between">
+        <button onclick="loadPage('home')" class="nav-btn w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-white transition bg-brand-blue">
           <span>หน้าแรก</span>
         </button>
-        <button onclick="switchTab('executives')" class="nav-item w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition flex items-center justify-between">
+        <button onclick="loadPage('executives')" class="nav-btn w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">
           <span>ผู้บริหารเทศบาลนครระยอง</span>
         </button>
-        <button onclick="switchTab('working-team')" class="nav-item w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition flex items-center justify-between">
+        <button onclick="loadPage('working-team')" class="nav-btn w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">
           <span>คณะทำงาน</span>
         </button>
       </div>
@@ -294,32 +139,32 @@
         <div class="px-3 pb-1 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
           ระบบงานหลัก
         </div>
-        <button onclick="switchTab('supervision')" class="nav-item w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">
+        <button onclick="loadPage('supervision')" class="nav-btn w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">
           <span>ระบบงานนิเทศ</span>
         </button>
-        <button onclick="switchTab('curriculum')" class="nav-item w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">
+        <button onclick="loadPage('curriculum')" class="nav-btn w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">
           <span>ระบบงานหลักสูตร</span>
         </button>
-        <button onclick="switchTab('qa')" class="nav-item w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">
+        <button onclick="loadPage('qa')" class="nav-btn w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">
           <span>ระบบงานประกันคุณภาพการศึกษา</span>
         </button>
-        <button onclick="switchTab('evaluation')" class="nav-item w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">
+        <button onclick="loadPage('evaluation')" class="nav-btn w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">
           <span>ระบบงานวัดและประเมินผล</span>
         </button>
-        <button onclick="switchTab('media-tech')" class="nav-item w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">
+        <button onclick="loadPage('media-tech')" class="nav-btn w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">
           <span>ระบบงานสื่อและเทคโนโลยี</span>
         </button>
       </div>
 
       <!-- กลุ่มที่ 3: ระบบงานรอง -->
       <div class="space-y-1 border-t border-slate-800 pt-3">
-        <button onclick="switchTab('news')" class="nav-item w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">
+        <button onclick="loadPage('news')" class="nav-btn w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">
           <span>ข่าวประชาสัมพันธ์</span>
         </button>
-        <button onclick="switchTab('about')" class="nav-item w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">
+        <button onclick="loadPage('about')" class="nav-btn w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">
           <span>เกี่ยวกับเรา</span>
         </button>
-        <button id="menu-settings" onclick="switchTab('settings')" class="nav-item hidden w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-amber-400 transition">
+        <button id="menu-settings" onclick="loadPage('settings')" class="nav-btn hidden w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-amber-400 transition">
           <span>ตั้งค่าการใช้งาน</span>
         </button>
       </div>
@@ -350,114 +195,86 @@
     </div>
   </div>
 
-  <!-- DYNAMIC DATA FORM MODAL -->
-  <div id="form-modal" class="fixed inset-0 bg-slate-900 bg-opacity-60 hidden items-center justify-center z-50">
-    <div class="bg-white rounded-lg p-6 w-full max-w-md shadow-2xl space-y-4 border-t-4 border-brand-green">
-      <div class="flex justify-between items-center border-b pb-2">
-        <h3 id="form-title" class="text-base font-bold text-slate-800">จัดการข้อมูล</h3>
-        <button onclick="closeFormModal()" class="text-slate-400 hover:text-slate-600 font-bold">X</button>
-      </div>
-      <form id="dynamic-form" class="space-y-3">
-        <input type="hidden" id="form-sheet-name">
-        <input type="hidden" id="form-data-id">
-        <div id="form-fields-container" class="space-y-3"></div>
-      </form>
-      <div class="flex justify-end space-x-2 pt-3 border-t">
-        <button onclick="closeFormModal()" class="px-3 py-1.5 border rounded text-xs hover:bg-slate-100">ยกเลิก</button>
-        <button onclick="submitFormData()" class="px-3 py-1.5 bg-brand-green text-white rounded text-xs hover:bg-emerald-700">บันทึกข้อมูล</button>
-      </div>
-    </div>
-  </div>
-
   <!-- JAVASCRIPT APPLICATION LOGIC -->
   <script>
-    // ** ใส่ Web App URL ที่ได้จากการ Deploy Google Apps Script ในช่องนี้ **
     const GAS_API_URL = "https://script.google.com/macros/s/AKfycbyUbL4Aq6p4CP2u4KdWurx42-r75eSzAZeLVhAeL8xBBblseSv7IOUEZ31b8XVHtqA/exec";
 
     let dbData = { users: [], units: [], students: [], personnel: [] };
     let currentUser = null;
     let genderChart = null;
     let personnelChart = null;
+    let currentPage = 'home';
+    let defaultHomeHTML = '';
 
-    const schemaMap = {
-      'ข้อมูลหน่วยงาน': [
-        { name: 'รหัสหน่วยงาน', type: 'text' },
-        { name: 'ชื่อหน่วยงาน', type: 'text' }
-      ],
-      'ข้อมูลนักเรียน': [
-        { name: 'รหัสหน่วยงาน', type: 'select_unit' },
-        { name: 'ระดับชั้น', type: 'select', options: ['อนุบาล 1', 'อนุบาล 2', 'อนุบาล 3', 'ประถมศึกษาปีที่ 1', 'ประถมศึกษาปีที่ 2', 'ประถมศึกษาปีที่ 3', 'ประถมศึกษาปีที่ 4', 'ประถมศึกษาปีที่ 5', 'ประถมศึกษาปีที่ 6'] },
-        { name: 'เพศ', type: 'select', options: ['ชาย', 'หญิง'] },
-        { name: 'จำนวน', type: 'number' }
-      ],
-      'ข้อมูลบุคลากร': [
-        { name: 'รหัสหน่วยงาน', type: 'select_unit' },
-        { name: 'ตำแหน่ง', type: 'text' },
-        { name: 'วิทยฐานะ', type: 'text' },
-        { name: 'เพศ', type: 'select', options: ['ชาย', 'หญิง'] }
-      ]
+    const pageTitles = {
+      'home': 'หน้าแรก',
+      'executives': 'ผู้บริหารเทศบาลนครระยอง',
+      'working-team': 'คณะทำงาน',
+      'supervision': 'ระบบงานนิเทศ',
+      'curriculum': 'ระบบงานหลักสูตร',
+      'qa': 'ระบบงานประกันคุณภาพการศึกษา',
+      'evaluation': 'ระบบงานวัดและประเมินผล',
+      'media-tech': 'ระบบงานสื่อและเทคโนโลยี',
+      'news': 'ข่าวประชาสัมพันธ์',
+      'about': 'เกี่ยวกับเรา',
+      'settings': 'ตั้งค่าการใช้งาน'
     };
 
     window.onload = function() {
+      // บันทึกโครงสร้างหน้าแรกไว้ในหน่วยความจำ
+      defaultHomeHTML = document.getElementById('main-content').innerHTML;
       fetchData();
       updateAuthUI();
     };
 
-    function fetchData() {
-      if (GAS_API_URL.includes("ใส่_URL_")) return;
+    // Dynamic Loader Function
+    function loadPage(pageName) {
+      currentPage = pageName;
+      document.getElementById('header-title').innerText = pageTitles[pageName] || 'SuperVision+';
 
+      if (pageName === 'home') {
+        // คืนค่าหน้าแรกจากหน่วยความจำ
+        document.getElementById('main-content').innerHTML = defaultHomeHTML;
+        renderDashboard();
+        return;
+      }
+
+      // ดึงไฟล์ HTML ย่อยจากโฟลเดอร์ pages/
+      fetch(`pages/${pageName}.html`)
+        .then(res => {
+          if (!res.ok) throw new Error('File not found');
+          return res.text();
+        })
+        .then(html => {
+          document.getElementById('main-content').innerHTML = html;
+        })
+        .catch(err => {
+          document.getElementById('main-content').innerHTML = `
+            <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200 text-center">
+              <p class="text-slate-600 font-semibold">อยู่ระหว่างการพัฒนาหน้า pages/${pageName}.html</p>
+              <p class="text-xs text-slate-400 mt-1">สามารถสร้างไฟล์นี้ในโฟลเดอร์ pages เพื่อเพิ่มเนื้อหาได้ทันที</p>
+            </div>
+          `;
+        });
+    }
+
+    function fetchData() {
       fetch(GAS_API_URL + "?action=getAllData")
         .then(res => res.json())
         .then(data => {
           if (data.status === 'success') {
             dbData = data;
-            renderDashboard();
-            renderTables();
+            if (currentPage === 'home') renderDashboard();
           }
         })
         .catch(err => console.error("Error fetching data:", err));
-    }
-
-    function switchTab(tab) {
-      const pageIds = ['home', 'executives', 'working-team', 'supervision', 'curriculum', 'qa', 'evaluation', 'media-tech', 'news', 'about', 'settings'];
-      
-      pageIds.forEach(id => {
-        const el = document.getElementById(`page-${id}`);
-        if (el) el.classList.add('hidden');
-      });
-
-      const activePage = document.getElementById(`page-${tab}`);
-      if (activePage) activePage.classList.remove('hidden');
-
-      const titles = {
-        'home': 'หน้าแรก',
-        'executives': 'ผู้บริหารเทศบาลนครระยอง',
-        'working-team': 'คณะทำงาน',
-        'supervision': 'ระบบงานนิเทศ',
-        'curriculum': 'ระบบงานหลักสูตร',
-        'qa': 'ระบบงานประกันคุณภาพการศึกษา',
-        'evaluation': 'ระบบงานวัดและประเมินผล',
-        'media-tech': 'ระบบงานสื่อและเทคโนโลยี',
-        'news': 'ข่าวประชาสัมพันธ์',
-        'about': 'เกี่ยวกับเรา',
-        'settings': 'ตั้งค่าการใช้งาน'
-      };
-      document.getElementById('header-title').innerText = titles[tab] || 'SuperVision+';
-
-      // Update Nav Class Highlights
-      document.querySelectorAll('.nav-item').forEach(btn => {
-        btn.classList.remove('bg-brand-blue', 'text-white');
-        btn.classList.add('text-slate-300');
-      });
-      event.currentTarget.classList.add('bg-brand-blue', 'text-white');
-      event.currentTarget.classList.remove('text-slate-300');
     }
 
     function toggleAuthModal() {
       if (currentUser) {
         currentUser = null;
         updateAuthUI();
-        switchTab('home');
+        loadPage('home');
       } else {
         document.getElementById('login-modal').classList.toggle('flex');
         document.getElementById('login-modal').classList.toggle('hidden');
@@ -513,7 +330,10 @@
     }
 
     function renderDashboard() {
-      document.getElementById('kpi-units').innerText = dbData.units.length;
+      const kpiUnits = document.getElementById('kpi-units');
+      if (!kpiUnits) return;
+
+      kpiUnits.innerText = dbData.units.length;
 
       let totalStudents = dbData.students.reduce((acc, curr) => acc + Number(curr['จำนวน'] || 0), 0);
       document.getElementById('kpi-students').innerText = totalStudents.toLocaleString();
@@ -557,10 +377,7 @@
         type: 'pie',
         data: {
           labels: ['ชาย', 'หญิง'],
-          datasets: [{
-            data: [maleStudents, femaleStudents],
-            backgroundColor: ['#2563eb', '#22c55e']
-          }]
+          datasets: [{ data: [maleStudents, femaleStudents], backgroundColor: ['#2563eb', '#22c55e'] }]
         }
       });
 
@@ -576,150 +393,9 @@
         type: 'bar',
         data: {
           labels: Object.keys(posCounts),
-          datasets: [{
-            label: 'จำนวนบุคลากร (คน)',
-            data: Object.values(posCounts),
-            backgroundColor: '#1e3a8a'
-          }]
+          datasets: [{ label: 'จำนวนบุคลากร (คน)', data: Object.values(posCounts), backgroundColor: '#1e3a8a' }]
         },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false
-        }
-      });
-    }
-
-    function renderTables() {
-      let htmlUnits = '';
-      dbData.units.forEach(u => {
-        htmlUnits += `
-          <tr class="border-b hover:bg-slate-50">
-            <td class="p-2 border">${u['ลำดับ']}</td>
-            <td class="p-2 border font-semibold">${u['รหัสหน่วยงาน']}</td>
-            <td class="p-2 border">${u['ชื่อหน่วยงาน']}</td>
-            <td class="p-2 border text-center crud-col">
-              <button onclick="openFormModal('ข้อมูลหน่วยงาน', ${JSON.stringify(u).replace(/"/g, '&quot;')})" class="bg-amber-500 text-white px-2 py-0.5 rounded text-[10px] mr-1">แก้ไข</button>
-              <button onclick="deleteRow('ข้อมูลหน่วยงาน', '${u['ลำดับ']}')" class="bg-red-500 text-white px-2 py-0.5 rounded text-[10px]">ลบ</button>
-            </td>
-          </tr>
-        `;
-      });
-      document.getElementById('table-units-body').innerHTML = htmlUnits;
-
-      let htmlStudents = '';
-      dbData.students.forEach(s => {
-        htmlStudents += `
-          <tr class="border-b hover:bg-slate-50">
-            <td class="p-2 border">${s['ลำดับ']}</td>
-            <td class="p-2 border">${s['รหัสหน่วยงาน']}</td>
-            <td class="p-2 border">${s['ระดับชั้น']}</td>
-            <td class="p-2 border">${s['เพศ']}</td>
-            <td class="p-2 border font-semibold">${s['จำนวน']}</td>
-            <td class="p-2 border text-center crud-col">
-              <button onclick="openFormModal('ข้อมูลนักเรียน', ${JSON.stringify(s).replace(/"/g, '&quot;')})" class="bg-amber-500 text-white px-2 py-0.5 rounded text-[10px] mr-1">แก้ไข</button>
-              <button onclick="deleteRow('ข้อมูลนักเรียน', '${s['ลำดับ']}')" class="bg-red-500 text-white px-2 py-0.5 rounded text-[10px]">ลบ</button>
-            </td>
-          </tr>
-        `;
-      });
-      document.getElementById('table-students-body').innerHTML = htmlStudents;
-
-      let htmlPersonnel = '';
-      dbData.personnel.forEach(p => {
-        htmlPersonnel += `
-          <tr class="border-b hover:bg-slate-50">
-            <td class="p-2 border">${p['ลำดับ']}</td>
-            <td class="p-2 border">${p['รหัสหน่วยงาน']}</td>
-            <td class="p-2 border font-semibold">${p['ตำแหน่ง']}</td>
-            <td class="p-2 border">${p['วิทยฐานะ']}</td>
-            <td class="p-2 border">${p['เพศ']}</td>
-            <td class="p-2 border text-center crud-col">
-              <button onclick="openFormModal('ข้อมูลบุคลากร', ${JSON.stringify(p).replace(/"/g, '&quot;')})" class="bg-amber-500 text-white px-2 py-0.5 rounded text-[10px] mr-1">แก้ไข</button>
-              <button onclick="deleteRow('ข้อมูลบุคลากร', '${p['ลำดับ']}')" class="bg-red-500 text-white px-2 py-0.5 rounded text-[10px]">ลบ</button>
-            </td>
-          </tr>
-        `;
-      });
-      document.getElementById('table-personnel-body').innerHTML = htmlPersonnel;
-    }
-
-    function openFormModal(sheetName, editData = null) {
-      document.getElementById('form-sheet-name').value = sheetName;
-      document.getElementById('form-data-id').value = editData ? editData['ลำดับ'] : '';
-      document.getElementById('form-title').innerText = (editData ? 'แก้ไข' : 'เพิ่ม') + sheetName;
-
-      const container = document.getElementById('form-fields-container');
-      container.innerHTML = '';
-
-      const fields = schemaMap[sheetName] || [];
-      fields.forEach(f => {
-        let val = editData ? (editData[f.name] || '') : '';
-        let fieldHtml = `<div><label class="block text-xs font-semibold mb-1">${f.name}</label>`;
-
-        if (f.type === 'select_unit') {
-          let options = dbData.units.map(u => `<option value="${u['รหัสหน่วยงาน']}" ${val === u['รหัสหน่วยงาน'] ? 'selected' : ''}>${u['รหัสหน่วยงาน']} - ${u['ชื่อหน่วยงาน']}</option>`).join('');
-          fieldHtml += `<select data-key="${f.name}" class="form-input w-full border rounded px-3 py-1.5 text-xs">${options}</select>`;
-        } else if (f.type === 'select') {
-          let options = f.options.map(o => `<option value="${o}" ${val === o ? 'selected' : ''}>${o}</option>`).join('');
-          fieldHtml += `<select data-key="${f.name}" class="form-input w-full border rounded px-3 py-1.5 text-xs">${options}</select>`;
-        } else {
-          fieldHtml += `<input type="${f.type}" data-key="${f.name}" value="${val}" class="form-input w-full border rounded px-3 py-1.5 text-xs focus:ring-2 focus:ring-brand-blue" required>`;
-        }
-
-        fieldHtml += `</div>`;
-        container.innerHTML += fieldHtml;
-      });
-
-      document.getElementById('form-modal').classList.remove('hidden');
-      document.getElementById('form-modal').classList.add('flex');
-    }
-
-    function closeFormModal() {
-      document.getElementById('form-modal').classList.add('hidden');
-      document.getElementById('form-modal').classList.remove('flex');
-    }
-
-    function submitFormData() {
-      const sheetName = document.getElementById('form-sheet-name').value;
-      const id = document.getElementById('form-data-id').value;
-      const inputs = document.querySelectorAll('#form-fields-container .form-input');
-      
-      let rowObj = { 'ลำดับ': id };
-      inputs.forEach(input => {
-        rowObj[input.getAttribute('data-key')] = input.value;
-      });
-
-      fetch(GAS_API_URL, {
-        method: 'POST',
-        body: JSON.stringify({ action: 'saveData', sheetName: sheetName, rowObj: rowObj })
-      })
-      .then(res => res.json())
-      .then(res => {
-        if (res.status === 'success') {
-          alert('บันทึกข้อมูลเรียบร้อย');
-          closeFormModal();
-          fetchData();
-        } else {
-          alert('เกิดข้อผิดพลาด: ' + res.message);
-        }
-      });
-    }
-
-    function deleteRow(sheetName, id) {
-      if (!confirm(`คุณต้องการลบรายการลำดับที่ ${id} ใช่หรือไม่?`)) return;
-
-      fetch(GAS_API_URL, {
-        method: 'POST',
-        body: JSON.stringify({ action: 'deleteData', sheetName: sheetName, id: id })
-      })
-      .then(res => res.json())
-      .then(res => {
-        if (res.status === 'success') {
-          alert('ลบข้อมูลเรียบร้อยแล้ว');
-          fetchData();
-        } else {
-          alert('เกิดข้อผิดพลาด: ' + res.message);
-        }
+        options: { responsive: true, maintainAspectRatio: false }
       });
     }
   </script>
