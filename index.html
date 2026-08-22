@@ -343,7 +343,23 @@
         .catch(err => console.error("Error fetching data:", err));
     }
 
-    // ฟังก์ชัน Render ข่าวประชาสัมพันธ์ (ปรับขนาดการ์ดให้กะทัดรัดขึ้น)
+    // ฟังก์ชัน Render ข่าวประชาสัมพันธ์ (เลย์เอาต์แนวนอน: ภาพซ้าย ข้อมูลขวา)
+    function renderNewsCards() {
+      const container = document.getElementById('news-container');
+      if (!container) return;
+
+      if (!dbData.news || dbData.news.length === 0) {
+        container.innerHTML = '<p class="text-xs text-slate-400 p-2">ไม่มีข่าวประชาสัมพันธ์ในขณะนี้</p>';
+        return;
+      }
+
+      // เรียงลำดับข่าวตามวันที่ล่าสุด
+      const sortedNews = [...dbData.news].sort((a, b) => new Date(b['วันที่']) - new Date(a['วันที่']));
+
+      let html = '';
+      sortedNews.forEach((item, index) => {
+        const imgSrc = (item['ภาพข่าว'] && item['ภาพ```javascript
+    // ฟังก์ชัน Render ข่าวประชาสัมพันธ์ (เลย์เอาต์แนวนอน: ภาพซ้าย ข้อมูลขวา)
     function renderNewsCards() {
       const container = document.getElementById('news-container');
       if (!container) return;
@@ -360,7 +376,7 @@
       sortedNews.forEach((item, index) => {
         const imgSrc = (item['ภาพข่าว'] && item['ภาพข่าว'].length > 10) 
           ? item['ภาพข่าว'] 
-          : 'https://via.placeholder.com/300x160?text=SuperVision%2B';
+          : '[https://via.placeholder.com/300x160?text=SuperVision%2B](https://via.placeholder.com/300x160?text=SuperVision%2B)';
         
         let formattedDate = 'ไม่ระบุวันที่';
         if (item['วันที่']) {
@@ -371,20 +387,28 @@
         }
 
         html += `
-          <div class="min-w-[200px] max-w-[200px] bg-slate-50 rounded-lg border border-slate-200 overflow-hidden flex flex-col justify-between shadow-sm hover:shadow transition">
-            <div>
-              <!-- ลดความสูงของรูปภาพลงเหลือ h-20 (80px) -->
-              <img src="${imgSrc}" class="w-full h-20 object-cover" alt="ภาพข่าว" onerror="this.src='https://via.placeholder.com/300x160?text=No+Image'">
-              <div class="p-2">
-                <span class="text-[9px] text-brand-lightblue font-semibold">${formattedDate}</span>
-                <h4 class="font-bold text-[11px] text-slate-800 line-clamp-1 mt-0.5" title="${item['พาดหัวข่าว'] || ''}">${item['พาดหัวข่าว'] || 'ไม่มีหัวข้อ'}</h4>
-                <p class="text-[10px] text-slate-500 line-clamp-1 mt-0.5">${item['เนื้อหาข่าว'] || ''}</p>
-              </div>
+          <div class="min-w-[280px] max-w-[280px] h-20 bg-slate-50 rounded-lg border border-slate-200 overflow-hidden flex flex-row shadow-sm hover:shadow transition">
+            <!-- ฝั่งซ้าย: ภาพข่าวขนาดกะทัดรัด -->
+            <div class="w-24 h-full flex-shrink-0 bg-slate-200">
+              <img src="${imgSrc}" class="w-full h-full object-cover" alt="ภาพข่าว" onerror="this.src='[https://via.placeholder.com/300x160?text=No+Image](https://via.placeholder.com/300x160?text=No+Image)'">
             </div>
-            <div class="p-2 pt-0">
-              <button onclick="openNewsDetailModal(${index})" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-700 text-[10px] font-semibold py-0.5 rounded transition">
-                อ่านเพิ่มเติม
-              </button>
+            
+            <!-- ฝั่งขวา: ข้อมูลย่อและปุ่มกด -->
+            <div class="flex-1 p-2 flex flex-col justify-between overflow-hidden">
+              <div>
+                <span class="text-[9px] text-brand-lightblue font-semibold block leading-none">${formattedDate}</span>
+                <h4 class="font-bold text-[11px] text-slate-800 line-clamp-1 mt-1 leading-tight" title="${item['พาดหัวข่าว'] || ''}">
+                  ${item['พาดหัวข่าว'] || 'ไม่มีหัวข้อ'}
+                </h4>
+                <p class="text-[10px] text-slate-500 line-clamp-1 mt-0.5 leading-tight">
+                  ${item['เนื้อหาข่าว'] || ''}
+                </p>
+              </div>
+              <div class="text-right mt-1">
+                <button onclick="openNewsDetailModal(${index})" class="text-brand-blue hover:text-blue-800 text-[10px] font-bold transition underline">
+                  อ่านเพิ่มเติม &rarr;
+                </button>
+              </div>
             </div>
           </div>
         `;
@@ -392,7 +416,6 @@
 
       container.innerHTML = html;
     }
-
     // Modal Control Functions
     function openNewsDetailModal(sortedIndex) {
       const sortedNews = [...dbData.news].sort((a, b) => new Date(b['วันที่']) - new Date(a['วันที่']));
