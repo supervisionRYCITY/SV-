@@ -104,19 +104,9 @@
     </div>
   </div>
 
-  <!-- Card 2: ผู้บริหาร -->
-  <div class="bg-white border-l-4 border-purple-600 p-3 rounded-lg shadow-sm">
-    <p class="text-[11px] text-slate-500 font-semibold">ผู้บริหารสถานศึกษา</p>
-    <h3 id="card2-total" class="text-xl font-bold text-purple-600 mt-0.5">0</h3>
-    <div class="flex justify-between text-[10px] text-slate-500 mt-1 pt-1 border-t border-slate-100">
-      <span>ชาย: <strong id="card2-male" class="text-slate-700">0</strong></span>
-      <span>หญิง: <strong id="card2-female" class="text-slate-700">0</strong></span>
-    </div>
-  </div>
-
-  <!-- Card 3: ครู -->
+  <!-- Card 3: พนักงานครู -->
   <div class="bg-white border-l-4 border-brand-green p-3 rounded-lg shadow-sm">
-    <p class="text-[11px] text-slate-500 font-semibold">จำนวนครู</p>
+    <p class="text-[11px] text-slate-500 font-semibold">พนักงานครู</p>
     <h3 id="card3-total" class="text-xl font-bold text-brand-green mt-0.5">0</h3>
     <div class="flex justify-between text-[10px] text-slate-500 mt-1 pt-1 border-t border-slate-100">
       <span>ชาย: <strong id="card3-male" class="text-slate-700">0</strong></span>
@@ -124,9 +114,9 @@
     </div>
   </div>
 
-  <!-- Card 4: บุคลากรทั้งหมด -->
+  <!-- Card 4: บุคลากรทางการศึกษา -->
   <div class="bg-white border-l-4 border-amber-500 p-3 rounded-lg shadow-sm">
-    <p class="text-[11px] text-slate-500 font-semibold">บุคลากรทั้งหมด</p>
+    <p class="text-[11px] text-slate-500 font-semibold">บุคลากรทางการศึกษา</p>
     <h3 id="card4-total" class="text-xl font-bold text-amber-600 mt-0.5">0</h3>
     <div class="flex justify-between text-[10px] text-slate-500 mt-1 pt-1 border-t border-slate-100">
       <span>ชาย: <strong id="card4-male" class="text-slate-700">0</strong></span>
@@ -667,8 +657,8 @@
       document.getElementById('card2-male').innerText = execMale.toLocaleString();
       document.getElementById('card2-female').innerText = execFemale.toLocaleString();
 
-      // --- Card 3: ครู ---
-      const teacherPositions = ['ครู', 'ครูผู้ช่วย', 'ผู้ช่วยครูผู้ช่วย'];
+      // --- Card 3: พนักงานครู ---
+      const teacherPositions = ['ครู', 'ครูผู้ช่วย'];
       let teacherMale = 0, teacherFemale = 0;
       filteredPersonnel.forEach(p => {
         if (teacherPositions.includes(p['ตำแหน่ง'])) {
@@ -680,11 +670,15 @@
       document.getElementById('card3-male').innerText = teacherMale.toLocaleString();
       document.getElementById('card3-female').innerText = teacherFemale.toLocaleString();
 
-      // --- Card 4: บุคลากรทั้งหมด ---
+      // --- Card 4: บุคลากรทางการศึกษา ---
+      // ผมเพิ่มตำแหน่งอื่นๆ ที่ปรากฏในฐานข้อมูลตามภาพเข้าไปด้วย หากในอนาคตมีตำแหน่ง 'บุคลากร' สามารถใส่เพิ่มใน Array นี้ได้เลยครับ
+      const eduStaffPositions = ['บุคลากร', 'ผู้ช่วยครูผู้ช่วย', 'ผู้ช่วยเจ้าพนักงานธุรการ'];
       let staffMale = 0, staffFemale = 0;
       filteredPersonnel.forEach(p => {
-        if (p['เพศ'] === 'ชาย') staffMale++;
-        else if (p['เพศ'] === 'หญิง') staffFemale++;
+        if (eduStaffPositions.includes(p['ตำแหน่ง'])) {
+          if (p['เพศ'] === 'ชาย') staffMale++;
+          else if (p['เพศ'] === 'หญิง') staffFemale++;
+        }
       });
       document.getElementById('card4-total').innerText = (staffMale + staffFemale).toLocaleString();
       document.getElementById('card4-male').innerText = staffMale.toLocaleString();
