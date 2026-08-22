@@ -875,7 +875,7 @@
         const fileInput = document.getElementById('curriculum-file');
         
         const errMsg = document.getElementById('curriculum-error-msg');
-        errMsg.classList.add('hidden'); // ปิดกล่อง error ไว้ก่อน
+        errMsg.classList.add('hidden'); 
 
         if (!title || !level || !year) {
            errMsg.innerText = 'กรุณากรอกข้อมูลให้ครบถ้วน';
@@ -884,7 +884,7 @@
         }
 
         const originalText = btn.innerText;
-        btn.innerText = 'กำลังบันทึก PDF...';
+        btn.innerText = 'กำลังบันทึก (อาจใช้เวลาอัปโหลด PDF สักครู่)...';
         btn.disabled = true;
         btn.classList.add('opacity-70', 'cursor-not-allowed');
 
@@ -906,7 +906,7 @@
             })
           }).then(res => res.json()).then(res => {
             if (res.status === 'success') {
-              this.closeForm();
+              CurriculumSystem.closeForm(); // <--- เปลี่ยนจาก this.closeForm()
               fetchData(); 
             } else {
               errMsg.innerText = 'Error: ' + res.message;
@@ -926,6 +926,17 @@
 
         if (fileInput.files && fileInput.files[0]) {
           const file = fileInput.files[0];
+          
+          const maxSizeMB = 10; 
+          if (file.size > maxSizeMB * 1024 * 1024) {
+             errMsg.innerText = `ขนาดไฟล์เกินกำหนด (สูงสุด ${maxSizeMB} MB)`;
+             errMsg.classList.remove('hidden');
+             btn.innerText = originalText;
+             btn.disabled = false;
+             btn.classList.remove('opacity-70', 'cursor-not-allowed');
+             return; 
+          }
+
           const reader = new FileReader();
           reader.onload = e => executeSave({
             base64: e.target.result,
