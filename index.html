@@ -866,6 +866,10 @@
         document.getElementById('curriculum-form-modal').classList.replace('hidden', 'flex');
       },
 
+      closeForm: function() {
+        document.getElementById('curriculum-form-modal').classList.replace('flex', 'hidden');
+      },
+      
       saveData: function(btn) {
         const id = document.getElementById('curriculum-id').value;
         const schoolId = document.getElementById('curriculum-school-id').value;
