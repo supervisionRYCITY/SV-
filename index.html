@@ -752,6 +752,188 @@
     };
     // ==========================================
 
+    // ==========================================
+    // MODULE: ระบบงานหลักสูตร (CurriculumSystem)
+    // ==========================================
+    const CurriculumSystem = {
+      targetDeleteId: null,
+
+      renderCards: function() {
+        const container = document.getElementById('curriculum-container');
+        if (!container) return;
+
+        let currData = dbData.curriculum || [];
+        
+        // ถ้าไม่ใช่ผู้ดูแลระบบ ให้แสดงเฉพาะหลักสูตรของโรงเรียนตัวเอง
+        if (currentUser && currentUser.role !== 'ผู้ดูแลระบบ') {
+          currData = currData.filter(c => String(c['รหัสสถานศึกษา']) === String(currentUser.unitId));
+        }
+
+        if (currData.length === 0) {
+          container.innerHTML = '<div class="p-8 text-center text-slate-500 bg-white rounded-xl shadow-sm border border-slate-200">ยังไม่มีข้อมูลหลักสูตรสำหรับสถานศึกษานี้</div>';
+          return;
+        }
+
+        let html = '';
+        currData.forEach(item => {
+          let levelColor = 'bg-slate-400';
+          if (item['ระดับการศึกษา'] === 'ปฐมวัย') levelColor = 'bg-pink-500';
+          else if (item['ระดับการศึกษา'] === 'ประถมศึกษา') levelColor = 'bg-green-500';
+          else if (item['ระดับการศึกษา'] === 'มัธยมศึกษา') levelColor = 'bg-purple-500';
+
+          const pdfUrl = item['เอกสารหลักสูตร'] || '#';
+          const btnPdfHtml = item['เอกสารหลักสูตร'] 
+            ? `<a href="${pdfUrl}" target="_blank" class="px-3 py-1.5 bg-slate-100 text-slate-700 rounded text-xs font-semibold hover:bg-slate-200 transition flex items-center gap-1">
+                 <svg class="w-3 h-3 text-red-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>
+                 เปิดไฟล์หลักสูตร
+               </a>` 
+            : `<span class="text-[10px] text-slate-400">ไม่มีไฟล์แนบ</span>`;
+
+          html += `
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-col sm:flex-row justify-between items-center gap-4 hover:shadow-md transition" id="curr-row-${item['ลำดับ']}">
+              <div class="flex items-center gap-4 w-full">
+                <div class="w-12 h-12 rounded-full bg-blue-50 text-brand-blue flex items-center justify-center flex-shrink-0">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                </div>
+                <div class="flex-1">
+                  <h4 class="text-sm font-bold text-slate-800">${item['ชื่อหลักสูตร']}</h4>
+                  <div class="flex flex-wrap gap-4 mt-1 text-[11px] text-slate-500 font-medium">
+                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full ${levelColor}"></span> ${item['ระดับการศึกษา']}</span>
+                    <span class="flex items-center gap-1"><svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> ปีการศึกษา ${item['ปีการศึกษา']}</span>
+                    <span class="flex items-center gap-1"><svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg> รหัส: ${item['รหัสสถานศึกษา']}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 w-full sm:w-auto justify-end border-t sm:border-t-0 pt-3 sm:pt-0 mt-3 sm:mt-0">
+                ${btnPdfHtml}
+                <button onclick="CurriculumSystem.openForm('${item['ลำดับ']}')" class="p-1.5 bg-amber-50 text-amber-600 rounded hover:bg-amber-100 transition" title="แก้ไข">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                </button>
+                <button onclick="CurriculumSystem.confirmDelete('${item['ลำดับ']}', '${item['ชื่อหลักสูตร']}')" class="p-1.5 bg-red-50 text-red-600 rounded hover:bg-red-100 transition" title="ลบ">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                </button>
+              </div>
+            </div>`;
+        });
+        container.innerHTML = html;
+      },
+
+      openForm: function(id = null) {
+        document.getElementById('curriculum-form').reset();
+        document.getElementById('curriculum-file-hint').classList.add('hidden');
+        document.getElementById('curriculum-id').value = id || '';
+        document.getElementById('curriculum-form-header').innerText = id ? 'แก้ไขข้อมูลหลักสูตร' : 'เพิ่มหลักสูตรใหม่';
+        
+        // ดึงรหัสสถานศึกษาจาก currentUser มาใส่โดยอัตโนมัติ
+        document.getElementById('curriculum-school-id').value = currentUser ? currentUser.unitId : '';
+
+        if (id) {
+          const item = dbData.curriculum.find(n => String(n['ลำดับ']) === String(id));
+          if (item) {
+            document.getElementById('curriculum-school-id').value = item['รหัสสถานศึกษา'];
+            document.getElementById('curriculum-title').value = item['ชื่อหลักสูตร'];
+            document.getElementById('curriculum-level').value = item['ระดับการศึกษา'];
+            document.getElementById('curriculum-year').value = item['ปีการศึกษา'];
+            if(item['เอกสารหลักสูตร']) document.getElementById('curriculum-file-hint').classList.remove('hidden');
+          }
+        }
+        document.getElementById('curriculum-form-modal').classList.replace('hidden', 'flex');
+      },
+
+      closeForm: () => document.getElementById('curriculum-form-modal').classList.replace('flex', 'hidden'),
+
+      saveData: function(btn) {
+        const id = document.getElementById('curriculum-id').value;
+        const schoolId = document.getElementById('curriculum-school-id').value;
+        const title = document.getElementById('curriculum-title').value;
+        const level = document.getElementById('curriculum-level').value;
+        const year = document.getElementById('curriculum-year').value;
+        const fileInput = document.getElementById('curriculum-file');
+
+        if (!title || !level || !year) return alert('กรุณากรอกข้อมูลให้ครบถ้วน');
+
+        const originalText = btn.innerText;
+        btn.innerText = 'กำลังบันทึก (อาจใช้เวลาอัปโหลด PDF สักครู่)...';
+        btn.disabled = true;
+        btn.classList.add('opacity-70', 'cursor-not-allowed');
+
+        const executeSave = (fileData) => {
+          const rowObj = {
+            'รหัสสถานศึกษา': schoolId,
+            'ชื่อหลักสูตร': title,
+            'ระดับการศึกษา': level,
+            'ปีการศึกษา': year
+          };
+
+          fetch(GAS_API_URL, {
+            method: 'POST',
+            body: JSON.stringify({ 
+              action: id ? 'updateCurriculum' : 'saveCurriculum', 
+              id: id, 
+              rowObj: rowObj,
+              fileData: fileData
+            })
+          }).then(res => res.json()).then(res => {
+            if (res.status === 'success') {
+              this.closeForm();
+              fetchData(); 
+            } else alert('Error: ' + res.message);
+            btn.innerText = originalText;
+            btn.disabled = false;
+            btn.classList.remove('opacity-70', 'cursor-not-allowed');
+          }).catch(() => {
+            this.closeForm();
+            fetchData();
+          });
+        };
+
+        if (fileInput.files && fileInput.files[0]) {
+          const file = fileInput.files[0];
+          const reader = new FileReader();
+          reader.onload = e => executeSave({
+            base64: e.target.result,
+            filename: file.name,
+            mimeType: file.type
+          });
+          reader.readAsDataURL(file);
+        } else {
+          executeSave(null);
+        }
+      },
+
+      confirmDelete: function(id, title) {
+        this.targetDeleteId = id;
+        document.getElementById('curr-confirm-delete-text').innerText = `หลักสูตร: "${title}"`;
+        document.getElementById('curr-confirm-modal').classList.replace('hidden', 'flex');
+      },
+      closeConfirm: function() {
+        this.targetDeleteId = null;
+        document.getElementById('curr-confirm-modal').classList.replace('flex', 'hidden');
+      },
+      executeDelete: function() {
+        if (!this.targetDeleteId) return;
+        const id = this.targetDeleteId;
+        const btn = document.getElementById('curr-btn-confirm-delete');
+        
+        btn.innerText = 'กำลังลบ...';
+        btn.disabled = true;
+
+        const row = document.getElementById('curr-row-' + id);
+        if(row) row.style.display = 'none';
+        dbData.curriculum = dbData.curriculum.filter(n => String(n['ลำดับ']) !== String(id));
+
+        fetch(GAS_API_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'deleteCurriculum', id: id })
+        }).then(res => res.json()).then(res => {
+          this.closeConfirm();
+          fetchData(); 
+          btn.innerText = 'ยืนยันลบ';
+          btn.disabled = false;
+        }).catch(() => { this.closeConfirm(); fetchData(); });
+      }
+    };
+    
     // ฟังก์ชันออกจากระบบ และเปิดหน้าต่างล็อกอิน
     function toggleAuthModal() {
       if (currentUser) {
