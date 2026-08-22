@@ -458,10 +458,14 @@
         });
     }
 
-    // ฟังก์ชันควบคุมหน้าจอโหลดข้อมูล
-    function showGlobalLoader() {
+    // ฟังก์ชันควบคุมหน้าจอโหลดข้อมูล (อัปเดตให้เปลี่ยนข้อความได้)
+    function showGlobalLoader(msg = 'กำลังโหลดข้อมูล...') {
       const loader = document.getElementById('global-loader');
       if(loader) {
+        // หา tag span เพื่อเปลี่ยนข้อความ
+        const span = loader.querySelector('span');
+        if (span) span.innerText = msg;
+        
         loader.classList.remove('hidden');
         loader.classList.add('flex');
       }
@@ -748,22 +752,40 @@
     };
     // ==========================================
 
-    // ฟังก์ชันระบบล็อกอิน
+    // ฟังก์ชันออกจากระบบ และเปิดหน้าต่างล็อกอิน
     function toggleAuthModal() {
       if (currentUser) {
-        currentUser = null;
-        localStorage.removeItem('supervision_user');
-        updateAuthUI();
-        loadPage('home');
+        // กรณีออกจากระบบ: แสดงวงแหวนโหลด
+        showGlobalLoader('กำลังออกจากระบบ...');
+        
+        // จำลองการหน่วงเวลาสัก 0.8 วินาที เพื่อความลื่นไหล (เพราะลบข้อมูลในเครื่องมันเร็วจนมองไม่ทัน)
+        setTimeout(() => {
+          currentUser = null;
+          localStorage.removeItem('supervision_user');
+          updateAuthUI();
+          loadPage('home');
+          hideGlobalLoader(); // ปิดวงแหวน
+        }, 800);
+        
       } else {
-        document.getElementById('login-modal').classList.toggle('flex');
-        document.getElementById('login-modal').classList.toggle('hidden');
+        // กรณีเปิดหน้าต่างล็อกอิน: ให้ล้างข้อมูลเดิมในช่องกรอกก่อน
+        document.getElementById('login-username').value = '';
+        document.getElementById('login-password').value = '';
+        document.getElementById('login-error').classList.add('hidden');
+        
+        document.getElementById('login-modal').classList.remove('hidden');
+        document.getElementById('login-modal').classList.add('flex');
       }
     }
 
+    // ฟังก์ชันเข้าสู่ระบบ
     function performLogin() {
       const u = document.getElementById('login-username').value;
       const p = document.getElementById('login-password').value;
+
+      // ปิดกล่อง error เก่า (ถ้ามี) และแสดงวงแหวนโหลด
+      document.getElementById('login-error').classList.add('hidden');
+      showGlobalLoader('กำลังตรวจสอบสิทธิ์...'); 
 
       fetch(GAS_API_URL, {
         method: 'POST',
@@ -771,6 +793,8 @@
       })
       .then(res => res.json())
       .then(res => {
+        hideGlobalLoader(); // ปิดวงแหวนโหลดเมื่อได้รับข้อมูลกลับมา
+        
         if (res.status === 'success') {
           currentUser = res.user;
           localStorage.setItem('supervision_user', JSON.stringify(currentUser));
@@ -778,10 +802,17 @@
           document.getElementById('login-modal').classList.remove('flex');
           updateAuthUI();
         } else {
+          // แจ้งเตือนกรณีรหัสผิด
           const errDiv = document.getElementById('login-error');
           errDiv.innerText = res.message;
           errDiv.classList.remove('hidden');
         }
+      })
+      .catch(err => {
+        hideGlobalLoader(); // ปิดวงแหวนโหลดถ้าเกิดข้อผิดพลาด
+        const errDiv = document.getElementById('login-error');
+        errDiv.innerText = 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้';
+        errDiv.classList.remove('hidden');
       });
     }
 
