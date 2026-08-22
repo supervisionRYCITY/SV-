@@ -1,0 +1,111 @@
+<div class="space-y-6 pb-10">
+  
+  <!-- Header Section -->
+  <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col sm:flex-row justify-between sm:items-center gap-4 border-l-4 border-brand-blue">
+    <div>
+      <h2 class="text-xl font-bold text-brand-blue tracking-tight">ข้อมูลหลักสูตรสถานศึกษา</h2>
+      <p class="text-xs text-slate-500 mt-1">จัดการข้อมูลและเอกสารหลักสูตรของสถานศึกษา</p>
+    </div>
+    <div>
+      <!-- ปุ่มเพิ่มหลักสูตร -->
+      <button onclick="document.getElementById('curriculum-form-modal').classList.replace('hidden', 'flex')" class="px-4 py-2 bg-brand-blue text-white rounded-lg text-sm hover:bg-blue-800 font-semibold shadow-sm transition w-full sm:w-auto flex items-center justify-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+        เพิ่มหลักสูตร
+      </button>
+    </div>
+  </div>
+
+  <!-- Container สำหรับการ์ดแนวนอน -->
+  <div id="curriculum-container" class="space-y-3">
+    
+    <!-- ============================================== -->
+    <!-- MOCKUP: ตัวอย่างการ์ด 1 แถว (จะถูกแทนที่ด้วย JS) -->
+    <!-- ============================================== -->
+    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-col sm:flex-row justify-between items-center gap-4 hover:shadow-md transition">
+      <div class="flex items-center gap-4 w-full">
+        <div class="w-12 h-12 rounded-full bg-blue-50 text-brand-blue flex items-center justify-center flex-shrink-0">
+          <!-- ไอคอนหนังสือ -->
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+        </div>
+        <div class="flex-1">
+          <h4 class="text-sm font-bold text-slate-800">หลักสูตรสถานศึกษา โรงเรียนเทศบาลวัดโขดทิมทาราม พุทธศักราช 2569</h4>
+          <div class="flex flex-wrap gap-4 mt-1 text-[11px] text-slate-500 font-medium">
+            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-green-500"></span> ประถมศึกษา</span>
+            <span class="flex items-center gap-1"><svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> ปีการศึกษา 2569</span>
+            <span class="flex items-center gap-1"><svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg> รหัส: 1021040001</span>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 w-full sm:w-auto justify-end border-t sm:border-t-0 pt-3 sm:pt-0 mt-3 sm:mt-0">
+        <!-- ปุ่มเปิด PDF -->
+        <button class="px-3 py-1.5 bg-slate-100 text-slate-700 rounded text-xs font-semibold hover:bg-slate-200 transition flex items-center gap-1">
+          <svg class="w-3 h-3 text-red-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>
+          ไฟล์หลักสูตร
+        </button>
+        <!-- ปุ่มดินสอ แก้ไข -->
+        <button class="p-1.5 bg-amber-50 text-amber-600 rounded hover:bg-amber-100 transition" title="แก้ไข">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+        </button>
+      </div>
+    </div>
+    <!-- ============================================== -->
+
+  </div>
+
+  <!-- MODAL: ฟอร์มเพิ่ม/แก้ไข หลักสูตร -->
+  <div id="curriculum-form-modal" class="fixed inset-0 bg-slate-900 bg-opacity-70 hidden items-center justify-center z-[55]">
+    <div class="bg-white rounded-lg p-6 w-full max-w-md shadow-2xl space-y-4 border-t-4 border-brand-blue max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b pb-2">
+        <h3 id="curriculum-form-header" class="text-base font-bold text-slate-800">จัดการข้อมูลหลักสูตร</h3>
+        <button onclick="document.getElementById('curriculum-form-modal').classList.replace('flex', 'hidden')" class="text-slate-400 hover:text-slate-600 font-bold">X</button>
+      </div>
+      
+      <form id="curriculum-form" class="space-y-3" onsubmit="event.preventDefault();">
+        <input type="hidden" id="curriculum-id">
+        
+        <!-- รหัสสถานศึกษา (ดึงออโต้) -->
+        <div>
+          <label class="block text-xs font-semibold mb-1">รหัสสถานศึกษา <span class="text-slate-400 font-normal">(ระบบดึงให้อัตโนมัติ)</span></label>
+          <input type="text" id="curriculum-school-id" class="w-full border border-slate-200 rounded px-3 py-1.5 text-xs bg-slate-100 text-slate-500 cursor-not-allowed" value="1021040001" readonly>
+        </div>
+        
+        <!-- ชื่อหลักสูตร -->
+        <div>
+          <label class="block text-xs font-semibold mb-1">ชื่อหลักสูตร</label>
+          <input type="text" id="curriculum-title" class="w-full border rounded px-3 py-1.5 text-xs focus:ring-2 focus:ring-brand-blue" placeholder="เช่น หลักสูตรสถานศึกษา พุทธศักราช..." required>
+        </div>
+        
+        <div class="grid grid-cols-2 gap-3">
+          <!-- ระดับการศึกษา -->
+          <div>
+            <label class="block text-xs font-semibold mb-1">ระดับการศึกษา</label>
+            <select id="curriculum-level" class="w-full border rounded px-3 py-1.5 text-xs focus:ring-2 focus:ring-brand-blue bg-white" required>
+              <option value="" disabled selected>เลือก...</option>
+              <option value="ปฐมวัย">ปฐมวัย</option>
+              <option value="ประถมศึกษา">ประถมศึกษา</option>
+              <option value="มัธยมศึกษา">มัธยมศึกษา</option>
+            </select>
+          </div>
+          <!-- ปีการศึกษา -->
+          <div>
+            <label class="block text-xs font-semibold mb-1">ปีการศึกษา</label>
+            <input type="number" id="curriculum-year" class="w-full border rounded px-3 py-1.5 text-xs focus:ring-2 focus:ring-brand-blue" placeholder="เช่น 2569" min="2500" max="2600" required>
+          </div>
+        </div>
+        
+        <!-- แนบไฟล์ PDF -->
+        <div class="pt-2">
+          <label class="block text-xs font-semibold mb-1">เอกสารหลักสูตร (PDF เท่านั้น)</label>
+          <input type="file" id="curriculum-file" accept="application/pdf" class="w-full border rounded px-3 py-1.5 text-xs file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-[10px] file:font-semibold file:bg-blue-50 file:text-brand-blue hover:file:bg-blue-100">
+          <p id="curriculum-file-hint" class="text-[10px] text-slate-400 mt-1 hidden">มีไฟล์แนบเดิมอยู่แล้ว หากไม่ต้องการเปลี่ยน ไม่ต้องเลือกไฟล์ใหม่</p>
+        </div>
+      </form>
+      
+      <div class="flex justify-end space-x-2 pt-4 border-t mt-4">
+        <button onclick="document.getElementById('curriculum-form-modal').classList.replace('flex', 'hidden')" class="px-3 py-1.5 border rounded text-xs hover:bg-slate-100 font-semibold">ยกเลิก</button>
+        <button class="px-4 py-1.5 bg-brand-blue text-white rounded text-xs hover:bg-blue-800 font-semibold transition shadow-sm">บันทึกข้อมูล</button>
+      </div>
+    </div>
+  </div>
+
+</div>
