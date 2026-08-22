@@ -358,25 +358,9 @@
 
       let html = '';
       sortedNews.forEach((item, index) => {
-        const imgSrc = (item['ภาพข่าว'] && item['ภาพ```javascript
-    // ฟังก์ชัน Render ข่าวประชาสัมพันธ์ (เลย์เอาต์แนวนอน: ภาพซ้าย ข้อมูลขวา)
-    function renderNewsCards() {
-      const container = document.getElementById('news-container');
-      if (!container) return;
-
-      if (!dbData.news || dbData.news.length === 0) {
-        container.innerHTML = '<p class="text-xs text-slate-400 p-2">ไม่มีข่าวประชาสัมพันธ์ในขณะนี้</p>';
-        return;
-      }
-
-      // เรียงลำดับข่าวตามวันที่ล่าสุด
-      const sortedNews = [...dbData.news].sort((a, b) => new Date(b['วันที่']) - new Date(a['วันที่']));
-
-      let html = '';
-      sortedNews.forEach((item, index) => {
         const imgSrc = (item['ภาพข่าว'] && item['ภาพข่าว'].length > 10) 
           ? item['ภาพข่าว'] 
-          : '[https://via.placeholder.com/300x160?text=SuperVision%2B](https://via.placeholder.com/300x160?text=SuperVision%2B)';
+          : 'https://via.placeholder.com/300x160?text=SuperVision%2B';
         
         let formattedDate = 'ไม่ระบุวันที่';
         if (item['วันที่']) {
@@ -390,7 +374,7 @@
           <div class="min-w-[280px] max-w-[280px] h-20 bg-slate-50 rounded-lg border border-slate-200 overflow-hidden flex flex-row shadow-sm hover:shadow transition">
             <!-- ฝั่งซ้าย: ภาพข่าวขนาดกะทัดรัด -->
             <div class="w-24 h-full flex-shrink-0 bg-slate-200">
-              <img src="${imgSrc}" class="w-full h-full object-cover" alt="ภาพข่าว" onerror="this.src='[https://via.placeholder.com/300x160?text=No+Image](https://via.placeholder.com/300x160?text=No+Image)'">
+              <img src="${imgSrc}" class="w-full h-full object-cover" alt="ภาพข่าว" onerror="this.src='https://via.placeholder.com/300x160?text=No+Image'">
             </div>
             
             <!-- ฝั่งขวา: ข้อมูลย่อและปุ่มกด -->
@@ -416,6 +400,7 @@
 
       container.innerHTML = html;
     }
+
     // Modal Control Functions
     function openNewsDetailModal(sortedIndex) {
       const sortedNews = [...dbData.news].sort((a, b) => new Date(b['วันที่']) - new Date(a['วันที่']));
