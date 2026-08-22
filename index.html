@@ -354,7 +354,9 @@
     let levelChartInstances = {};
     let currentPage = 'home';
     let defaultHomeHTML = '';
-    let editingNewsTitle = null; // ตัวแปรเช็คสถานะ เพิ่ม/แก้ไขข่าว
+    
+    // เปลี่ยนมาจำ ID ข่าวแทนชื่อข่าวแล้วครับ
+    let editingNewsId = null; 
 
     const pageTitles = {
       'home': 'หน้าแรก',
@@ -371,16 +373,11 @@
 
     window.onload = function() {
       defaultHomeHTML = document.getElementById('main-content').innerHTML;
-      
       const savedUser = localStorage.getItem('supervision_user');
       if (savedUser) {
-        try {
-          currentUser = JSON.parse(savedUser);
-        } catch(e) {
-          localStorage.removeItem('supervision_user');
-        }
+        try { currentUser = JSON.parse(savedUser); } 
+        catch(e) { localStorage.removeItem('supervision_user'); }
       }
-
       updateAuthUI();
       fetchData();
     };
@@ -401,9 +398,7 @@
           if (!res.ok) throw new Error('File not found');
           return res.text();
         })
-        .then(html => {
-          document.getElementById('main-content').innerHTML = html;
-        })
+        .then(html => { document.getElementById('main-content').innerHTML = html; })
         .catch(err => {
           document.getElementById('main-content').innerHTML = `
             <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200 text-center">
@@ -413,7 +408,7 @@
         });
     }
 
-    // รีเฟรชข้อมูล ทั้งหน้าหลัก และตารางจัดการข่าว(ถ้าเปิดอยู่)
+    // ฟังก์ชันดึงข้อมูลจาก GAS ใหม่ (อัปเดตทุกหน้าต่างที่เปิดอยู่)
     function fetchData() {
       fetch(GAS_API_URL + "?action=getAllData")
         .then(res => res.json())
@@ -433,10 +428,23 @@
         .catch(err => console.error("Error fetching data:", err));
     }
 
+    // ฟังก์ชันแปลงรูปแบบวันที่ให้เป็นภาษาไทยแบบสวยงาม
+    function formatThaiDate(dateString) {
+      if (!dateString) return 'ไม่ระบุวันที่';
+      let parts = dateString.split('-');
+      if (parts.length === 3) {
+        const months = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+        let d = parseInt(parts[2], 10);
+        let m = months[parseInt(parts[1], 10) - 1];
+        let y = parseInt(parts[0], 10) + 543;
+        return `${d} ${m} ${y}`;
+      }
+      return dateString;
+    }
+
     function renderNewsCards() {
       const container = document.getElementById('news-container');
       if (!container) return;
-
       if (!dbData.news || dbData.news.length === 0) {
         container.innerHTML = '<p class="text-xs text-slate-400 p-2">ไม่มีข่าวประชาสัมพันธ์ในขณะนี้</p>';
         return;
@@ -447,16 +455,9 @@
       
       sortedNews.forEach((item, index) => {
         const imgSrc = (item['ภาพข่าว'] && item['ภาพข่าว'].length > 10) 
-          ? item['ภาพข่าว'] 
-          : 'https://via.placeholder.com/300x160?text=SuperVision%2B';
+          ? item['ภาพข่าว'] : 'https://via.placeholder.com/300x160?text=SuperVision%2B';
         
-        let formattedDate = 'ไม่ระบุวันที่';
-        if (item['วันที่']) {
-          let parts = item['วันที่'].split('-');
-          if (parts.length === 3) {
-            formattedDate = `${parseInt(parts[2])}/${parseInt(parts[1])}/${parseInt(parts[0]) + 543}`;
-          }
-        }
+        let formattedDate = formatThaiDate(item['วันที่']);
 
         html += `
           <div class="min-w-[280px] max-w-[280px] h-20 bg-slate-50 rounded-lg border border-slate-200 overflow-hidden flex flex-row shadow-sm hover:shadow transition">
@@ -474,7 +475,7 @@
                 </p>
               </div>
               <div class="text-right mt-1">
-                <button onclick="openNewsDetailModal(${index})" class="text-brand-blue hover:text-blue-800 text-[10px] font-bold transition underline">
+                <button onclick="openNewsDetailModal('${item['ลำดับ']}')" class="text-brand-blue hover:text-blue-800 text-[10px] font-bold transition underline">
                   อ่านเพิ่มเติม &rarr;
                 </button>
               </div>
@@ -482,25 +483,16 @@
           </div>
         `;
       });
-
       container.innerHTML = html;
     }
 
-    function openNewsDetailModal(sortedIndex) {
-      const sortedNews = [...dbData.news].sort((a, b) => new Date(b['วันที่']) - new Date(a['วันที่']));
-      const news = sortedNews[sortedIndex];
+    // ตอนคลิกอ่านเพิ่มเติม ใช้ ID ค้นหาข่าว
+    function openNewsDetailModal(id) {
+      const news = dbData.news.find(n => String(n['ลำดับ']) === String(id));
       if (!news) return;
 
       document.getElementById('detail-news-title').innerText = news['พาดหัวข่าว'] || '';
-      
-      let formattedDate = '';
-      if (news['วันที่']) {
-        let parts = news['วันที่'].split('-');
-        if (parts.length === 3) {
-          formattedDate = `วันที่ประกาศ: ${parseInt(parts[2])}/${parseInt(parts[1])}/${parseInt(parts[0]) + 543}`;
-        }
-      }
-      document.getElementById('detail-news-date').innerText = formattedDate;
+      document.getElementById('detail-news-date').innerText = 'วันที่ประกาศ: ' + formatThaiDate(news['วันที่']);
       document.getElementById('detail-news-content').innerText = news['เนื้อหาข่าว'] || '';
       
       const imgContainer = document.getElementById('detail-news-image-container');
@@ -509,7 +501,6 @@
       } else {
         imgContainer.innerHTML = '';
       }
-
       document.getElementById('news-detail-modal').classList.remove('hidden');
       document.getElementById('news-detail-modal').classList.add('flex');
     }
@@ -540,23 +531,16 @@
       const sortedNews = [...dbData.news].sort((a, b) => new Date(b['วันที่']) - new Date(a['วันที่']));
       let html = '';
       sortedNews.forEach(item => {
-        let dateStr = 'ไม่ระบุ';
-        if (item['วันที่']) {
-          let parts = item['วันที่'].split('-');
-          if (parts.length === 3) {
-            dateStr = `${parseInt(parts[2])}/${parseInt(parts[1])}/${parseInt(parts[0]) + 543}`;
-          }
-        }
-        
-        let safeTitle = (item['พาดหัวข่าว'] || '').replace(/'/g, "\\'").replace(/"/g, '&quot;'); 
+        let dateStr = formatThaiDate(item['วันที่']);
+        let safeId = item['ลำดับ']; // ใช้ ID เป็นเป้าหมายหลัก
         
         html += `
           <tr class="hover:bg-slate-50 transition border-b border-slate-100 last:border-0">
             <td class="p-3 text-slate-500">${dateStr}</td>
             <td class="p-3 font-medium text-brand-blue">${item['พาดหัวข่าว'] || ''}</td>
             <td class="p-3 text-center space-x-3">
-              <button onclick="editNewsItem('${safeTitle}')" class="text-amber-500 hover:text-amber-700 font-semibold underline">แก้ไข</button>
-              <button onclick="deleteNewsItem('${safeTitle}', this)" class="text-red-500 hover:text-red-700 font-semibold underline">ลบ</button>
+              <button onclick="editNewsItem('${safeId}')" class="text-amber-500 hover:text-amber-700 font-semibold underline">แก้ไข</button>
+              <button onclick="deleteNewsItem('${safeId}', this)" class="text-red-500 hover:text-red-700 font-semibold underline">ลบ</button>
             </td>
           </tr>
         `;
@@ -565,19 +549,19 @@
     }
 
     function openNewsAdminModal() {
-      editingNewsTitle = null; 
+      editingNewsId = null; // สถานะ = ข่าวใหม่
       document.getElementById('news-form').reset();
-      
       closeNewsListModal();
       document.getElementById('news-admin-modal').classList.remove('hidden');
       document.getElementById('news-admin-modal').classList.add('flex');
     }
 
-    function editNewsItem(title) {
-      const item = dbData.news.find(n => n['พาดหัวข่าว'] === title);
+    // ฟังก์ชันเปิดฟอร์มเพื่อแก้ไขข่าว
+    function editNewsItem(id) {
+      const item = dbData.news.find(n => String(n['ลำดับ']) === String(id));
       if (!item) return;
       
-      editingNewsTitle = title; 
+      editingNewsId = id; 
       
       document.getElementById('news-title').value = item['พาดหัวข่าว'] || '';
       document.getElementById('news-content').value = item['เนื้อหาข่าว'] || '';
@@ -595,40 +579,41 @@
       openNewsListModal(); 
     }
 
-    function deleteNewsItem(title, btn) {
+    // ฟังก์ชันลบแบบอัปเดตหน้าจอทันที (Optimistic Delete)
+    function deleteNewsItem(id, btn) {
+      // 1. ซ่อน/ลบข่าวบนหน้าจอผู้ใช้ให้เห็นทันที
       btn.innerText = 'กำลังลบ...';
-      btn.classList.remove('text-red-500', 'hover:text-red-700', 'underline');
-      btn.classList.add('text-slate-400', 'cursor-not-allowed');
       btn.disabled = true;
       
+      // ดึงข่าวอันนั้นออกจากการแสดงผลชั่วคราว
+      dbData.news = dbData.news.filter(n => String(n['ลำดับ']) !== String(id));
+      renderAdminNewsList(); // รีเฟรชตารางหลังบ้าน
+      if (currentPage === 'home') renderNewsCards(); // รีเฟรชข่าวหน้าแรก
+
+      // 2. สั่งระบบให้วิ่งไปลบที่เซิร์ฟเวอร์
       fetch(GAS_API_URL, {
         method: 'POST',
-        body: JSON.stringify({ action: 'deleteNews', title: title })
+        body: JSON.stringify({ action: 'deleteNews', id: id })
       })
       .then(res => res.json())
       .then(res => {
         if (res.status === 'success') {
-          fetchData(); 
+           fetchData(); // ดึงข้อมูลใหม่เพื่อความสมบูรณ์
         } else {
-          alert('เกิดข้อผิดพลาด: ' + res.message);
-          btn.innerText = 'ลบ';
-          btn.classList.add('text-red-500', 'hover:text-red-700', 'underline');
-          btn.classList.remove('text-slate-400', 'cursor-not-allowed');
-          btn.disabled = false;
+           fetchData(); // ถ้ายกเลิก/ลบพลาด ให้ดึงข้อมูลมาใหม่
         }
-      });
+      })
+      .catch(() => fetchData());
     }
 
+    // ฟังก์ชันบันทึกข่าว (รองรับเพิ่ม/แก้ไข)
     function submitNewsData(btn) {
       const title = document.getElementById('news-title').value;
       const content = document.getElementById('news-content').value;
       const date = document.getElementById('news-date').value;
       const fileInput = document.getElementById('news-image');
 
-      if (!title || !content || !date) {
-        alert('กรุณากรอกข้อมูลให้ครบถ้วน');
-        return;
-      }
+      if (!title || !content || !date) return;
       
       const originalText = btn.innerText;
       btn.innerText = 'กำลังบันทึก...';
@@ -646,11 +631,11 @@
           rowObj['ภาพข่าว'] = base64Img;
         }
 
-        let actionType = editingNewsTitle ? 'updateNews' : 'saveData';
+        let actionType = editingNewsId ? 'updateNews' : 'saveData';
         let payload = { action: actionType, sheetName: 'ข่าวประชาสัมพันธ์', rowObj: rowObj };
         
-        if (editingNewsTitle) {
-          payload.oldTitle = editingNewsTitle; 
+        if (editingNewsId) {
+          payload.id = editingNewsId; // แนบ ID ถ้าเป็นการแก้ไข
         }
 
         fetch(GAS_API_URL, {
@@ -661,7 +646,7 @@
         .then(res => {
           if (res.status === 'success') {
             closeNewsAdminModal(); 
-            fetchData(); 
+            fetchData(); // สั่งรีเฟรชข้อมูล ดึงข่าวใหม่มารันเลย
           } else {
             alert('เกิดข้อผิดพลาด: ' + res.message);
           }
@@ -763,7 +748,6 @@
           html += `<option value="${unitId.trim()}">${unitName.trim()}</option>`;
         }
       });
-
       select.innerHTML = html;
     }
 
@@ -776,7 +760,6 @@
       }
 
       const selectedSchoolId = schoolSelect ? schoolSelect.value : 'ALL';
-
       const schoolLabel = document.getElementById('selected-school-label');
       if (schoolLabel) {
         schoolLabel.innerText = selectedSchoolId === 'ALL' 
