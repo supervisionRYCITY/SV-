@@ -14,7 +14,7 @@
   </div>
 
   <div id="curriculum-container" class="space-y-3">
-    <!-- การ์ดของจริงจะถูกสร้างด้วย JavaScript และมาแสดงตรงนี้ -->
+    <!-- การ์ดจะถูกสร้างด้วย JavaScript -->
   </div>
 
   <!-- MODAL: ฟอร์มเพิ่ม/แก้ไข หลักสูตร -->
@@ -26,6 +26,8 @@
       </div>
       
       <form id="curriculum-form" class="space-y-3" onsubmit="event.preventDefault();">
+        
+        <!-- กล่องสำหรับแสดง Error สีแดง (ตัวปัญหาคือขาดแท็กนี้ไปครับ) -->
         <div id="curriculum-error-msg" class="hidden bg-red-50 text-red-600 border border-red-200 text-xs p-2 rounded text-center font-bold"></div>
         
         <input type="hidden" id="curriculum-id">
@@ -41,10 +43,10 @@
           <div>
             <label class="block text-xs font-semibold mb-1">ระดับการศึกษา</label>
             <select id="curriculum-level" class="w-full border rounded px-3 py-1.5 text-xs focus:ring-2 focus:ring-brand-blue bg-white" required>
-               <option value="" disabled selected>เลือก...</option>
-               <option value="ปฐมวัย">ปฐมวัย</option>
-               <option value="ประถมศึกษา">ประถมศึกษา</option>
-               <option value="มัธยมศึกษา">มัธยมศึกษา</option>
+              <option value="" disabled selected>เลือก...</option>
+              <option value="ปฐมวัย">ปฐมวัย</option>
+              <option value="ประถมศึกษา">ประถมศึกษา</option>
+              <option value="มัธยมศึกษา">มัธยมศึกษา</option>
             </select>
           </div>
           <div>
