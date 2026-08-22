@@ -343,7 +343,7 @@
         .catch(err => console.error("Error fetching data:", err));
     }
 
-    // Render ข่าวสาร
+    // ฟังก์ชัน Render ข่าวประชาสัมพันธ์ (ปรับขนาดการ์ดให้กะทัดรัดขึ้น)
     function renderNewsCards() {
       const container = document.getElementById('news-container');
       if (!container) return;
@@ -353,6 +353,7 @@
         return;
       }
 
+      // เรียงลำดับข่าวตามวันที่ล่าสุด
       const sortedNews = [...dbData.news].sort((a, b) => new Date(b['วันที่']) - new Date(a['วันที่']));
 
       let html = '';
@@ -370,17 +371,18 @@
         }
 
         html += `
-          <div class="min-w-[240px] max-w-[240px] bg-slate-50 rounded-lg border border-slate-200 overflow-hidden flex flex-col justify-between shadow-sm hover:shadow transition">
+          <div class="min-w-[200px] max-w-[200px] bg-slate-50 rounded-lg border border-slate-200 overflow-hidden flex flex-col justify-between shadow-sm hover:shadow transition">
             <div>
-              <img src="${imgSrc}" class="w-full h-32 object-cover" alt="ภาพข่าว" onerror="this.src='https://via.placeholder.com/300x160?text=No+Image'">
-              <div class="p-3">
-                <span class="text-[10px] text-brand-lightblue font-semibold">${formattedDate}</span>
-                <h4 class="font-bold text-xs text-slate-800 line-clamp-1 mt-1">${item['พาดหัวข่าว'] || 'ไม่มีหัวข้อ'}</h4>
-                <p class="text-[11px] text-slate-500 line-clamp-2 mt-1">${item['เนื้อหาข่าว'] || ''}</p>
+              <!-- ลดความสูงของรูปภาพลงเหลือ h-20 (80px) -->
+              <img src="${imgSrc}" class="w-full h-20 object-cover" alt="ภาพข่าว" onerror="this.src='https://via.placeholder.com/300x160?text=No+Image'">
+              <div class="p-2">
+                <span class="text-[9px] text-brand-lightblue font-semibold">${formattedDate}</span>
+                <h4 class="font-bold text-[11px] text-slate-800 line-clamp-1 mt-0.5" title="${item['พาดหัวข่าว'] || ''}">${item['พาดหัวข่าว'] || 'ไม่มีหัวข้อ'}</h4>
+                <p class="text-[10px] text-slate-500 line-clamp-1 mt-0.5">${item['เนื้อหาข่าว'] || ''}</p>
               </div>
             </div>
-            <div class="p-3 pt-0">
-              <button onclick="openNewsDetailModal(${index})" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-700 text-[11px] font-semibold py-1 rounded transition">
+            <div class="p-2 pt-0">
+              <button onclick="openNewsDetailModal(${index})" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-700 text-[10px] font-semibold py-0.5 rounded transition">
                 อ่านเพิ่มเติม
               </button>
             </div>
