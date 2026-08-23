@@ -781,22 +781,24 @@
     const CurriculumSystem = {
       targetDeleteId: null,
 
+      
       renderCards: function() {
         const container = document.getElementById('curriculum-container');
         if (!container) return;
 
         let currData = dbData.curriculum || [];
         
-        // 1. ดึงสิทธิ์ (Permissions) สำหรับระบบงานหลักสูตร ของ Role ผู้ใช้ปัจจุบัน
+        // 1. ดึงสิทธิ์ (Permissions)
+        // ถ้าล็อกอินอยู่ ให้ใช้ role ของ user ถ้าไม่ได้ล็อกอิน ให้ใช้ 'บุคคลภายนอก'
+        const currentRole = currentUser ? currentUser.role : 'บุคคลภายนอก'; 
         let perm = null;
-        if (currentUser && dbData.permissions) {
-          perm = dbData.permissions.find(p => p['ระบบงาน'] === 'curriculum' && p['ระดับสิทธิ์'] === currentUser.role);
+        if (dbData.permissions) {
+          perm = dbData.permissions.find(p => p['ระบบงาน'] === 'curriculum' && p['ระดับสิทธิ์'] === currentRole);
         }
 
         // 2. จัดการปุ่ม "เพิ่มหลักสูตร" (Create)
         const addBtn = document.querySelector('button[onclick="CurriculumSystem.openForm()"]');
         if (addBtn) {
-          // ถ้าไม่มีค่า perm หรือ perm['C_Active'] เป็นเท็จ ให้ซ่อนปุ่ม
           if (perm && String(perm['C_Active']).toLowerCase() === 'true') {
             addBtn.classList.remove('hidden');
             addBtn.classList.add('flex');
@@ -814,11 +816,16 @@
 
         // 4. กรองข้อมูลตามสิทธิ์ R_Scope (Visibility)
         const readScope = perm['R_Scope'];
+        
         if (readScope === 'UNIT') {
-          currData = currData.filter(c => String(c['รหัสสถานศึกษา']) === String(currentUser.unitId));
+          // ถ้าตั้งสิทธิ์เป็น UNIT แต่ไม่ได้ล็อกอิน (ไม่มี unitId) จะไม่เห็นข้อมูลเลย เพื่อความปลอดภัย
+          const unitIdToMatch = currentUser ? String(currentUser.unitId) : 'NO_UNIT';
+          currData = currData.filter(c => String(c['รหัสสถานศึกษา']) === unitIdToMatch);
         } else if (readScope === 'OWN') {
-          currData = currData.filter(c => String(c['รหัสสถานศึกษา']) === String(currentUser.unitId)); // อนาคตปรับให้กรองจาก Username คนสร้าง
-        }
+          // กรณีของ OWN ก็เช่นกัน ถ้าไม่ได้ล็อกอิน จะไม่เห็นข้อมูลของใครเลย
+          const unitIdToMatch = currentUser ? String(currentUser.unitId) : 'NO_UNIT';
+          currData = currData.filter(c => String(c['รหัสสถานศึกษา']) === unitIdToMatch); 
+        } // ถ้าเป็น 'ALL' ก็ไม่ต้อง filter แสดงทั้งหมดเลย
 
         if (currData.length === 0) {
           container.innerHTML = '<div class="p-8 text-center text-slate-500 bg-white rounded-xl shadow-sm border border-slate-200">ยังไม่มีข้อมูลหลักสูตรที่ตรงกับสิทธิ์ของคุณ</div>';
@@ -880,6 +887,8 @@
         });
         container.innerHTML = html;
       },
+
+      
       openForm: function(id = null) {
         document.getElementById('curriculum-form').reset();
         document.getElementById('curriculum-file-hint').classList.add('hidden');
