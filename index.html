@@ -456,6 +456,10 @@
           if (pageName === 'curriculum') {
             CurriculumSystem.renderCards();
           }
+          if (pageName === 'settings') {
+            SettingsSystem.attachEvents();
+            SettingsSystem.loadSettingsToUI();
+          }
         })
         .catch(err => {
           document.getElementById('main-content').innerHTML = `
@@ -507,7 +511,9 @@
             if (currentPage === 'curriculum') {
               CurriculumSystem.renderCards();
             }
-
+            if (currentPage === 'settings') {
+              SettingsSystem.loadSettingsToUI();
+            }
             // อัปเดตตารางจัดการข่าวถ้าเปิดอยู่
             const newsModal = document.getElementById('news-list-modal');
             if (newsModal && !newsModal.classList.contains('hidden')) {
@@ -983,6 +989,96 @@
           btn.innerText = 'ยืนยันลบ';
           btn.disabled = false;
         }).catch(() => { this.closeConfirm(); fetchData(); });
+      }
+    };
+
+
+    // ==========================================
+    // MODULE: ระบบตั้งค่าสิทธิ์ (SettingsSystem)
+    // ==========================================
+    const SettingsSystem = {
+      roles: ['ผู้ดูแลระบบ', 'ผู้กำกับดูแล', 'สถานศึกษา', 'ครูและบุคลากรทางการศึกษา', 'บุคคลภายนอก'],
+      
+      attachEvents: function() {
+        const tbody = document.querySelector('tbody');
+        if (!tbody) return;
+        tbody.querySelectorAll('input[type="checkbox"]').forEach(chk => {
+          chk.onchange = (e) => {
+            const td = e.target.closest('td');
+            const sel = td.querySelector('select');
+            const span = td.querySelector('span');
+            let cClass = td.cellIndex===1 ? 'text-green-600' : td.cellIndex===2 ? 'text-blue-600' : td.cellIndex===3 ? 'text-amber-500' : 'text-red-600';
+            
+            if (chk.checked) {
+              sel.disabled = false;
+              sel.classList.replace('bg-slate-100', 'bg-white');
+              sel.classList.replace('text-slate-400', 'text-slate-600');
+              span.innerText = 'เปิดใช้งาน';
+              span.className = `font-bold ${cClass}`;
+            } else {
+              sel.disabled = true;
+              sel.classList.replace('bg-white', 'bg-slate-100');
+              sel.classList.replace('text-slate-600', 'text-slate-400');
+              span.innerText = 'ปิดใช้งาน';
+              span.className = 'font-bold text-slate-400';
+            }
+          };
+        });
+      },
+
+      loadSettingsToUI: function() {
+        if (!dbData || !dbData.permissions) return;
+        const tbody = document.querySelector('tbody');
+        if (!tbody) return;
+        
+        tbody.querySelectorAll('tr').forEach((row, index) => {
+          const role = this.roles[index];
+          const perm = dbData.permissions.find(p => p['ระบบงาน'] === 'curriculum' && String(p['ระดับสิทธิ์']) === role);
+          if (perm) {
+            const tds = row.querySelectorAll('td');
+            const setCell = (td, active, scope, cClass) => {
+              if(!td) return;
+              const chk = td.querySelector('input[type="checkbox"]');
+              const sel = td.querySelector('select');
+              chk.checked = (String(active).toLowerCase() === 'true');
+              sel.value = scope || 'ALL';
+              chk.dispatchEvent(new Event('change')); // กระตุ้น UI ให้เปลี่ยนสี
+            };
+            setCell(tds[1], perm['C_Active'], perm['C_Scope'], 'text-green-600');
+            setCell(tds[2], perm['R_Active'], perm['R_Scope'], 'text-blue-600');
+            setCell(tds[3], perm['U_Active'], perm['U_Scope'], 'text-amber-500');
+            setCell(tds[4], perm['D_Active'], perm['D_Scope'], 'text-red-600');
+          }
+        });
+      },
+
+      saveAll: function(btn) {
+        const tbody = document.querySelector('tbody');
+        if (!tbody) return;
+        let settingsData = [];
+
+        tbody.querySelectorAll('tr').forEach((row, index) => {
+          const tds = row.querySelectorAll('td');
+          const getCell = (td) => ({ active: td.querySelector('input').checked, scope: td.querySelector('select').value });
+          const c = getCell(tds[1]), r = getCell(tds[2]), u = getCell(tds[3]), d = getCell(tds[4]);
+
+          settingsData.push({
+            'ระบบงาน': 'curriculum', 'ระดับสิทธิ์': this.roles[index],
+            'C_Active': c.active, 'C_Scope': c.scope, 'R_Active': r.active, 'R_Scope': r.scope,
+            'U_Active': u.active, 'U_Scope': u.scope, 'D_Active': d.active, 'D_Scope': d.scope
+          });
+        });
+
+        const origText = btn.innerHTML;
+        btn.innerHTML = 'กำลังบันทึก...';
+        btn.disabled = true;
+
+        fetch(GAS_API_URL, { method: 'POST', body: JSON.stringify({ action: 'saveSettings', settingsData: settingsData }) })
+        .then(res => res.json()).then(res => {
+          if (res.status === 'success') { showGlobalLoader('บันทึกสำเร็จ อัปเดตข้อมูล...'); fetchData(); } 
+          else alert('Error: ' + res.message);
+          btn.innerHTML = origText; btn.disabled = false;
+        }).catch(err => { alert('การเชื่อมต่อล้มเหลว'); btn.innerHTML = origText; btn.disabled = false; });
       }
     };
     
