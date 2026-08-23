@@ -850,10 +850,10 @@
 
           const pdfUrl = item['เอกสารหลักสูตร'] || '#';
           
-          // ปรับปุ่มเปิดไฟล์ให้เหลือแค่ไอคอน PDF สีแดง
+          // ปรับปุ่มเปิดไฟล์ให้เป็นคำว่า PDF สีแดง
           const btnPdfHtml = item['เอกสารหลักสูตร'] 
-            ? `<a href="${pdfUrl}" target="_blank" class="p-1.5 text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 rounded transition" title="เปิดไฟล์หลักสูตร (PDF)">
-                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>
+            ? `<a href="${pdfUrl}" target="_blank" class="px-2.5 py-1 text-red-600 font-bold bg-red-50 hover:bg-red-100 border border-red-200 rounded text-xs transition" title="เปิดไฟล์หลักสูตร">
+                 PDF
                </a>` 
             : `<span class="text-[10px] text-slate-400">ไม่มีไฟล์แนบ</span>`;
 
