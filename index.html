@@ -504,13 +504,14 @@
             // อัปเดตหน้า Dashboard
             if (currentPage === 'home') {
               renderDashboard();
-              NewsSystem.s();
+              NewsSystem.renderCards(); // <--- แก้เป็นอันนี้
             }
             
             // อัปเดตหน้าหลักสูตร
             if (currentPage === 'curriculum') {
-              CurriculumSystem.s();
+              CurriculumSystem.renderCards(); // <--- แก้เป็นอันนี้
             }
+            
             if (currentPage === 'settings') {
               SettingsSystem.loadSettingsToUI();
             }
