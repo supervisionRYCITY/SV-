@@ -598,7 +598,7 @@
 
         let html = '';
         sortedNews.forEach(item => {
-          const imgSrc = (item['ภาพข่าว'] && item['ภาพข่าว'].length > 10) ? item['ภาพข่าว'] : 'https://via.placeholder.com/300x160?text=SuperVision%2B';
+          const imgSrc = (item['ภาพข่าว'] && item['ภาพข่าว'].length > 10) ? item['ภาพข่าว'] : 'SV_logo.png';
           const displayDate = this.getDisplayDate(item['วันที่']);
 
           // เพิ่ม cursor-pointer และ onclick ที่กล่องข่าวเลย จะได้กดง่ายๆ
