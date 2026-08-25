@@ -504,12 +504,12 @@
             // อัปเดตหน้า Dashboard
             if (currentPage === 'home') {
               renderDashboard();
-              NewsSystem.renderCards();
+              NewsSystem.s();
             }
             
             // อัปเดตหน้าหลักสูตร
             if (currentPage === 'curriculum') {
-              CurriculumSystem.renderCards();
+              CurriculumSystem.s();
             }
             if (currentPage === 'settings') {
               SettingsSystem.loadSettingsToUI();
@@ -907,9 +907,45 @@
         container.innerHTML = html;
       },
 
+      // ... (โค้ดของ renderCards ด้านบน) ...
+      }, // <--- ปีกกาปิดของ renderCards
+
+      // ------------------------------------------------
+      // นำ 2 ฟังก์ชันนี้ไปวางแทรกตรงนี้ครับ
+      openForm: function(id = null) {
+        document.getElementById('curriculum-error-msg').classList.add('hidden');
+        document.getElementById('curriculum-form').reset();
+        document.getElementById('curriculum-id').value = id || '';
+        document.getElementById('curriculum-school-id').value = currentUser ? currentUser.unitId : '';
+        const fileHint = document.getElementById('curriculum-file-hint');
+        
+        if (id) {
+          document.getElementById('curriculum-form-header').innerText = 'แก้ไขข้อมูลหลักสูตร';
+          const item = dbData.curriculum.find(c => String(c['ลำดับ']) === String(id));
+          if (item) {
+            document.getElementById('curriculum-title').value = item['ชื่อหลักสูตร'] || '';
+            document.getElementById('curriculum-level').value = item['ระดับการศึกษา'] || '';
+            document.getElementById('curriculum-year').value = item['ปีการศึกษา'] || '';
+            if(item['เอกสารหลักสูตร']) {
+               fileHint.classList.remove('hidden');
+            } else {
+               fileHint.classList.add('hidden');
+            }
+          }
+        } else {
+          document.getElementById('curriculum-form-header').innerText = 'เพิ่มหลักสูตรใหม่';
+          if(fileHint) fileHint.classList.add('hidden');
+        }
+        document.getElementById('curriculum-form-modal').classList.replace('hidden', 'flex');
+      },
+
       closeForm: function() {
         document.getElementById('curriculum-form-modal').classList.replace('flex', 'hidden');
       },
+      // ------------------------------------------------
+
+      saveData: function(btn) {
+      // ... (โค้ดของ saveData ด้านล่าง) ...
       
       saveData: function(btn) {
         const id = document.getElementById('curriculum-id').value;
