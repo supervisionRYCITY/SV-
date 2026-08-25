@@ -460,6 +460,15 @@
 
     // 1. ฟังก์ชัน loadPage
     function loadPage(pageName) {
+      // โค้ดเพิ่มใหม่: เช็คว่าถ้าจอเล็ก (มือถือ) ให้ปิดเมนูหลังจากกดเลือก
+      if (window.innerWidth < 1024) { 
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+        if (sidebar && !sidebar.classList.contains('translate-x-full')) {
+          sidebar.classList.add('translate-x-full');
+          overlay.classList.add('hidden');
+        }
+      }
       currentPage = pageName;
       document.getElementById('header-title').innerText = pageTitles[pageName] || 'SuperVision+';
 
