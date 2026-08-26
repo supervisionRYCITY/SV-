@@ -15,7 +15,6 @@
   
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- Plugin สำหรับแสดงตัวเลขบน Chart -->
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
   
   <script>
@@ -25,12 +24,9 @@
           fontFamily: { sans: ['Sarabun', 'sans-serif'] },
           colors: {
             brand: {
-              blue: '#1e3a8a',
-              lightblue: '#2563eb',
-              green: '#15803d',
-              lightgreen: '#22c55e',
-              yellow: '#eab308',
-              accentyellow: '#fde047'
+              blue: '#1e3a8a', lightblue: '#2563eb',
+              green: '#15803d', lightgreen: '#22c55e',
+              yellow: '#eab308', accentyellow: '#fde047'
             }
           }
         }
@@ -43,8 +39,10 @@
 </head>
 <body class="bg-slate-50 text-slate-800 flex h-screen overflow-hidden">
 
+  <!-- ฉากหลังดำๆ เวลากดเปิดเมนูในมือถือ (คลิกเพื่อปิดได้) -->
+  <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900 bg-opacity-50 z-30 hidden lg:hidden transition-opacity"></div>
+
   <!-- MAIN CONTAINER AREA -->
-  <!-- เปลี่ยนจาก mr-64 เป็น mr-0 lg:mr-64 เพื่อให้มือถือขยายเต็มจอ -->
   <div class="flex-1 flex flex-col h-full overflow-hidden transition-all duration-300 mr-0 lg:mr-64">
     
     <!-- TOP HEADER -->
@@ -97,7 +95,6 @@
             </h2>
             <div class="flex items-center gap-2">
               <select id="school-filter" onchange="renderDashboard()" class="text-sm border border-slate-300 rounded-lg p-2 bg-slate-50 font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-blue min-w-[220px] shadow-sm cursor-pointer">
-                <!-- รายชื่อจะถูกเติมโดยอัตโนมัติจากชีท "ข้อมูลหน่วยงาน" -->
               </select>
             </div>
           </div>
@@ -109,14 +106,8 @@
               <p class="text-xs text-slate-500 font-bold mb-1">จำนวนนักเรียน</p>
               <h3 id="card1-total" class="text-4xl font-extrabold text-brand-blue my-2 leading-none">0</h3>
               <div class="flex justify-start gap-4 items-center text-xs mt-auto pt-2 border-t border-slate-200 font-bold">
-                <span class="text-blue-500 flex items-center gap-1" title="ชาย">
-                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="10" cy="14" r="6" stroke-width="3"/><path d="M14 10l6-6M15 4h5v5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  <span id="card1-male">0</span>
-                </span>
-                <span class="text-pink-500 flex items-center gap-1" title="หญิง">
-                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="10" r="6" stroke-width="3"/><path d="M12 16v8M9 20h6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  <span id="card1-female">0</span>
-                </span>
+                <span class="text-blue-500 flex items-center gap-1" title="ชาย"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="10" cy="14" r="6" stroke-width="3"/><path d="M14 10l6-6M15 4h5v5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="card1-male">0</span></span>
+                <span class="text-pink-500 flex items-center gap-1" title="หญิง"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="10" r="6" stroke-width="3"/><path d="M12 16v8M9 20h6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="card1-female">0</span></span>
               </div>
             </div>
 
@@ -125,14 +116,8 @@
               <p class="text-xs text-slate-500 font-bold mb-1">ผู้บริหารสถานศึกษา</p>
               <h3 id="card2-total" class="text-4xl font-extrabold text-purple-600 my-2 leading-none">0</h3>
               <div class="flex justify-start gap-4 items-center text-xs mt-auto pt-2 border-t border-slate-200 font-bold">
-                <span class="text-blue-500 flex items-center gap-1" title="ชาย">
-                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="10" cy="14" r="6" stroke-width="3"/><path d="M14 10l6-6M15 4h5v5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  <span id="card2-male">0</span>
-                </span>
-                <span class="text-pink-500 flex items-center gap-1" title="หญิง">
-                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="10" r="6" stroke-width="3"/><path d="M12 16v8M9 20h6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  <span id="card2-female">0</span>
-                </span>
+                <span class="text-blue-500 flex items-center gap-1" title="ชาย"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="10" cy="14" r="6" stroke-width="3"/><path d="M14 10l6-6M15 4h5v5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="card2-male">0</span></span>
+                <span class="text-pink-500 flex items-center gap-1" title="หญิง"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="10" r="6" stroke-width="3"/><path d="M12 16v8M9 20h6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="card2-female">0</span></span>
               </div>
             </div>
 
@@ -141,14 +126,8 @@
               <p class="text-xs text-slate-500 font-bold mb-1">พนักงานครู</p>
               <h3 id="card3-total" class="text-4xl font-extrabold text-brand-green my-2 leading-none">0</h3>
               <div class="flex justify-start gap-4 items-center text-xs mt-auto pt-2 border-t border-slate-200 font-bold">
-                <span class="text-blue-500 flex items-center gap-1" title="ชาย">
-                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="10" cy="14" r="6" stroke-width="3"/><path d="M14 10l6-6M15 4h5v5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  <span id="card3-male">0</span>
-                </span>
-                <span class="text-pink-500 flex items-center gap-1" title="หญิง">
-                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="10" r="6" stroke-width="3"/><path d="M12 16v8M9 20h6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  <span id="card3-female">0</span>
-                </span>
+                <span class="text-blue-500 flex items-center gap-1" title="ชาย"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="10" cy="14" r="6" stroke-width="3"/><path d="M14 10l6-6M15 4h5v5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="card3-male">0</span></span>
+                <span class="text-pink-500 flex items-center gap-1" title="หญิง"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="10" r="6" stroke-width="3"/><path d="M12 16v8M9 20h6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="card3-female">0</span></span>
               </div>
             </div>
 
@@ -157,14 +136,8 @@
               <p class="text-xs text-slate-500 font-bold mb-1">บุคลากรทางการศึกษา</p>
               <h3 id="card4-total" class="text-4xl font-extrabold text-amber-500 my-2 leading-none">0</h3>
               <div class="flex justify-start gap-4 items-center text-xs mt-auto pt-2 border-t border-slate-200 font-bold">
-                <span class="text-blue-500 flex items-center gap-1" title="ชาย">
-                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="10" cy="14" r="6" stroke-width="3"/><path d="M14 10l6-6M15 4h5v5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  <span id="card4-male">0</span>
-                </span>
-                <span class="text-pink-500 flex items-center gap-1" title="หญิง">
-                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="10" r="6" stroke-width="3"/><path d="M12 16v8M9 20h6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  <span id="card4-female">0</span>
-                </span>
+                <span class="text-blue-500 flex items-center gap-1" title="ชาย"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="10" cy="14" r="6" stroke-width="3"/><path d="M14 10l6-6M15 4h5v5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="card4-male">0</span></span>
+                <span class="text-pink-500 flex items-center gap-1" title="หญิง"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="10" r="6" stroke-width="3"/><path d="M12 16v8M9 20h6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="card4-female">0</span></span>
               </div>
             </div>
 
@@ -187,30 +160,23 @@
               <span id="selected-school-label" class="text-xs text-brand-blue font-semibold bg-blue-50 px-2.5 py-1 rounded-md border border-blue-100 inline-block text-center">ภาพรวมเทศบาลนครระยอง</span>
             </div>
             
-            <!-- Container สำหรับการ์ด Mini Doughnut Chart นักเรียน -->
             <div id="student-levels-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-6">
               <p class="text-xs text-slate-400 col-span-full text-center py-4">กำลังประมวลผลข้อมูล...</p>
             </div>
 
-            <!-- กราฟแท่ง (Bar Chart) แบ่ง 2 คอลัมน์ ซ้าย (นักเรียน) - ขวา (บุคลากร) -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 border-t border-slate-200 pt-6 mt-4">
-              
-              <!-- กราฟนักเรียน -->
               <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
                 <h3 class="text-sm font-bold text-slate-700 mb-4 text-center">จำนวนนักเรียน ชาย/หญิง (แยกตามระดับชั้น)</h3>
                 <div class="w-full h-80 relative">
                   <canvas id="studentBarChart"></canvas>
                 </div>
               </div>
-              
-              <!-- กราฟบุคลากร -->
               <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
                 <h3 class="text-sm font-bold text-slate-700 mb-4 text-center">จำนวนบุคลากร ชาย/หญิง (แยกตามตำแหน่ง)</h3>
                 <div class="w-full h-80 relative">
                   <canvas id="personnelBarChart"></canvas>
                 </div>
               </div>
-
             </div>
           </div>
           
@@ -222,11 +188,6 @@
 
   
   <!-- RIGHT SIDEBAR FIXED -->
-  <!-- ฉากหลังดำๆ เวลากดเปิดเมนูในมือถือ (คลิกเพื่อปิดได้) -->
-  <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900 bg-opacity-50 z-30 hidden lg:hidden transition-opacity"></div>
-
-  <!-- RIGHT SIDEBAR FIXED -->
-  <!-- เพิ่ม transform translate-x-full (ซ่อนขวา) และ lg:translate-x-0 (แสดงจอใหญ่) -->
   <aside id="sidebar" class="w-64 bg-slate-900 text-white fixed right-0 top-0 h-full shadow-2xl flex flex-col z-40 border-l border-slate-700 transform translate-x-full lg:translate-x-0 transition-transform duration-300">
     <div class="p-4 border-b border-slate-800 bg-slate-900 flex justify-between items-center">
       <img src="SV_logo.png" alt="SuperVision+ Logo" class="h-auto w-auto object-contain">         
@@ -284,7 +245,7 @@
     </div>
   </aside>
   
-<!-- GLOBAL LOADING SPINNER -->
+  <!-- GLOBAL LOADING SPINNER -->
   <div id="global-loader" class="fixed inset-0 bg-slate-900 bg-opacity-40 hidden items-center justify-center z-[100]">
     <div class="bg-white px-6 py-4 rounded-xl shadow-xl flex flex-col items-center border-t-4 border-brand-blue">
       <svg class="animate-spin h-8 w-8 text-brand-blue mb-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -316,8 +277,6 @@
   </div>
 
   <!-- MODALS ระบบข่าวประชาสัมพันธ์แบบใหม่ -->
-  
-  <!-- 1. MODAL: ดูข่าวสารฉบับเต็ม (คนทั่วไปดูได้) -->
   <div id="news-detail-modal" class="fixed inset-0 bg-slate-900 bg-opacity-60 hidden items-center justify-center z-50">
     <div class="bg-white rounded-lg p-6 w-full max-w-lg shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-start border-b pb-2">
@@ -333,7 +292,6 @@
     </div>
   </div>
 
-  <!-- 2. MODAL: รายการข่าวประชาสัมพันธ์ (เฉพาะผู้ดูแลระบบ) -->
   <div id="news-list-modal" class="fixed inset-0 bg-slate-900 bg-opacity-60 hidden items-center justify-center z-50">
     <div class="bg-white rounded-lg p-6 w-full max-w-3xl shadow-2xl space-y-4 border-t-4 border-brand-blue max-h-[90vh] flex flex-col">
       <div class="flex justify-between items-center border-b pb-2">
@@ -358,7 +316,6 @@
     </div>
   </div>
 
-  <!-- 3. MODAL: ฟอร์มเพิ่ม/แก้ไข ข่าว (เฉพาะผู้ดูแลระบบ) -->
   <div id="news-form-modal" class="fixed inset-0 bg-slate-900 bg-opacity-70 hidden items-center justify-center z-[55]">
     <div class="bg-white rounded-lg p-6 w-full max-w-md shadow-2xl space-y-4 border-t-4 border-amber-500 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-2">
@@ -392,7 +349,6 @@
     </div>
   </div>
 
-  <!-- 4. MODAL: ยืนยันการลบข่าว (เฉพาะผู้ดูแลระบบ) -->
   <div id="news-confirm-modal" class="fixed inset-0 bg-slate-900 bg-opacity-75 hidden items-center justify-center z-[60]">
     <div class="bg-white rounded-lg p-6 w-80 shadow-2xl space-y-4 border-t-4 border-red-500 text-center">
       <div class="text-red-500 mb-2">
@@ -408,6 +364,74 @@
   </div>
 
 
+  <!-- MODAL: ฟอร์มเพิ่ม/แก้ไข หลักสูตร (สร้างใหม่ Native Form) -->
+  <div id="curriculum-form-modal" class="fixed inset-0 bg-slate-900 bg-opacity-70 hidden items-center justify-center z-[55]">
+    <div class="bg-white rounded-lg p-6 w-full max-w-md shadow-2xl space-y-4 border-t-4 border-brand-blue max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b pb-2">
+        <h3 id="curriculum-form-header" class="text-base font-bold text-slate-800">เพิ่มหลักสูตรใหม่</h3>
+        <button onclick="CurriculumSystem.closeForm()" class="text-slate-400 hover:text-slate-600 font-bold">X</button>
+      </div>
+
+      <form id="curriculum-native-form" method="POST" target="curriculum-iframe" enctype="multipart/form-data" onsubmit="CurriculumSystem.prepareSubmit()">
+        <input type="hidden" name="action" id="curriculum-action" value="saveCurriculumForm">
+        <input type="hidden" name="id" id="curriculum-id">
+        <input type="hidden" name="rowObj" id="curriculum-rowObj">
+
+        <div class="space-y-3">
+          <div>
+            <label class="block text-xs font-semibold mb-1">รหัสสถานศึกษา</label>
+            <input type="text" id="curriculum-school-id" class="w-full border rounded px-3 py-1.5 text-xs bg-slate-100" readonly>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold mb-1">ชื่อหลักสูตร</label>
+            <input type="text" id="curriculum-title" class="w-full border rounded px-3 py-1.5 text-xs focus:ring-2 focus:ring-brand-blue" required>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold mb-1">ระดับการศึกษา</label>
+              <select id="curriculum-level" class="w-full border rounded px-3 py-1.5 text-xs focus:ring-2 focus:ring-brand-blue" required>
+                <option value="">- เลือก -</option>
+                <option value="ปฐมวัย">ปฐมวัย</option>
+                <option value="ประถมศึกษา">ประถมศึกษา</option>
+                <option value="มัธยมศึกษา">มัธยมศึกษา</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold mb-1">ปีการศึกษา</label>
+              <input type="number" id="curriculum-year" class="w-full border rounded px-3 py-1.5 text-xs focus:ring-2 focus:ring-brand-blue" required>
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold mb-1">เอกสารหลักสูตร (PDF)</label>
+            <input type="file" name="file" id="curriculum-file" accept="application/pdf" class="w-full border rounded px-3 py-1.5 text-xs">
+            <p id="curriculum-file-hint" class="text-[10px] text-slate-400 mt-1 hidden">มีไฟล์เดิมอยู่แล้ว หากไม่ต้องการเปลี่ยน ไม่ต้องเลือกไฟล์ใหม่</p>
+          </div>
+        </div>
+
+        <div class="flex justify-end space-x-2 pt-4 mt-4 border-t">
+          <button type="button" onclick="CurriculumSystem.closeForm()" class="px-4 py-2 border rounded-md text-xs hover:bg-slate-100 font-semibold">ยกเลิก</button>
+          <button type="submit" id="curriculum-save-btn" class="px-5 py-2 bg-brand-blue text-white rounded-md text-xs hover:bg-blue-800 font-semibold transition shadow-sm">บันทึกข้อมูล</button>
+        </div>
+      </form>
+      <iframe name="curriculum-iframe" id="curriculum-iframe" class="hidden" onload="CurriculumSystem.onIframeLoad()"></iframe>
+    </div>
+  </div>
+
+  <div id="curr-confirm-modal" class="fixed inset-0 bg-slate-900 bg-opacity-75 hidden items-center justify-center z-[60]">
+    <div class="bg-white rounded-lg p-6 w-80 shadow-2xl space-y-4 border-t-4 border-red-500 text-center">
+      <div class="text-red-500 mb-2">
+        <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+      </div>
+      <h3 class="text-base font-bold text-slate-800">ยืนยันการลบหลักสูตร?</h3>
+      <p class="text-[11px] text-slate-500" id="curr-confirm-delete-text">คุณต้องการลบข้อมูลนี้ใช่หรือไม่</p>
+      <div class="flex justify-center space-x-3 pt-4">
+        <button onclick="CurriculumSystem.closeConfirm()" class="px-5 py-2 border rounded-md text-xs font-semibold hover:bg-slate-100">ยกเลิก</button>
+        <button id="curr-btn-confirm-delete" onclick="CurriculumSystem.executeDelete()" class="px-5 py-2 bg-red-600 text-white rounded-md text-xs font-semibold hover:bg-red-700 transition shadow-sm">ยืนยันลบ</button>
+      </div>
+    </div>
+  </div>
+
+
   <!-- JAVASCRIPT APPLICATION LOGIC -->
   <script>
     const GAS_API_URL = "https://script.google.com/macros/s/AKfycbyUbL4Aq6p4CP2u4KdWurx42-r75eSzAZeLVhAeL8xBBblseSv7IOUEZ31b8XVHtqA/exec";
@@ -417,22 +441,6 @@
     let levelChartInstances = {};
     let currentPage = 'home';
     let defaultHomeHTML = '';
-
-    // ฟังก์ชันเปิด/ปิด Sidebar บนมือถือ
-    function toggleSidebar() {
-      const sidebar = document.getElementById('sidebar');
-      const overlay = document.getElementById('sidebar-overlay');
-      
-      if (sidebar.classList.contains('translate-x-full')) {
-        // เปิดเมนู
-        sidebar.classList.remove('translate-x-full');
-        overlay.classList.remove('hidden');
-      } else {
-        // ปิดเมนู
-        sidebar.classList.add('translate-x-full');
-        overlay.classList.add('hidden');
-      }
-    }
 
     const pageTitles = {
       'home': 'หน้าแรก',
@@ -458,9 +466,21 @@
       fetchData();
     };
 
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebar-overlay');
+      
+      if (sidebar.classList.contains('translate-x-full')) {
+        sidebar.classList.remove('translate-x-full');
+        overlay.classList.remove('hidden');
+      } else {
+        sidebar.classList.add('translate-x-full');
+        overlay.classList.add('hidden');
+      }
+    }
+
     // 1. ฟังก์ชัน loadPage
     function loadPage(pageName) {
-      // โค้ดเพิ่มใหม่: เช็คว่าถ้าจอเล็ก (มือถือ) ให้ปิดเมนูหลังจากกดเลือก
       if (window.innerWidth < 1024) { 
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebar-overlay');
@@ -469,6 +489,7 @@
           overlay.classList.add('hidden');
         }
       }
+
       currentPage = pageName;
       document.getElementById('header-title').innerText = pageTitles[pageName] || 'SuperVision+';
 
@@ -487,7 +508,6 @@
         .then(html => { 
           document.getElementById('main-content').innerHTML = html; 
           
-          // เพิ่มคำสั่ง: ถ้าเปิดหน้าหลักสูตร ให้วาดการ์ดข้อมูลจริงจากฐานข้อมูล
           if (pageName === 'curriculum') {
             CurriculumSystem.renderCards();
           }
@@ -505,14 +525,11 @@
         });
     }
 
-    // ฟังก์ชันควบคุมหน้าจอโหลดข้อมูล (อัปเดตให้เปลี่ยนข้อความได้)
     function showGlobalLoader(msg = 'กำลังโหลดข้อมูล...') {
       const loader = document.getElementById('global-loader');
       if(loader) {
-        // หา tag span เพื่อเปลี่ยนข้อความ
         const span = loader.querySelector('span');
         if (span) span.innerText = msg;
-        
         loader.classList.remove('hidden');
         loader.classList.add('flex');
       }
@@ -536,21 +553,17 @@
           if (data.status === 'success') {
             dbData = data;
             
-            // อัปเดตหน้า Dashboard
             if (currentPage === 'home') {
               renderDashboard();
-              NewsSystem.renderCards(); // <--- แก้เป็นอันนี้
+              NewsSystem.renderCards();
             }
             
-            // อัปเดตหน้าหลักสูตร
             if (currentPage === 'curriculum') {
-              CurriculumSystem.renderCards(); // <--- แก้เป็นอันนี้
+              CurriculumSystem.renderCards();
             }
-            
             if (currentPage === 'settings') {
               SettingsSystem.loadSettingsToUI();
             }
-            // อัปเดตตารางจัดการข่าวถ้าเปิดอยู่
             const newsModal = document.getElementById('news-list-modal');
             if (newsModal && !newsModal.classList.contains('hidden')) {
               NewsSystem.renderTable();
@@ -572,14 +585,12 @@
     const NewsSystem = {
       targetDeleteId: null,
 
-      // แปลง ISO -> ไทย (สำหรับแสดงผล)
       isoToThai: function(isoStr) {
         if (!isoStr || !String(isoStr).includes('-')) return isoStr;
         const parts = String(isoStr).split('T')[0].split('-');
         if (parts.length !== 3) return isoStr;
         
         let y = parseInt(parts[0]);
-        // ป้องกันการบวก 543 ซ้ำ หากปีเป็น พ.ศ. อยู่แล้ว (เช่น 2569)
         if (y < 2500) {
           y += 543;
         }
@@ -589,15 +600,13 @@
         return `${d} ${m} ${y}`;
       },
 
-      // แปลง ไทย -> ISO (สำหรับลง Input Date)
       thaiToIso: function(thaiStr) {
         if (!thaiStr) return '';
         
-        // กรณีดึงมาจากชีทแล้วเป็น format แบบ 2026-08-12 หรือ 2569-08-12 อยู่แล้ว
         if (String(thaiStr).includes('-')) {
           const parts = String(thaiStr).split('T')[0].split('-');
           let y = parseInt(parts[0]);
-          if (y > 2500) y -= 543; // บังคับกลับเป็น ค.ศ. เสมอ สำหรับกล่อง input date
+          if (y > 2500) y -= 543; 
           return `${y}-${parts[1]}-${parts[2]}`;
         } 
         
@@ -611,7 +620,6 @@
         return `${y}-${m}-${d}`;
       },
 
-      // ดึงวันที่พร้อมแสดงผลให้ชัวร์
       getDisplayDate: function(rawDate) {
         if(!rawDate) return 'ไม่ระบุวันที่';
         if(String(rawDate).includes('-')) return this.isoToThai(rawDate);
@@ -637,7 +645,6 @@
           const imgSrc = (item['ภาพข่าว'] && item['ภาพข่าว'].length > 10) ? item['ภาพข่าว'] : 'SV_logo.png';
           const displayDate = this.getDisplayDate(item['วันที่']);
 
-          // เพิ่ม cursor-pointer และ onclick ที่กล่องข่าวเลย จะได้กดง่ายๆ
           html += `
             <div class="min-w-[280px] max-w-[280px] h-20 bg-slate-50 rounded-lg border border-slate-200 overflow-hidden flex flex-row shadow-sm hover:shadow transition cursor-pointer" onclick="NewsSystem.openDetail('${item['ลำดับ']}')">
               <div class="w-24 h-full flex-shrink-0 bg-slate-200">
@@ -665,7 +672,7 @@
         document.getElementById('detail-news-date').innerText = 'ประกาศเมื่อ: ' + this.getDisplayDate(news['วันที่']);
         document.getElementById('detail-news-content').innerText = news['เนื้อหาข่าว'] || '';
         const imgContainer = document.getElementById('detail-news-image-container');
-        imgContainer.innerHTML = news['ภาพข่าว'] ? `<img src="${news['ภาพข่าว']}" class="w-full max-h-60 object-cover rounded shadow">` : '';
+        imgContainer.innerHTML = news['ภาพข่าว'] ? `<img src="${news['ภาพข่าว']}" class="w-full max-h-60 object-cover rounded shadow" onerror="this.src='SV_logo.png'">` : '';
         document.getElementById('news-detail-modal').classList.replace('hidden', 'flex');
       },
       closeDetail: () => document.getElementById('news-detail-modal').classList.replace('flex', 'hidden'),
@@ -732,7 +739,7 @@
 
         if (!title || !content || !dateIso) return alert('กรุณากรอกข้อมูลให้ครบถ้วน');
 
-        const dateThaiStr = this.isoToThai(dateIso); // บันทึกเป็นวันที่ไทยเสมอ
+        const dateThaiStr = this.isoToThai(dateIso); 
 
         const originalText = btn.innerText;
         btn.innerText = 'กำลังบันทึก...';
@@ -748,7 +755,7 @@
           }).then(res => res.json()).then(res => {
             if (res.status === 'success') {
               this.closeForm();
-              fetchData(); // อัปเดตเงียบๆ
+              fetchData(); 
             } else alert('Error: ' + res.message);
             btn.innerText = originalText;
             btn.disabled = false;
@@ -784,7 +791,6 @@
         btn.innerText = 'กำลังลบ...';
         btn.disabled = true;
 
-        // ลบจากหน้าจอทันทีเพื่อความสมูท
         const row = document.getElementById('row-' + id);
         if(row) row.style.display = 'none';
         dbData.news = dbData.news.filter(n => String(n['ลำดับ']) !== String(id));
@@ -809,29 +815,25 @@
         });
       }
     };
-    // ==========================================
 
     // ==========================================
-    // MODULE: ระบบงานหลักสูตร (CurriculumSystem)
+    // MODULE: ระบบงานหลักสูตร (Native Form + Iframe)
     // ==========================================
     const CurriculumSystem = {
       targetDeleteId: null,
+      isSubmitting: false,
 
-      
       renderCards: function() {
         const container = document.getElementById('curriculum-container');
         if (!container) return;
 
         let currData = dbData.curriculum || [];
-        
-        // 1. ดึงสิทธิ์
         const currentRole = currentUser ? currentUser.role : 'บุคคลภายนอก'; 
         let perm = null;
         if (dbData.permissions) {
           perm = dbData.permissions.find(p => p['ระบบงาน'] === 'curriculum' && p['ระดับสิทธิ์'] === currentRole);
         }
 
-        // 2. จัดการปุ่ม "เพิ่มหลักสูตร"
         const addBtn = document.querySelector('button[onclick="CurriculumSystem.openForm()"]');
         if (addBtn) {
           if (perm && String(perm['C_Active']).toLowerCase() === 'true') {
@@ -843,20 +845,16 @@
           }
         }
 
-        // 3. ตรวจสอบสิทธิ์ R (Read)
         if (!perm || String(perm['R_Active']).toLowerCase() !== 'true') {
           container.innerHTML = '<div class="p-8 text-center text-slate-500 bg-white rounded-xl shadow-sm border border-slate-200">คุณไม่มีสิทธิ์ในการดูข้อมูลรายการหลักสูตร</div>';
           return;
         }
 
-        // 4. กรองข้อมูลตามสิทธิ์ R_Scope (Visibility)
         const readScope = perm['R_Scope'];
         const userUnitId = currentUser ? String(currentUser.unitId) : 'NO_UNIT';
         
-        if (readScope === 'UNIT') {
+        if (readScope === 'UNIT' || readScope === 'OWN') {
           currData = currData.filter(c => String(c['รหัสสถานศึกษา']) === userUnitId);
-        } else if (readScope === 'OWN') {
-          currData = currData.filter(c => String(c['รหัสสถานศึกษา']) === userUnitId); 
         }
 
         if (currData.length === 0) {
@@ -864,14 +862,11 @@
           return;
         }
 
-        // 5. เตรียมสิทธิ์พื้นฐาน Update / Delete
         const baseCanUpdate = perm && String(perm['U_Active']).toLowerCase() === 'true';
         const baseCanDelete = perm && String(perm['D_Active']).toLowerCase() === 'true';
         const uScope = perm ? perm['U_Scope'] : '';
         const dScope = perm ? perm['D_Scope'] : '';
-
-        // เตรียมข้อมูลอ้างอิงชื่อหน่วยงาน
-        const unitsData = dbData.units || [];
+        const unitsData = dbData.units || dbData['ข้อมูลหน่วยงาน'] || [];
 
         let html = '';
         currData.forEach(item => {
@@ -880,20 +875,14 @@
           else if (item['ระดับการศึกษา'] === 'ประถมศึกษา') levelColor = 'bg-green-500';
           else if (item['ระดับการศึกษา'] === 'มัธยมศึกษา') levelColor = 'bg-purple-500';
 
-          // หาชื่อหน่วยงานจากรหัส
           const unitObj = unitsData.find(u => String(u['รหัสหน่วยงาน']) === String(item['รหัสสถานศึกษา']));
           const unitName = unitObj ? unitObj['ชื่อหน่วยงาน'] : item['รหัสสถานศึกษา'];
 
           const pdfUrl = item['เอกสารหลักสูตร'] || '#';
-          
-          // ปรับปุ่มเปิดไฟล์ให้เป็นคำว่า PDF สีแดง
           const btnPdfHtml = item['เอกสารหลักสูตร'] 
-            ? `<a href="${pdfUrl}" target="_blank" class="px-2.5 py-1 text-red-600 font-bold bg-red-50 hover:bg-red-100 border border-red-200 rounded text-xs transition" title="เปิดไฟล์หลักสูตร">
-                 PDF
-               </a>` 
+            ? `<a href="${pdfUrl}" target="_blank" class="px-2.5 py-1 text-red-600 font-bold bg-red-50 hover:bg-red-100 border border-red-200 rounded text-xs transition" title="เปิดไฟล์หลักสูตร">PDF</a>` 
             : `<span class="text-[10px] text-slate-400">ไม่มีไฟล์แนบ</span>`;
 
-          // 6. เช็คสิทธิ์การแสดงปุ่ม Edit/Delete ของการ์ดใบนี้โดยเฉพาะ
           let showUpdateBtn = false;
           let showDeleteBtn = false;
           
@@ -901,7 +890,6 @@
             if (uScope === 'ALL') showUpdateBtn = true;
             else if ((uScope === 'UNIT' || uScope === 'OWN') && String(item['รหัสสถานศึกษา']) === userUnitId) showUpdateBtn = true;
           }
-          
           if (baseCanDelete) {
             if (dScope === 'ALL') showDeleteBtn = true;
             else if ((dScope === 'UNIT' || dScope === 'OWN') && String(item['รหัสสถานศึกษา']) === userUnitId) showDeleteBtn = true;
@@ -909,14 +897,10 @@
 
           let actionBtns = '';
           if (showUpdateBtn) {
-            actionBtns += `<button onclick="CurriculumSystem.openForm('${item['ลำดับ']}')" class="p-1.5 bg-amber-50 text-amber-600 rounded hover:bg-amber-100 transition" title="แก้ไข">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
-                </button>`;
+            actionBtns += `<button onclick="CurriculumSystem.openForm('${item['ลำดับ']}')" class="p-1.5 bg-amber-50 text-amber-600 rounded hover:bg-amber-100 transition" title="แก้ไข"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></button>`;
           }
           if (showDeleteBtn) {
-            actionBtns += `<button onclick="CurriculumSystem.confirmDelete('${item['ลำดับ']}', '${item['ชื่อหลักสูตร']}')" class="p-1.5 bg-red-50 text-red-600 rounded hover:bg-red-100 transition" title="ลบ">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                </button>`;
+            actionBtns += `<button onclick="CurriculumSystem.confirmDelete('${item['ลำดับ']}', '${item['ชื่อหลักสูตร']}')" class="p-1.5 bg-red-50 text-red-600 rounded hover:bg-red-100 transition" title="ลบ"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>`;
           }
 
           html += `
@@ -944,126 +928,60 @@
       },
 
       openForm: function(id = null) {
-        document.getElementById('curriculum-error-msg').classList.add('hidden');
-        document.getElementById('curriculum-form').reset();
+        document.getElementById('curriculum-native-form').action = GAS_API_URL;
+        document.getElementById('curriculum-native-form').reset();
+        document.getElementById('curriculum-file-hint').classList.add('hidden');
         document.getElementById('curriculum-id').value = id || '';
         document.getElementById('curriculum-school-id').value = currentUser ? currentUser.unitId : '';
-        const fileHint = document.getElementById('curriculum-file-hint');
-        
+        document.getElementById('curriculum-form-header').innerText = id ? 'แก้ไขข้อมูลหลักสูตร' : 'เพิ่มหลักสูตรใหม่';
+
         if (id) {
-          document.getElementById('curriculum-form-header').innerText = 'แก้ไขข้อมูลหลักสูตร';
           const item = dbData.curriculum.find(c => String(c['ลำดับ']) === String(id));
           if (item) {
             document.getElementById('curriculum-title').value = item['ชื่อหลักสูตร'] || '';
             document.getElementById('curriculum-level').value = item['ระดับการศึกษา'] || '';
             document.getElementById('curriculum-year').value = item['ปีการศึกษา'] || '';
-            if(item['เอกสารหลักสูตร']) {
-               fileHint.classList.remove('hidden');
-            } else {
-               fileHint.classList.add('hidden');
-            }
+            if (item['เอกสารหลักสูตร']) document.getElementById('curriculum-file-hint').classList.remove('hidden');
           }
-        } else {
-          document.getElementById('curriculum-form-header').innerText = 'เพิ่มหลักสูตรใหม่';
-          if(fileHint) fileHint.classList.add('hidden');
         }
         document.getElementById('curriculum-form-modal').classList.replace('hidden', 'flex');
       },
 
       closeForm: function() {
         document.getElementById('curriculum-form-modal').classList.replace('flex', 'hidden');
+        const btn = document.getElementById('curriculum-save-btn');
+        btn.innerText = 'บันทึกข้อมูล';
+        btn.disabled = false;
+        btn.classList.remove('opacity-70', 'cursor-not-allowed');
+        this.isSubmitting = false;
       },
-      // ------------------------------------------------
 
-      saveData: function(btn) {
+      prepareSubmit: function() {
+        this.isSubmitting = true; 
+
         const id = document.getElementById('curriculum-id').value;
-        const schoolId = document.getElementById('curriculum-school-id').value;
-        const title = document.getElementById('curriculum-title').value;
-        const level = document.getElementById('curriculum-level').value;
-        const year = document.getElementById('curriculum-year').value;
-        const fileInput = document.getElementById('curriculum-file');
-        
-        const errMsg = document.getElementById('curriculum-error-msg');
-        errMsg.classList.add('hidden'); 
+        const rowObj = {
+          'รหัสสถานศึกษา': document.getElementById('curriculum-school-id').value,
+          'ชื่อหลักสูตร': document.getElementById('curriculum-title').value,
+          'ระดับการศึกษา': document.getElementById('curriculum-level').value,
+          'ปีการศึกษา': document.getElementById('curriculum-year').value
+        };
 
-        if (!title || !level || !year) {
-           errMsg.innerText = 'กรุณากรอกข้อมูลให้ครบถ้วน';
-           errMsg.classList.remove('hidden');
-           return;
-        }
+        document.getElementById('curriculum-action').value = id ? 'updateCurriculumForm' : 'saveCurriculumForm';
+        document.getElementById('curriculum-rowObj').value = JSON.stringify(rowObj);
 
-        const originalText = btn.innerText;
-        btn.innerText = 'กำลังอัปโหลดและบันทึก...';
+        const btn = document.getElementById('curriculum-save-btn');
+        btn.innerText = 'กำลังอัปโหลดไฟล์...';
         btn.disabled = true;
         btn.classList.add('opacity-70', 'cursor-not-allowed');
-
-        const rowObj = {
-          'รหัสสถานศึกษา': schoolId,
-          'ชื่อหลักสูตร': title,
-          'ระดับการศึกษา': level,
-          'ปีการศึกษา': year
-        };
-
-        // 1. สร้าง Iframe ซ่อนไว้รอรับการตอบกลับ
-        let iframe = document.getElementById('hidden-upload-iframe');
-        if (!iframe) {
-            iframe = document.createElement('iframe');
-            iframe.name = 'hidden-upload-iframe';
-            iframe.id = 'hidden-upload-iframe';
-            iframe.style.display = 'none';
-            document.body.appendChild(iframe);
-        }
-
-        // 2. ใช้ Form เดิมที่มีอยู่แล้ว (ไม่ย้ายช่องไฟล์เพื่อป้องกันเบราว์เซอร์ล้างค่า)
-        const form = document.getElementById('curriculum-form');
-        
-        // ลบ input ซ่อนที่อาจตกค้างอยู่จากการกดรอบก่อนๆ
-        document.querySelectorAll('.temp-hidden-input').forEach(el => el.remove());
-
-        // 3. สร้าง input ซ่อนเพื่อส่งค่าข้อมูลต่างๆ
-        const addHiddenInput = (name, value) => {
-            const inp = document.createElement('input');
-            inp.type = 'hidden';
-            inp.name = name;
-            inp.value = value;
-            inp.className = 'temp-hidden-input';
-            form.appendChild(inp);
-        };
-
-        addHiddenInput('action', id ? 'updateCurriculumForm' : 'saveCurriculumForm');
-        addHiddenInput('id', id || '');
-        addHiddenInput('rowObj', JSON.stringify(rowObj));
-        
-        // ตั้งชื่อให้ช่องไฟล์ เพื่อให้ส่งค่าได้
-        fileInput.name = 'file'; 
-
-        // 4. กำหนดเป้าหมายการส่งฟอร์มไปที่ Iframe ทะลุกำแพง CORS
-        form.action = GAS_API_URL;
-        form.method = 'POST';
-        form.enctype = 'multipart/form-data';
-        form.target = 'hidden-upload-iframe';
-
-        // 5. ดักจับเมื่อ Iframe โหลดเสร็จ
-        iframe.onload = function() {
-            // ทำความสะอาด
-            document.querySelectorAll('.temp-hidden-input').forEach(el => el.remove());
-            fileInput.name = ''; 
-            
-            CurriculumSystem.closeForm();
-            fetchData(); 
-            
-            btn.innerText = originalText;
-            btn.disabled = false;
-            btn.classList.remove('opacity-70', 'cursor-not-allowed');
-        };
-
-        // 6. สั่ง submit ฟอร์ม
-        form.submit();
       },
 
+      onIframeLoad: function() {
+        if (!this.isSubmitting) return;
+        this.closeForm();
+        fetchData(); 
+      },
 
-
-      
       confirmDelete: function(id, title) {
         this.targetDeleteId = id;
         document.getElementById('curr-confirm-delete-text').innerText = `หลักสูตร: "${title}"`;
@@ -1147,7 +1065,7 @@
               const sel = td.querySelector('select');
               chk.checked = (String(active).toLowerCase() === 'true');
               sel.value = scope || 'ALL';
-              chk.dispatchEvent(new Event('change')); // กระตุ้น UI ให้เปลี่ยนสี
+              chk.dispatchEvent(new Event('change')); 
             };
             setCell(tds[1], perm['C_Active'], perm['C_Scope'], 'text-green-600');
             setCell(tds[2], perm['R_Active'], perm['R_Scope'], 'text-blue-600');
@@ -1190,35 +1108,27 @@
     // ฟังก์ชันออกจากระบบ และเปิดหน้าต่างล็อกอิน
     function toggleAuthModal() {
       if (currentUser) {
-        // กรณีออกจากระบบ: แสดงวงแหวนโหลด
         showGlobalLoader('กำลังออกจากระบบ...');
-        
-        // จำลองการหน่วงเวลาสัก 0.8 วินาที เพื่อความลื่นไหล (เพราะลบข้อมูลในเครื่องมันเร็วจนมองไม่ทัน)
         setTimeout(() => {
           currentUser = null;
           localStorage.removeItem('supervision_user');
           updateAuthUI();
           loadPage('home');
-          hideGlobalLoader(); // ปิดวงแหวน
+          hideGlobalLoader(); 
         }, 800);
-        
       } else {
-        // กรณีเปิดหน้าต่างล็อกอิน: ให้ล้างข้อมูลเดิมในช่องกรอกก่อน
         document.getElementById('login-username').value = '';
         document.getElementById('login-password').value = '';
         document.getElementById('login-error').classList.add('hidden');
-        
         document.getElementById('login-modal').classList.remove('hidden');
         document.getElementById('login-modal').classList.add('flex');
       }
     }
 
-    // ฟังก์ชันเข้าสู่ระบบ
     function performLogin() {
       const u = document.getElementById('login-username').value;
       const p = document.getElementById('login-password').value;
 
-      // ปิดกล่อง error เก่า (ถ้ามี) และแสดงวงแหวนโหลด
       document.getElementById('login-error').classList.add('hidden');
       showGlobalLoader('กำลังตรวจสอบสิทธิ์...'); 
 
@@ -1228,8 +1138,7 @@
       })
       .then(res => res.json())
       .then(res => {
-        hideGlobalLoader(); // ปิดวงแหวนโหลดเมื่อได้รับข้อมูลกลับมา
-        
+        hideGlobalLoader(); 
         if (res.status === 'success') {
           currentUser = res.user;
           localStorage.setItem('supervision_user', JSON.stringify(currentUser));
@@ -1237,14 +1146,13 @@
           document.getElementById('login-modal').classList.remove('flex');
           updateAuthUI();
         } else {
-          // แจ้งเตือนกรณีรหัสผิด
           const errDiv = document.getElementById('login-error');
           errDiv.innerText = res.message;
           errDiv.classList.remove('hidden');
         }
       })
       .catch(err => {
-        hideGlobalLoader(); // ปิดวงแหวนโหลดถ้าเกิดข้อผิดพลาด
+        hideGlobalLoader(); 
         const errDiv = document.getElementById('login-error');
         errDiv.innerText = 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้';
         errDiv.classList.remove('hidden');
@@ -1263,7 +1171,6 @@
         info.classList.remove('hidden');
         document.getElementById('user-name').innerText = currentUser.name;
         
-        // เช็คว่ามีข้อมูลหน่วยงานส่งมาไหม ถ้ามีให้เอามาต่อท้าย ถ้าไม่มีก็ไม่แสดง
         let unitText = currentUser.unit ? ` ${currentUser.unit}` : '';
         document.getElementById('user-role').innerText = `${currentUser.position}${unitText} (${currentUser.role})`;
 
@@ -1297,14 +1204,11 @@
       unitData.forEach(item => {
         const unitId = item['รหัสหน่วยงาน'] || '';
         const unitName = item['ชื่อหน่วยงาน'] || '';
-        
-        // เช็คว่าชื่อหน่วยงานมีคำที่บ่งบอกว่าเป็นสถานศึกษาหรือไม่ (คัดกรอง ท.1-ท.6 และ ศพด.)
         const isSchool = unitName.includes('โรงเรียน') || 
                          unitName.includes('ท.') || 
                          unitName.includes('ศพด') || 
                          unitName.includes('ศูนย์พัฒนา');
 
-        // แสดงใน Dropdown เฉพาะหน่วยงานที่ผ่านเงื่อนไขสถานศึกษา
         if (unitId.trim() !== '' && unitName.trim() !== '' && isSchool) {
           html += `<option value="${unitId.trim()}">${unitName.trim()}</option>`;
         }
@@ -1328,7 +1232,6 @@
           : schoolSelect.options[schoolSelect.selectedIndex].text;
       }
 
-      // ดึงรหัสหน่วยงานที่จัดว่าเป็น "สถานศึกษา" (ท.1-ท.6 และ ศพด.) เก็บไว้เป็นลิสต์
       const unitData = dbData['ข้อมูลหน่วยงาน'] || dbData.units || [];
       const validSchoolIds = [];
       unitData.forEach(item => {
@@ -1344,11 +1247,9 @@
         }
       });
 
-      // ฟังก์ชันตัวกรองข้อมูล
       const filterData = (item) => {
         const itemId = String(item['รหัสหน่วยงาน'] || '').trim();
         if (selectedSchoolId === 'ALL') {
-          // ถ้าเลือกภาพรวม ให้นับสถิติ "เฉพาะ" รหัสหน่วยงานที่เป็นสถานศึกษาเท่านั้น
           return validSchoolIds.includes(itemId);
         }
         return itemId === String(selectedSchoolId).trim();
@@ -1580,7 +1481,6 @@
       }
     }
 
-    // ฟังก์ชันใหม่ วาดกราฟแท่งบุคลากร
     function renderPersonnelBarChart(personnelList) {
       const barCtx = document.getElementById('personnelBarChart');
       if (!barCtx) return;
@@ -1588,7 +1488,6 @@
       let oldBarChart = Chart.getChart('personnelBarChart');
       if (oldBarChart) oldBarChart.destroy();
 
-      // จัดกลุ่มบุคลากรตามตำแหน่ง
       const positionGroup = {};
       personnelList.forEach(p => {
         let pos = p['ตำแหน่ง'] || 'ไม่ระบุ';
