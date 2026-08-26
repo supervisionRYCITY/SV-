@@ -1004,43 +1004,64 @@
           'ปีการศึกษา': year
         };
 
-        // เตรียมข้อมูลส่งผ่าน FormData
-        const formData = new FormData();
-        formData.append('action', id ? 'updateCurriculumForm' : 'saveCurriculumForm');
-        formData.append('id', id || "");
-        formData.append('rowObj', JSON.stringify(rowObj));
-        
-        // ถ้ามีการเลือกไฟล์ ให้แนบไฟล์ไปด้วย
-        if (fileInput.files && fileInput.files.length > 0) {
-           formData.append('file', fileInput.files[0]);
+        // 1. สร้าง Iframe ซ่อนไว้เพื่อรับการตอบกลับ
+        let iframe = document.getElementById('hidden-upload-iframe');
+        if (!iframe) {
+            iframe = document.createElement('iframe');
+            iframe.name = 'hidden-upload-iframe';
+            iframe.id = 'hidden-upload-iframe';
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
         }
 
-        // ยิง Fetch ปกติ
-        fetch(GAS_API_URL, {
-          method: 'POST',
-          body: formData
-        })
-        .then(res => res.json())
-        .then(res => {
-          if (res.status === 'success') {
-            CurriculumSystem.closeForm(); 
-            fetchData(); 
-          } else {
-            errMsg.innerText = 'Error: ' + res.message;
-            errMsg.classList.remove('hidden');
-          }
-        })
-        .catch(err => {
-          errMsg.innerText = 'เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์';
-          errMsg.classList.remove('hidden');
-        })
-        .finally(() => {
-          btn.innerText = originalText;
-          btn.disabled = false;
-          btn.classList.remove('opacity-70', 'cursor-not-allowed');
-        });
-      },
+        // 2. สร้าง Form จำลองสำหรับยิงไฟล์
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = GAS_API_URL;
+        form.target = 'hidden-upload-iframe'; // ชี้เป้าไปที่ Iframe
+        form.enctype = 'multipart/form-data';
+        form.style.display = 'none';
 
+        // 3. แนบข้อมูลต่างๆ เข้าไปใน Form
+        const addInput = (name, value) => {
+            const inp = document.createElement('input');
+            inp.name = name;
+            inp.value = value;
+            form.appendChild(inp);
+        };
+        addInput('action', id ? 'updateCurriculumForm' : 'saveCurriculumForm');
+        addInput('id', id || '');
+        addInput('rowObj', JSON.stringify(rowObj));
+
+        // 4. ย้ายช่องเลือกไฟล์ (ของจริง) ไปใส่ใน Form ชั่วคราว
+        const fileParent = fileInput.parentNode;
+        const fileSibling = fileInput.nextSibling;
+        fileInput.name = 'file'; 
+        form.appendChild(fileInput);
+        
+        document.body.appendChild(form);
+
+        // 5. ดักจับเมื่อ Iframe โหลดเสร็จ (แปลว่าเซิร์ฟเวอร์ตอบกลับมาแล้ว)
+        iframe.onload = function() {
+            // ย้ายช่องเลือกไฟล์กลับคืนที่เดิมบนหน้าเว็บ
+            fileInput.name = ''; 
+            fileParent.insertBefore(fileInput, fileSibling);
+            
+            // ลบ Form จำลองทิ้ง
+            document.body.removeChild(form);
+            
+            // ปิดหน้าต่างและรีเฟรชข้อมูล
+            CurriculumSystem.closeForm();
+            fetchData(); 
+            
+            btn.innerText = originalText;
+            btn.disabled = false;
+            btn.classList.remove('opacity-70', 'cursor-not-allowed');
+        };
+
+        // 6. กดส่งข้อมูล
+        form.submit();
+      },
       confirmDelete: function(id, title) {
         this.targetDeleteId = id;
         document.getElementById('curr-confirm-delete-text').innerText = `หลักสูตร: "${title}"`;
