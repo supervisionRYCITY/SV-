@@ -1004,7 +1004,7 @@
           'ปีการศึกษา': year
         };
 
-        // 1. สร้าง Iframe ซ่อนไว้เพื่อรับการตอบกลับ
+        // 1. สร้าง Iframe ซ่อนไว้รอรับการตอบกลับ
         let iframe = document.getElementById('hidden-upload-iframe');
         if (!iframe) {
             iframe = document.createElement('iframe');
@@ -1014,43 +1014,41 @@
             document.body.appendChild(iframe);
         }
 
-        // 2. สร้าง Form จำลองสำหรับยิงไฟล์
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = GAS_API_URL;
-        form.target = 'hidden-upload-iframe'; // ชี้เป้าไปที่ Iframe
-        form.enctype = 'multipart/form-data';
-        form.style.display = 'none';
+        // 2. ใช้ Form เดิมที่มีอยู่แล้ว (ไม่ย้ายช่องไฟล์เพื่อป้องกันเบราว์เซอร์ล้างค่า)
+        const form = document.getElementById('curriculum-form');
+        
+        // ลบ input ซ่อนที่อาจตกค้างอยู่จากการกดรอบก่อนๆ
+        document.querySelectorAll('.temp-hidden-input').forEach(el => el.remove());
 
-        // 3. แนบข้อมูลต่างๆ เข้าไปใน Form
-        const addInput = (name, value) => {
+        // 3. สร้าง input ซ่อนเพื่อส่งค่าข้อมูลต่างๆ
+        const addHiddenInput = (name, value) => {
             const inp = document.createElement('input');
+            inp.type = 'hidden';
             inp.name = name;
             inp.value = value;
+            inp.className = 'temp-hidden-input';
             form.appendChild(inp);
         };
-        addInput('action', id ? 'updateCurriculumForm' : 'saveCurriculumForm');
-        addInput('id', id || '');
-        addInput('rowObj', JSON.stringify(rowObj));
 
-        // 4. ย้ายช่องเลือกไฟล์ (ของจริง) ไปใส่ใน Form ชั่วคราว
-        const fileParent = fileInput.parentNode;
-        const fileSibling = fileInput.nextSibling;
-        fileInput.name = 'file'; 
-        form.appendChild(fileInput);
+        addHiddenInput('action', id ? 'updateCurriculumForm' : 'saveCurriculumForm');
+        addHiddenInput('id', id || '');
+        addHiddenInput('rowObj', JSON.stringify(rowObj));
         
-        document.body.appendChild(form);
+        // ตั้งชื่อให้ช่องไฟล์ เพื่อให้ส่งค่าได้
+        fileInput.name = 'file'; 
 
-        // 5. ดักจับเมื่อ Iframe โหลดเสร็จ (แปลว่าเซิร์ฟเวอร์ตอบกลับมาแล้ว)
+        // 4. กำหนดเป้าหมายการส่งฟอร์มไปที่ Iframe ทะลุกำแพง CORS
+        form.action = GAS_API_URL;
+        form.method = 'POST';
+        form.enctype = 'multipart/form-data';
+        form.target = 'hidden-upload-iframe';
+
+        // 5. ดักจับเมื่อ Iframe โหลดเสร็จ
         iframe.onload = function() {
-            // ย้ายช่องเลือกไฟล์กลับคืนที่เดิมบนหน้าเว็บ
+            // ทำความสะอาด
+            document.querySelectorAll('.temp-hidden-input').forEach(el => el.remove());
             fileInput.name = ''; 
-            fileParent.insertBefore(fileInput, fileSibling);
             
-            // ลบ Form จำลองทิ้ง
-            document.body.removeChild(form);
-            
-            // ปิดหน้าต่างและรีเฟรชข้อมูล
             CurriculumSystem.closeForm();
             fetchData(); 
             
@@ -1059,9 +1057,13 @@
             btn.classList.remove('opacity-70', 'cursor-not-allowed');
         };
 
-        // 6. กดส่งข้อมูล
+        // 6. สั่ง submit ฟอร์ม
         form.submit();
       },
+
+
+
+      
       confirmDelete: function(id, title) {
         this.targetDeleteId = id;
         document.getElementById('curr-confirm-delete-text').innerText = `หลักสูตร: "${title}"`;
