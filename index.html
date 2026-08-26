@@ -1035,16 +1035,6 @@
 
         if (fileInput.files && fileInput.files[0]) {
           const file = fileInput.files[0];
-          
-          const maxSizeMB = 10; 
-          if (file.size > maxSizeMB * 1024 * 1024) {
-             errMsg.innerText = `ขนาดไฟล์เกินกำหนด (สูงสุด ${maxSizeMB} MB)`;
-             errMsg.classList.remove('hidden');
-             btn.innerText = originalText;
-             btn.disabled = false;
-             btn.classList.remove('opacity-70', 'cursor-not-allowed');
-             return; 
-          }
 
           const reader = new FileReader();
           reader.onload = e => executeSave({
