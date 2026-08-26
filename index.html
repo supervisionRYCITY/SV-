@@ -413,7 +413,7 @@
           <button type="submit" id="curriculum-save-btn" class="px-5 py-2 bg-brand-blue text-white rounded-md text-xs hover:bg-blue-800 font-semibold transition shadow-sm">บันทึกข้อมูล</button>
         </div>
       </form>
-      <iframe name="curriculum-iframe" id="curriculum-iframe" class="hidden" onload="CurriculumSystem.onIframeLoad()"></iframe>
+    <iframe name="curriculum-iframe" id="curriculum-iframe" class="hidden" onload="if(window.CurriculumSystem) CurriculumSystem.onIframeLoad()"></iframe>
     </div>
   </div>
 
