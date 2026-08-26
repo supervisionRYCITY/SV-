@@ -993,7 +993,7 @@
         }
 
         const originalText = btn.innerText;
-        btn.innerText = 'กำลังอัปโหลดไฟล์และบันทึก...';
+        btn.innerText = 'กำลังอัปโหลดและบันทึก...';
         btn.disabled = true;
         btn.classList.add('opacity-70', 'cursor-not-allowed');
 
@@ -1004,64 +1004,41 @@
           'ปีการศึกษา': year
         };
 
-        // --- เริ่มต้นกระบวนการส่งไฟล์แบบปกติผ่าน Hidden Iframe ---
-        let iframe = document.getElementById('hidden-upload-iframe');
-        if (!iframe) {
-            iframe = document.createElement('iframe');
-            iframe.name = 'hidden-upload-iframe';
-            iframe.id = 'hidden-upload-iframe';
-            iframe.style.display = 'none';
-            document.body.appendChild(iframe);
+        // เตรียมข้อมูลส่งผ่าน FormData
+        const formData = new FormData();
+        formData.append('action', id ? 'updateCurriculumForm' : 'saveCurriculumForm');
+        formData.append('id', id || "");
+        formData.append('rowObj', JSON.stringify(rowObj));
+        
+        // ถ้ามีการเลือกไฟล์ ให้แนบไฟล์ไปด้วย
+        if (fileInput.files && fileInput.files.length > 0) {
+           formData.append('file', fileInput.files[0]);
         }
 
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = GAS_API_URL;
-        form.target = 'hidden-upload-iframe';
-        form.enctype = 'multipart/form-data';
-        form.style.display = 'none';
-
-        const inputAction = document.createElement('input');
-        inputAction.name = 'action';
-        inputAction.value = id ? 'updateCurriculumForm' : 'saveCurriculumForm';
-        form.appendChild(inputAction);
-
-        const inputId = document.createElement('input');
-        inputId.name = 'id';
-        inputId.value = id || '';
-        form.appendChild(inputId);
-
-        const inputRowObj = document.createElement('input');
-        inputRowObj.name = 'rowObj';
-        inputRowObj.value = JSON.stringify(rowObj);
-        form.appendChild(inputRowObj);
-
-        // ** ย้ายช่องเลือกไฟล์ (ของจริง) มาใส่ในฟอร์มจำลองชั่วคราว **
-        const fileParent = fileInput.parentNode;
-        const fileSibling = fileInput.nextSibling;
-        fileInput.name = 'file'; // ชื่อต้องตรงกับที่รับใน Code.gs
-        form.appendChild(fileInput);
-        
-        document.body.appendChild(form);
-
-        // เมื่อ Iframe ส่งข้อมูลเสร็จเรียบร้อย
-        iframe.onload = function() {
-            // ย้ายช่องเลือกไฟล์ กลับไปคืนที่หน้าจอเดิม
-            fileInput.name = ''; 
-            fileParent.insertBefore(fileInput, fileSibling);
-            
-            document.body.removeChild(form); // ลบฟอร์มจำลองทิ้ง
-            
-            CurriculumSystem.closeForm();
-            fetchData(); // สั่งดึงข้อมูลตารางใหม่
-            
-            btn.innerText = originalText;
-            btn.disabled = false;
-            btn.classList.remove('opacity-70', 'cursor-not-allowed');
-        };
-
-        // สั่งกดส่งฟอร์ม (เบราว์เซอร์จัดการไฟล์ให้ทั้งหมด)
-        form.submit();
+        // ยิง Fetch ปกติ
+        fetch(GAS_API_URL, {
+          method: 'POST',
+          body: formData
+        })
+        .then(res => res.json())
+        .then(res => {
+          if (res.status === 'success') {
+            CurriculumSystem.closeForm(); 
+            fetchData(); 
+          } else {
+            errMsg.innerText = 'Error: ' + res.message;
+            errMsg.classList.remove('hidden');
+          }
+        })
+        .catch(err => {
+          errMsg.innerText = 'เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์';
+          errMsg.classList.remove('hidden');
+        })
+        .finally(() => {
+          btn.innerText = originalText;
+          btn.disabled = false;
+          btn.classList.remove('opacity-70', 'cursor-not-allowed');
+        });
       },
 
       confirmDelete: function(id, title) {
