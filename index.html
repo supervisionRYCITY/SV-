@@ -565,24 +565,38 @@
     const THAI_MONTHS = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
 
     // -- NEWS LOGIC (อัปเดตใหม่ 5 ภาพ แบบ Base64) --
+    // -- NEWS LOGIC (อัปเดตใหม่ 5 ภาพ แบบ Base64) --
     const NewsSystem = {
       targetDeleteId: null,
       isoToThai: iso => iso ? `${parseInt(iso.split('-')[2])} ${['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'][parseInt(iso.split('-')[1])-1]} ${parseInt(iso.split('-')[0])<2500 ? parseInt(iso.split('-')[0])+543 : parseInt(iso.split('-')[0])}` : '',
       thaiToIso: th => { if(!th||th.includes('-')) return th; const p=th.split(' '); return `${parseInt(p[2])<2500?parseInt(p[2])+543:parseInt(p[2])-543}-${String(['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'].indexOf(p[1])+1).padStart(2,'0')}-${p[0].padStart(2,'0')}`;},
       
+      // ฟังก์ชันแปลงลิงก์ Google Drive ให้แสดงผลเป็นรูปภาพได้
+      getImgUrl: function(url) {
+        if (!url || url.trim() === '') return '';
+        if (url.includes('drive.google.com/file/d/')) {
+          const match = url.match(/\/d\/(.*?)\//);
+          if (match && match[1]) return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+        }
+        return url;
+      },
+
       renderCards: function() {
         const c = document.getElementById('news-container');
-        c.innerHTML = (dbData.news||[]).sort((a,b)=>new Date(this.thaiToIso(b['วันที่']))-new Date(this.thaiToIso(a['วันที่']))).map(n => `
+        c.innerHTML = (dbData.news||[]).sort((a,b)=>new Date(this.thaiToIso(b['วันที่']))-new Date(this.thaiToIso(a['วันที่']))).map(n => {
+          const mainImg = this.getImgUrl(n['ภาพข่าว 1']) || 'SV_logo.png';
+          return `
           <div class="min-w-[280px] max-w-[280px] bg-white rounded-lg border border-slate-200 p-3 cursor-pointer shadow-sm hover:shadow-md transition" onclick="NewsSystem.openDetail('${n['ลำดับ']}')">
             <div class="flex h-16">
-              <img src="${n['ภาพข่าว 1']||'SV_logo.png'}" class="w-16 h-16 object-cover bg-gray-100 rounded border border-slate-100 mr-3" onerror="this.src='SV_logo.png'">
+              <img src="${mainImg}" class="w-16 h-16 object-cover bg-gray-100 rounded border border-slate-100 mr-3" onerror="this.src='SV_logo.png'">
               <div class="flex-1 overflow-hidden">
                 <span class="text-[10px] text-blue-500 font-semibold">${n['วันที่']}</span>
                 <h4 class="font-bold text-xs truncate text-slate-800">${n['พาดหัวข่าว']}</h4>
                 <p class="text-[10px] text-gray-500 line-clamp-1 mt-0.5">${n['เนื้อหาข่าว']}</p>
               </div>
             </div>
-          </div>`).join('');
+          </div>`
+        }).join('');
       },
 
       openDetail: function(id) { 
@@ -592,8 +606,10 @@
         document.getElementById('detail-news-date').innerText = 'ประกาศเมื่อ: ' + n['วันที่']; 
         document.getElementById('detail-news-content').innerText = n['เนื้อหาข่าว']; 
         
-        // จัดการ Grid รูปภาพ (1 ภาพใหญ่ 4 ภาพเล็ก)
-        const imgs = [n['ภาพข่าว 1'], n['ภาพข่าว 2'], n['ภาพข่าว 3'], n['ภาพข่าว 4'], n['ภาพข่าว 5']].filter(url => url && url.trim() !== '');
+        // จัดการ Grid รูปภาพ (แปลงลิงก์ก่อน)
+        const rawImgs = [n['ภาพข่าว 1'], n['ภาพข่าว 2'], n['ภาพข่าว 3'], n['ภาพข่าว 4'], n['ภาพข่าว 5']];
+        const imgs = rawImgs.map(url => this.getImgUrl(url)).filter(url => url !== '');
+
         let imgHtml = '<div class="grid grid-cols-2 gap-2 h-full content-start">';
         if(imgs.length > 0) {
           imgHtml += `<div class="col-span-2"><a href="${imgs[0]}" target="_blank"><img src="${imgs[0]}" class="w-full h-48 sm:h-64 object-cover rounded-lg border border-slate-200 hover:opacity-90 transition"></a></div>`;
@@ -659,7 +675,6 @@
         });
 
         try {
-          // อ่านไฟล์ทั้ง 5 ช่อง
           for (let i = 1; i <= 5; i++) {
             const fileInput = document.getElementById('news-file' + i);
             if (fileInput && fileInput.files && fileInput.files[0]) {
