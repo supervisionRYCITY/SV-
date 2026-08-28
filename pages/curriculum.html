@@ -118,7 +118,16 @@
       else { document.getElementById('login-modal').classList.toggle('hidden'); document.getElementById('login-modal').classList.toggle('flex'); } 
     }
     
-    function updateAuthUI() { document.getElementById('auth-btn').innerText = currentUser ? 'ออกจากระบบ' : 'เข้าสู่ระบบ'; }
+    function updateAuthUI() { 
+      document.getElementById('auth-btn').innerText = currentUser ? 'ออกจากระบบ' : 'เข้าสู่ระบบ'; 
+      if (currentUser && currentUser.role === 'ผู้ดูแลระบบ') {
+        document.getElementById('menu-settings').classList.remove('hidden');
+        document.getElementById('menu-news').classList.remove('hidden');
+      } else {
+        document.getElementById('menu-settings').classList.add('hidden');
+        document.getElementById('menu-news').classList.add('hidden');
+      }
+    }
     
     function performLogin() {
       const u = document.getElementById('login-username').value; const p = document.getElementById('login-password').value;
