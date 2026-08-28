@@ -87,136 +87,66 @@
           </div>
         </div>
 
-        <!-- MAIN DASHBOARD CONTAINER -->
-        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+        <!-- แบ่งครึ่งจอ: ซ้าย (Dashboard) | ขวา (คู่มือ) -->
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
           
-          <!-- Header & Filter -->
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5 pb-4 border-b border-slate-100">
-            <h2 class="text-lg sm:text-xl font-bold text-brand-blue tracking-tight">
-              Dashboard นักเรียน ผู้บริหาร ครูและบุคลากร
-            </h2>
-            <div class="flex items-center gap-2">
-              <select id="school-filter" onchange="renderDashboard()" class="text-sm border border-slate-300 rounded-lg p-2 bg-slate-50 font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-blue min-w-[220px] shadow-sm cursor-pointer">
-                <!-- รายชื่อจะถูกเติมโดยอัตโนมัติจากชีท "ข้อมูลหน่วยงาน" -->
-              </select>
-            </div>
-          </div>
-
-          <!-- SECTION 2: KPI Cards (5 Cards) -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3 mb-6">
-            <!-- Card 1: นักเรียน -->
-            <div class="bg-slate-50 border-l-4 border-brand-blue p-4 rounded-lg shadow-sm border border-r-slate-200 border-t-slate-200 border-b-slate-200 flex flex-col justify-between">
-              <p class="text-xs text-slate-500 font-bold mb-1">จำนวนนักเรียน</p>
-              <h3 id="card1-total" class="text-4xl font-extrabold text-brand-blue my-2 leading-none">0</h3>
-              <div class="flex justify-start gap-4 items-center text-xs mt-auto pt-2 border-t border-slate-200 font-bold">
-                <span class="text-blue-500 flex items-center gap-1" title="ชาย">
-                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="10" cy="14" r="6" stroke-width="3"/><path d="M14 10l6-6M15 4h5v5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  <span id="card1-male">0</span>
-                </span>
-                <span class="text-pink-500 flex items-center gap-1" title="หญิง">
-                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="10" r="6" stroke-width="3"/><path d="M12 16v8M9 20h6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  <span id="card1-female">0</span>
-                </span>
-              </div>
-            </div>
-
-            <!-- Card 2: ผู้บริหาร -->
-            <div class="bg-slate-50 border-l-4 border-purple-600 p-4 rounded-lg shadow-sm border border-r-slate-200 border-t-slate-200 border-b-slate-200 flex flex-col justify-between">
-              <p class="text-xs text-slate-500 font-bold mb-1">ผู้บริหารสถานศึกษา</p>
-              <h3 id="card2-total" class="text-4xl font-extrabold text-purple-600 my-2 leading-none">0</h3>
-              <div class="flex justify-start gap-4 items-center text-xs mt-auto pt-2 border-t border-slate-200 font-bold">
-                <span class="text-blue-500 flex items-center gap-1" title="ชาย">
-                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="10" cy="14" r="6" stroke-width="3"/><path d="M14 10l6-6M15 4h5v5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  <span id="card2-male">0</span>
-                </span>
-                <span class="text-pink-500 flex items-center gap-1" title="หญิง">
-                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="10" r="6" stroke-width="3"/><path d="M12 16v8M9 20h6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  <span id="card2-female">0</span>
-                </span>
-              </div>
-            </div>
-
-            <!-- Card 3: พนักงานครู -->
-            <div class="bg-slate-50 border-l-4 border-brand-green p-4 rounded-lg shadow-sm border border-r-slate-200 border-t-slate-200 border-b-slate-200 flex flex-col justify-between">
-              <p class="text-xs text-slate-500 font-bold mb-1">พนักงานครู</p>
-              <h3 id="card3-total" class="text-4xl font-extrabold text-brand-green my-2 leading-none">0</h3>
-              <div class="flex justify-start gap-4 items-center text-xs mt-auto pt-2 border-t border-slate-200 font-bold">
-                <span class="text-blue-500 flex items-center gap-1" title="ชาย">
-                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="10" cy="14" r="6" stroke-width="3"/><path d="M14 10l6-6M15 4h5v5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  <span id="card3-male">0</span>
-                </span>
-                <span class="text-pink-500 flex items-center gap-1" title="หญิง">
-                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="10" r="6" stroke-width="3"/><path d="M12 16v8M9 20h6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  <span id="card3-female">0</span>
-                </span>
-              </div>
-            </div>
-
-            <!-- Card 4: บุคลากรทางการศึกษา -->
-            <div class="bg-slate-50 border-l-4 border-amber-500 p-4 rounded-lg shadow-sm border border-r-slate-200 border-t-slate-200 border-b-slate-200 flex flex-col justify-between">
-              <p class="text-xs text-slate-500 font-bold mb-1">บุคลากรทางการศึกษา</p>
-              <h3 id="card4-total" class="text-4xl font-extrabold text-amber-500 my-2 leading-none">0</h3>
-              <div class="flex justify-start gap-4 items-center text-xs mt-auto pt-2 border-t border-slate-200 font-bold">
-                <span class="text-blue-500 flex items-center gap-1" title="ชาย">
-                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="10" cy="14" r="6" stroke-width="3"/><path d="M14 10l6-6M15 4h5v5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  <span id="card4-male">0</span>
-                </span>
-                <span class="text-pink-500 flex items-center gap-1" title="หญิง">
-                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="10" r="6" stroke-width="3"/><path d="M12 16v8M9 20h6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  <span id="card4-female">0</span>
-                </span>
-              </div>
-            </div>
-
-            <!-- Card 5: วิทยฐานะ -->
-            <div class="bg-slate-50 border-l-4 border-rose-500 p-3 rounded-lg shadow-sm border border-r-slate-200 border-t-slate-200 border-b-slate-200 flex flex-col justify-center">
-              <p class="text-[11px] text-slate-500 font-semibold mb-2">วิทยฐานะบุคลากร</p>
-              <div class="space-y-1.5 text-xs text-slate-700 font-medium">
-                <div class="flex justify-between"><span>เชี่ยวชาญ:</span> <strong id="card5-expert" class="text-rose-600">0</strong></div>
-                <div class="flex justify-between"><span>ชำนาญการพิเศษ:</span> <strong id="card5-snr-adv" class="text-rose-600">0</strong></div>
-                <div class="flex justify-between"><span>ชำนาญการ:</span> <strong id="card5-adv" class="text-rose-600">0</strong></div>
-                <div class="flex justify-between"><span>ไม่มีวิทยฐานะ:</span> <strong id="card5-none" class="text-rose-600">0</strong></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- SECTION 3: กราฟสถิตินักเรียนและบุคลากร -->
-          <div class="pt-2">
-            <div class="flex flex-col sm:flex-row justify-between sm:items-center mb-4 pb-3 border-b border-slate-100 gap-2">
-              <h3 class="text-sm font-bold text-slate-800">สัดส่วนนักเรียนและบุคลากรแยกตามประเภท</h3>
-              <span id="selected-school-label" class="text-xs text-brand-blue font-semibold bg-blue-50 px-2.5 py-1 rounded-md border border-blue-100 inline-block text-center">ภาพรวมเทศบาลนครระยอง</span>
+          <!-- ฝั่งซ้าย: Dashboard -->
+          <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col h-full">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-5 pb-4 border-b border-slate-100 gap-2">
+              <h2 class="text-lg sm:text-xl font-bold text-brand-blue">Dashboard สถานศึกษา</h2>
+              <select id="school-filter" onchange="renderDashboard()" class="text-sm border rounded-lg p-2 bg-slate-50 w-full sm:w-auto font-medium"></select>
             </div>
             
-            <!-- Container สำหรับการ์ด Mini Doughnut Chart นักเรียน -->
-            <div id="student-levels-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-6">
-              <p class="text-xs text-slate-400 col-span-full text-center py-4">กำลังประมวลผลข้อมูล...</p>
+            <!-- ปรับ Grid ของ Card เป็น 2 คอลัมน์ให้เหมาะกับพื้นที่ครึ่งจอ -->
+            <div class="grid grid-cols-2 gap-3 mb-6">
+              <div class="bg-slate-50 border-l-4 border-brand-blue p-4 rounded-lg shadow-sm">
+                <p class="text-[11px] font-bold text-slate-500">จำนวนนักเรียน</p>
+                <h3 id="card1-total" class="text-2xl sm:text-3xl font-extrabold text-brand-blue my-1">0</h3>
+              </div>
+              <div class="bg-slate-50 border-l-4 border-purple-600 p-4 rounded-lg shadow-sm">
+                <p class="text-[11px] font-bold text-slate-500">ผู้บริหารสถานศึกษา</p>
+                <h3 id="card2-total" class="text-2xl sm:text-3xl font-extrabold text-purple-600 my-1">0</h3>
+              </div>
+              <div class="bg-slate-50 border-l-4 border-green-600 p-4 rounded-lg shadow-sm">
+                <p class="text-[11px] font-bold text-slate-500">พนักงานครู</p>
+                <h3 id="card3-total" class="text-2xl sm:text-3xl font-extrabold text-green-600 my-1">0</h3>
+              </div>
+              <div class="bg-slate-50 border-l-4 border-amber-500 p-4 rounded-lg shadow-sm">
+                <p class="text-[11px] font-bold text-slate-500">บุคลากรทางการศึกษา</p>
+                <h3 id="card4-total" class="text-2xl sm:text-3xl font-extrabold text-amber-500 my-1">0</h3>
+              </div>
             </div>
-
-            <!-- กราฟแท่ง (Bar Chart) แบ่ง 2 คอลัมน์ ซ้าย (นักเรียน) - ขวา (บุคลากร) -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 border-t border-slate-200 pt-6 mt-4">
-              
-              <!-- กราฟนักเรียน -->
-              <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
-                <h3 class="text-sm font-bold text-slate-700 mb-4 text-center">จำนวนนักเรียน ชาย/หญิง (แยกตามระดับชั้น)</h3>
-                <div class="w-full h-80 relative">
-                  <canvas id="studentBarChart"></canvas>
-                </div>
+            
+            <!-- กราฟแท่ง (เรียงบนล่าง) -->
+            <div class="grid grid-cols-1 gap-6 border-t border-slate-100 pt-6 mt-auto">
+              <div>
+                <h3 class="text-sm font-bold text-slate-700 mb-3 text-center">นักเรียน ชาย/หญิง (ตามระดับชั้น)</h3>
+                <div class="w-full h-56 relative"><canvas id="studentBarChart"></canvas></div>
               </div>
-              
-              <!-- กราฟบุคลากร -->
-              <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
-                <h3 class="text-sm font-bold text-slate-700 mb-4 text-center">จำนวนบุคลากร ชาย/หญิง (แยกตามตำแหน่ง)</h3>
-                <div class="w-full h-80 relative">
-                  <canvas id="personnelBarChart"></canvas>
-                </div>
+              <div>
+                <h3 class="text-sm font-bold text-slate-700 mb-3 text-center">บุคลากร ชาย/หญิง (ตามตำแหน่ง)</h3>
+                <div class="w-full h-56 relative"><canvas id="personnelBarChart"></canvas></div>
               </div>
-
             </div>
           </div>
-          
-        </div>
 
-      </div>
+          <!-- ฝั่งขวา: คู่มือและเอกสารวิชาการ -->
+          <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col h-full">
+            <div class="flex justify-between items-center mb-5 pb-4 border-b border-slate-100">
+              <h2 class="text-lg sm:text-xl font-bold text-brand-blue">คู่มือและเอกสารวิชาการ</h2>
+            </div>
+            
+            <!-- กล่องสำหรับใส่ข้อมูลในอนาคต -->
+            <div class="flex-1 flex items-center justify-center border-2 border-dashed border-slate-200 rounded-lg bg-slate-50 p-10">
+              <div class="text-center text-slate-400">
+                <svg class="w-12 h-12 mx-auto mb-3 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                <p class="text-sm font-bold text-slate-500">ส่วนแสดงคู่มือและเอกสารวิชาการ</p>
+                <p class="text-xs mt-1">รอเพิ่มข้อมูลจากระบบหลังบ้าน...</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
     </main>
   </div>
 
@@ -1424,154 +1354,46 @@
     }
 
     function renderStudentLevelCharts(studentList) {
-      const container = document.getElementById('student-levels-grid');
-      if (!container) return;
-
-      Object.keys(levelChartInstances).forEach(key => {
-        if (levelChartInstances[key]) levelChartInstances[key].destroy();
-      });
-      levelChartInstances = {};
-
-      let oldBarChart = Chart.getChart('studentBarChart');
+      let oldBarChart = Chart.getChart('studentBarChart'); 
       if (oldBarChart) oldBarChart.destroy();
 
       const levelGroup = {};
       studentList.forEach(s => {
-        let lvl = s['ระดับชั้น'] || 'ไม่ระบุ';
-        let count = Number(s['จำนวน'] || 0);
+        let lvl = s['ระดับชั้น'] || 'ไม่ระบุ'; 
+        let count = Number(s['จำนวน'] || 0); 
         let gender = s['เพศ'];
-
-        if (!levelGroup[lvl]) {
-          levelGroup[lvl] = { male: 0, female: 0, total: 0 };
-        }
-        if (gender === 'ชาย') levelGroup[lvl].male += count;
+        
+        if (!levelGroup[lvl]) levelGroup[lvl] = { male: 0, female: 0, total: 0 };
+        if (gender === 'ชาย') levelGroup[lvl].male += count; 
         else if (gender === 'หญิง') levelGroup[lvl].female += count;
         levelGroup[lvl].total += count;
       });
 
       const levels = Object.keys(levelGroup);
-      if (levels.length === 0) {
-        container.innerHTML = '<p class="text-xs text-slate-400 col-span-full text-center py-4">ไม่มีข้อมูลนักเรียนสำหรับสถานศึกษานี้</p>';
-        return;
-      }
+      if (levels.length === 0) return;
 
-      let html = '';
-      levels.forEach((lvl, idx) => {
-        const canvasId = `miniChartLevel_${idx}`;
-        const data = levelGroup[lvl];
-
-        html += `
-          <div class="bg-slate-50 border border-slate-200 rounded-lg p-3 flex flex-col items-center text-center shadow-sm hover:border-brand-lightblue transition h-full">
-            <h4 class="font-bold text-[13px] text-slate-700 w-full border-b pb-2 mb-3 truncate" title="${lvl}">${lvl}</h4>
-            
-            <div class="w-28 h-28 relative mb-2">
-              <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <span class="text-2xl font-extrabold text-brand-blue">${data.total.toLocaleString()}</span>
-              </div>
-              <canvas id="${canvasId}"></canvas>
-            </div>
-            
-            <div class="w-full flex justify-between items-center text-[10px] font-bold mt-auto pt-2 border-t border-slate-100">
-              <span class="text-blue-500 flex items-center gap-1" title="ชาย">
-                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="10" cy="14" r="6" stroke-width="3"/><path d="M14 10l6-6M15 4h5v5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                ${data.male.toLocaleString()}
-              </span>
-              <span class="text-pink-500 flex items-center gap-1" title="หญิง">
-                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="10" r="6" stroke-width="3"/><path d="M12 16v8M9 20h6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                ${data.female.toLocaleString()}
-              </span>
-            </div>
-          </div>
-        `;
-      });
-      container.innerHTML = html;
-
-      levels.forEach((lvl, idx) => {
-        const canvasId = `miniChartLevel_${idx}`;
-        const ctx = document.getElementById(canvasId);
-        if (!ctx) return;
-
-        const data = levelGroup[lvl];
-        levelChartInstances[canvasId] = new Chart(ctx, {
-          type: 'doughnut', 
-          data: {
-            labels: ['ชาย', 'หญิง'],
-            datasets: [{
-              data: [data.male, data.female],
-              backgroundColor: ['#3b82f6', '#ec4899'],
-              borderWidth: 2,
-              borderColor: '#f8fafc'
-            }]
+      new Chart(document.getElementById('studentBarChart'), {
+        type: 'bar',
+        data: { 
+          labels: levels, 
+          datasets: [
+            { label: 'ชาย', data: levels.map(l=>levelGroup[l].male), backgroundColor: '#3b82f6', borderRadius: 4 }, 
+            { label: 'หญิง', data: levels.map(l=>levelGroup[l].female), backgroundColor: '#ec4899', borderRadius: 4 }
+          ] 
+        },
+        options: { 
+          responsive: true, 
+          maintainAspectRatio: false, 
+          plugins: { 
+            legend: { position: 'top', labels: { font: { family: 'Sarabun', size: 12, weight: 'bold' } } },
+            datalabels: { color: '#fff', font: {size:10}, formatter: v=>v>0?v.toLocaleString():'' } 
           },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            cutout: '68%',
-            layout: { padding: 0 },
-            plugins: {
-              legend: { display: false },
-              tooltip: {
-                callbacks: {
-                  label: function(context) {
-                    return ` ${context.label}: ${context.raw.toLocaleString()} คน`;
-                  }
-                }
-              },
-              datalabels: { display: false }
-            }
+          scales: {
+            x: { ticks: { font: { family: 'Sarabun', size: 11 } } },
+            y: { beginAtZero: true, ticks: { font: { family: 'Sarabun' } } }
           }
-        });
+        }
       });
-
-      const barCtx = document.getElementById('studentBarChart');
-      if (barCtx) {
-        const maleData = levels.map(lvl => levelGroup[lvl].male);
-        const femaleData = levels.map(lvl => levelGroup[lvl].female);
-
-        new Chart(barCtx, {
-          type: 'bar',
-          data: {
-            labels: levels,
-            datasets: [
-              {
-                label: 'ชาย',
-                data: maleData,
-                backgroundColor: '#3b82f6',
-                borderRadius: 4
-              },
-              {
-                label: 'หญิง',
-                data: femaleData,
-                backgroundColor: '#ec4899',
-                borderRadius: 4
-              }
-            ]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: {
-                position: 'top',
-                labels: { font: { family: 'Sarabun', size: 12, weight: 'bold' } }
-              },
-              datalabels: {
-                color: '#ffffff',
-                anchor: 'center',
-                align: 'center',
-                font: { weight: 'bold', size: 10 },
-                formatter: function(value) {
-                  return value > 0 ? value.toLocaleString() : '';
-                }
-              }
-            },
-            scales: {
-              x: { ticks: { font: { family: 'Sarabun', size: 11 } } },
-              y: { beginAtZero: true, ticks: { font: { family: 'Sarabun' } } }
-            }
-          }
-        });
-      }
     }
 
     // ฟังก์ชันใหม่ วาดกราฟแท่งบุคลากร
