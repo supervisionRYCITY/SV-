@@ -291,9 +291,9 @@
 
   <!-- MODALS ระบบข่าวประชาสัมพันธ์แบบใหม่ -->
   
-  <!-- NEWS MODALS (เวอร์ชันใหม่ 5 ภาพ) -->
+  <!-- NEWS MODALS (เวอร์ชัน 5 ภาพ แบบ Base64) -->
   
-  <!-- Modal 1: ดูรายละเอียดข่าว (ปรับเลย์เอาต์แบ่งครึ่ง ซ้าย-รูป / ขวา-ข้อความ) -->
+  <!-- Modal 1: ดูรายละเอียดข่าว (ปรับเลย์เอาต์แบ่งครึ่ง ซ้าย-รูป 5 ภาพ / ขวา-ข้อความ) -->
   <div id="news-detail-modal" class="fixed inset-0 bg-slate-900 bg-opacity-70 hidden items-center justify-center z-[60]">
     <div class="bg-white rounded-xl w-full max-w-4xl max-h-[90vh] shadow-2xl flex flex-col overflow-hidden">
       <div class="px-5 py-4 border-b flex justify-between items-center bg-slate-50">
@@ -302,7 +302,7 @@
       </div>
       
       <div class="flex-1 overflow-y-auto p-5 flex flex-col md:flex-row gap-6">
-        <!-- ฝั่งซ้าย: รูปภาพ (JS จะสอดไส้ Grid โครงสร้าง 1 ภาพใหญ่ 4 ภาพเล็ก มาใส่ที่นี่) -->
+        <!-- ฝั่งซ้าย: รูปภาพ (1 ภาพใหญ่ 4 ภาพเล็ก) -->
         <div class="w-full md:w-1/2 flex-shrink-0" id="detail-news-image-grid"></div>
         
         <!-- ฝั่งขวา: เนื้อหา -->
@@ -314,7 +314,7 @@
     </div>
   </div>
 
-  <!-- Modal 2: ตารางจัดการข่าว (คงเดิม ปรับแค่ CSS นิดหน่อย) -->
+  <!-- Modal 2: ตารางจัดการข่าว -->
   <div id="news-list-modal" class="fixed inset-0 bg-slate-900 bg-opacity-60 hidden items-center justify-center z-50">
     <div class="bg-white rounded-lg p-6 w-full max-w-3xl max-h-[90vh] flex flex-col">
       <div class="flex justify-between items-center mb-4 border-b pb-3">
@@ -333,7 +333,7 @@
     </div>
   </div>
 
-  <!-- Modal 3: ฟอร์มเพิ่ม/แก้ไขข่าว (แบบ Native Iframe 5 ช่อง) -->
+  <!-- Modal 3: ฟอร์มเพิ่ม/แก้ไขข่าว (แบบ Base64) -->
   <div id="news-form-modal" class="fixed inset-0 bg-slate-900 bg-opacity-70 hidden items-center justify-center z-[55]">
     <div class="bg-white rounded-lg p-6 w-full max-w-xl shadow-2xl space-y-4 border-t-4 border-amber-500 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-2">
@@ -341,10 +341,9 @@
         <button onclick="NewsSystem.closeForm()" class="text-slate-400 hover:text-slate-600 font-bold text-lg">×</button>
       </div>
       
-      <form id="news-native-form" method="POST" target="news-iframe" enctype="multipart/form-data" onsubmit="NewsSystem.prepareSubmit()">
-        <input type="hidden" name="action" id="news-action" value="saveNewsForm">
-        <input type="hidden" name="id" id="news-id">
-        <input type="hidden" name="rowObj" id="news-rowObj">
+      <!-- ใช้ Form ธรรมดา ส่งผ่าน fetch -->
+      <form id="news-form" class="space-y-3" onsubmit="event.preventDefault(); NewsSystem.saveData(document.getElementById('news-save-btn'));">
+        <input type="hidden" id="news-id">
 
         <div class="space-y-3">
           <div><input type="text" id="news-title" class="w-full border p-2 text-xs focus:ring-1 focus:ring-brand-blue" placeholder="พาดหัวข่าว" required></div>
@@ -356,23 +355,23 @@
             <div class="grid grid-cols-2 gap-3">
               <div class="col-span-2">
                 <label class="text-[10px] text-slate-500 font-bold block mb-1">1. ภาพหลัก (แถวบนสุด)</label>
-                <input type="file" name="file1" accept="image/jpeg, image/jpg, image/png" class="w-full border border-slate-200 rounded text-[10px] file:bg-blue-50 file:text-brand-blue file:border-0 file:rounded file:px-2 file:py-1 cursor-pointer">
+                <input type="file" id="news-file1" accept="image/jpeg, image/jpg, image/png" class="w-full border border-slate-200 rounded text-[10px] file:bg-blue-50 file:text-brand-blue file:border-0 file:rounded file:px-2 file:py-1 cursor-pointer">
               </div>
               <div>
                 <label class="text-[10px] text-slate-500 font-bold block mb-1">2. ภาพเล็ก (กลางซ้าย)</label>
-                <input type="file" name="file2" accept="image/*" class="w-full border border-slate-200 rounded text-[10px] file:bg-slate-100 file:border-0 file:rounded file:px-2 file:py-1 cursor-pointer">
+                <input type="file" id="news-file2" accept="image/*" class="w-full border border-slate-200 rounded text-[10px] file:bg-slate-100 file:border-0 file:rounded file:px-2 file:py-1 cursor-pointer">
               </div>
               <div>
                 <label class="text-[10px] text-slate-500 font-bold block mb-1">3. ภาพเล็ก (กลางขวา)</label>
-                <input type="file" name="file3" accept="image/*" class="w-full border border-slate-200 rounded text-[10px] file:bg-slate-100 file:border-0 file:rounded file:px-2 file:py-1 cursor-pointer">
+                <input type="file" id="news-file3" accept="image/*" class="w-full border border-slate-200 rounded text-[10px] file:bg-slate-100 file:border-0 file:rounded file:px-2 file:py-1 cursor-pointer">
               </div>
               <div>
                 <label class="text-[10px] text-slate-500 font-bold block mb-1">4. ภาพเล็ก (ล่างซ้าย)</label>
-                <input type="file" name="file4" accept="image/*" class="w-full border border-slate-200 rounded text-[10px] file:bg-slate-100 file:border-0 file:rounded file:px-2 file:py-1 cursor-pointer">
+                <input type="file" id="news-file4" accept="image/*" class="w-full border border-slate-200 rounded text-[10px] file:bg-slate-100 file:border-0 file:rounded file:px-2 file:py-1 cursor-pointer">
               </div>
               <div>
                 <label class="text-[10px] text-slate-500 font-bold block mb-1">5. ภาพเล็ก (ล่างขวา)</label>
-                <input type="file" name="file5" accept="image/*" class="w-full border border-slate-200 rounded text-[10px] file:bg-slate-100 file:border-0 file:rounded file:px-2 file:py-1 cursor-pointer">
+                <input type="file" id="news-file5" accept="image/*" class="w-full border border-slate-200 rounded text-[10px] file:bg-slate-100 file:border-0 file:rounded file:px-2 file:py-1 cursor-pointer">
               </div>
             </div>
             <p class="text-[10px] text-amber-600 mt-2">* หากแก้ไขและไม่ต้องการเปลี่ยนภาพ ไม่ต้องเลือกไฟล์ใหม่</p>
@@ -384,12 +383,10 @@
           <button type="submit" id="news-save-btn" class="px-4 py-1.5 bg-brand-green text-white rounded text-xs font-bold hover:bg-green-700 shadow-sm">บันทึกข้อมูล</button>
         </div>
       </form>
-      <iframe name="news-iframe" id="news-iframe" class="hidden" onload="if(window.NewsSystem) NewsSystem.onIframeLoad()"></iframe>
     </div>
   </div>
 
   <div id="news-confirm-modal" class="fixed inset-0 bg-slate-900 bg-opacity-75 hidden items-center justify-center z-[65]"><div class="bg-white rounded-lg p-6 w-80 text-center"><h3 class="font-bold mb-4">ยืนยันการลบ?</h3><div class="flex justify-center gap-2"><button onclick="NewsSystem.closeConfirm()" class="px-4 py-2 border rounded text-xs font-bold">ยกเลิก</button><button id="btn-confirm-delete" onclick="NewsSystem.executeDelete()" class="px-4 py-2 bg-red-600 text-white rounded text-xs font-bold">ลบข้อมูล</button></div></div></div>
-
   <!-- 4. MODAL: ยืนยันการลบข่าว (เฉพาะผู้ดูแลระบบ) -->
   <div id="news-confirm-modal" class="fixed inset-0 bg-slate-900 bg-opacity-75 hidden items-center justify-center z-[60]">
     <div class="bg-white rounded-lg p-6 w-80 shadow-2xl space-y-4 border-t-4 border-red-500 text-center">
@@ -567,10 +564,9 @@
     // ==========================================
     const THAI_MONTHS = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
 
-    // -- NEWS LOGIC (อัปเดตใหม่รองรับ 5 ภาพ) --
+    // -- NEWS LOGIC (อัปเดตใหม่ 5 ภาพ แบบ Base64) --
     const NewsSystem = {
       targetDeleteId: null,
-      isSubmitting: false,
       isoToThai: iso => iso ? `${parseInt(iso.split('-')[2])} ${['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'][parseInt(iso.split('-')[1])-1]} ${parseInt(iso.split('-')[0])<2500 ? parseInt(iso.split('-')[0])+543 : parseInt(iso.split('-')[0])}` : '',
       thaiToIso: th => { if(!th||th.includes('-')) return th; const p=th.split(' '); return `${parseInt(p[2])<2500?parseInt(p[2])+543:parseInt(p[2])-543}-${String(['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'].indexOf(p[1])+1).padStart(2,'0')}-${p[0].padStart(2,'0')}`;},
       
@@ -596,7 +592,7 @@
         document.getElementById('detail-news-date').innerText = 'ประกาศเมื่อ: ' + n['วันที่']; 
         document.getElementById('detail-news-content').innerText = n['เนื้อหาข่าว']; 
         
-        // จัดการ Grid รูปภาพ
+        // จัดการ Grid รูปภาพ (1 ภาพใหญ่ 4 ภาพเล็ก)
         const imgs = [n['ภาพข่าว 1'], n['ภาพข่าว 2'], n['ภาพข่าว 3'], n['ภาพข่าว 4'], n['ภาพข่าว 5']].filter(url => url && url.trim() !== '');
         let imgHtml = '<div class="grid grid-cols-2 gap-2 h-full content-start">';
         if(imgs.length > 0) {
@@ -622,8 +618,7 @@
       },
       
       openForm: function(id=null) { 
-        document.getElementById('news-native-form').action = GAS_API_URL;
-        document.getElementById('news-native-form').reset(); 
+        document.getElementById('news-form').reset(); 
         document.getElementById('news-id').value = id || ''; 
         document.getElementById('news-form-header').innerText = id ? 'แก้ไขข่าวประชาสัมพันธ์' : 'เพิ่มข่าวใหม่';
         if(id){ 
@@ -637,32 +632,59 @@
       },
       closeForm: function() { 
         document.getElementById('news-form-modal').classList.replace('flex','hidden'); 
-        const btn = document.getElementById('news-save-btn');
-        if(btn) { btn.innerText = 'บันทึกข้อมูล'; btn.disabled = false; btn.classList.remove('opacity-70', 'cursor-not-allowed'); }
-        this.isSubmitting = false;
         this.openList(); 
       },
       
-      prepareSubmit: function() {
-        this.isSubmitting = true;
+      saveData: async function(btn) {
         const id = document.getElementById('news-id').value;
-        const rowObj = {
-          'พาดหัวข่าว': document.getElementById('news-title').value,
-          'เนื้อหาข่าว': document.getElementById('news-content').value,
-          'วันที่': this.isoToThai(document.getElementById('news-date').value)
-        };
-        document.getElementById('news-action').value = id ? 'updateNewsForm' : 'saveNewsForm';
-        document.getElementById('news-rowObj').value = JSON.stringify(rowObj);
+        const title = document.getElementById('news-title').value;
+        const content = document.getElementById('news-content').value;
+        const dateIso = document.getElementById('news-date').value;
 
-        const btn = document.getElementById('news-save-btn');
-        if(btn) { btn.innerText = 'กำลังอัปโหลด...'; btn.disabled = true; btn.classList.add('opacity-70', 'cursor-not-allowed'); }
-      },
-      onIframeLoad: function() {
-        if (!this.isSubmitting) return;
-        this.closeForm();
-        fetchData();
-        const form = document.getElementById('news-native-form');
-        if(form) form.reset();
+        if(!title || !dateIso) return alert('กรุณากรอกข้อมูลให้ครบถ้วน');
+
+        const rowObj = { 'พาดหัวข่าว': title, 'เนื้อหาข่าว': content, 'วันที่': this.isoToThai(dateIso) };
+
+        const originalText = btn.innerText;
+        btn.innerText = 'กำลังอัปโหลด (อาจใช้เวลา 1-2 นาที)...';
+        btn.disabled = true;
+        btn.classList.add('opacity-70', 'cursor-not-allowed');
+
+        const getBase64 = (file) => new Promise((resolve, reject) => {
+          if (!file) return resolve(null);
+          const reader = new FileReader();
+          reader.onload = () => resolve({ base64: reader.result, mimeType: file.type, filename: file.name });
+          reader.onerror = error => reject(error);
+          reader.readAsDataURL(file);
+        });
+
+        try {
+          // อ่านไฟล์ทั้ง 5 ช่อง
+          for (let i = 1; i <= 5; i++) {
+            const fileInput = document.getElementById('news-file' + i);
+            if (fileInput && fileInput.files && fileInput.files[0]) {
+               rowObj['fileData' + i] = await getBase64(fileInput.files[0]);
+            }
+          }
+
+          const res = await fetch(GAS_API_URL, {
+            method: 'POST',
+            body: JSON.stringify({ action: id ? 'updateNews' : 'saveNews', id: id, rowObj: rowObj })
+          }).then(r => r.json());
+
+          if (res.status === 'success') {
+            this.closeForm();
+            fetchData();
+          } else {
+            alert('Error: ' + res.message);
+          }
+        } catch (err) {
+          alert('เกิดข้อผิดพลาด: ' + err.message);
+        } finally {
+          btn.innerText = originalText;
+          btn.disabled = false;
+          btn.classList.remove('opacity-70', 'cursor-not-allowed');
+        }
       },
 
       confirmDelete: function(id) { this.targetDeleteId=id; document.getElementById('news-confirm-modal').classList.replace('hidden','flex'); },
