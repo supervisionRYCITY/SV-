@@ -571,13 +571,23 @@
       isoToThai: iso => iso ? `${parseInt(iso.split('-')[2])} ${['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'][parseInt(iso.split('-')[1])-1]} ${parseInt(iso.split('-')[0])<2500 ? parseInt(iso.split('-')[0])+543 : parseInt(iso.split('-')[0])}` : '',
       thaiToIso: th => { if(!th||th.includes('-')) return th; const p=th.split(' '); return `${parseInt(p[2])<2500?parseInt(p[2])+543:parseInt(p[2])-543}-${String(['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'].indexOf(p[1])+1).padStart(2,'0')}-${p[0].padStart(2,'0')}`;},
       
-      // ฟังก์ชันแปลงลิงก์ Google Drive ให้แสดงผลเป็นรูปภาพได้
+      // ฟังก์ชันแปลงลิงก์ Google Drive ให้แสดงผลเป็นรูปภาพได้ 100%
       getImgUrl: function(url) {
         if (!url || url.trim() === '') return '';
-        if (url.includes('drive.google.com/file/d/')) {
-          const match = url.match(/\/d\/(.*?)\//);
-          if (match && match[1]) return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+        
+        // 1. ถ้าเป็นลิงก์แบบเก่า (file/d/ID/view)
+        let match = url.match(/\/d\/(.*?)\//);
+        if (match && match[1]) {
+          return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w1000`;
         }
+        
+        // 2. ถ้าเป็นลิงก์แบบที่สอง (uc?export=view&id=ID)
+        match = url.match(/id=([a-zA-Z0-9_-]+)/);
+        if (url.includes('uc?export=view') && match && match[1]) {
+          return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w1000`;
+        }
+        
+        // 3. ถ้าเป็นลิงก์ Thumbnail อยู่แล้ว หรือเป็นลิงก์ภายนอก ให้คืนค่าเดิมกลับไป
         return url;
       },
 
