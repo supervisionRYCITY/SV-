@@ -1,85 +1,197 @@
-<div class="space-y-6 pb-10">
-  
-  <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col sm:flex-row justify-between sm:items-center gap-4 border-l-4 border-brand-blue">
-    <div>
-      <h2 class="text-xl font-bold text-brand-blue tracking-tight">ข้อมูลหลักสูตรสถานศึกษา</h2>
-      <p class="text-xs text-slate-500 mt-1">จัดการข้อมูลและเอกสารหลักสูตรของสถานศึกษา</p>
-    </div>
-    <div>
-      <button onclick="CurriculumSystem.openForm()" class="px-4 py-2 bg-brand-blue text-white rounded-lg text-sm hover:bg-blue-800 font-semibold shadow-sm transition w-full sm:w-auto flex items-center justify-center gap-2">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-        เพิ่มหลักสูตร
-      </button>
-    </div>
-  </div>
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SuperVision+ | ระบบงานหลักสูตร</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = { theme: { extend: { fontFamily: { sans: ['Sarabun', 'sans-serif'] }, colors: { brand: { blue: '#1e3a8a', green: '#15803d', yellow: '#eab308' } } } } }
+  </script>
+  <style>body { font-family: 'Sarabun', sans-serif; background-color: #f8fafc; }</style>
+</head>
+<body class="flex h-screen overflow-hidden text-slate-800">
 
-  <div id="curriculum-container" class="space-y-3">
-    <!-- การ์ดจะถูกสร้างด้วย JavaScript -->
-  </div>
+  <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900 bg-opacity-50 z-30 hidden lg:hidden transition-opacity"></div>
 
-  <!-- MODAL: ฟอร์มเพิ่ม/แก้ไข หลักสูตร -->
-  <div id="curriculum-form-modal" class="fixed inset-0 bg-slate-900 bg-opacity-70 hidden items-center justify-center z-[55]">
-    <div class="bg-white rounded-lg p-6 w-full max-w-md shadow-2xl space-y-4 border-t-4 border-brand-blue max-h-[90vh] overflow-y-auto">
-      <div class="flex justify-between items-center border-b pb-2">
-        <h3 id="curriculum-form-header" class="text-base font-bold text-slate-800">จัดการข้อมูลหลักสูตร</h3>
-        <button onclick="CurriculumSystem.closeForm()" class="text-slate-400 hover:text-slate-600 font-bold">X</button>
+  <!-- MAIN CONTENT -->
+  <div class="flex-1 flex flex-col h-full overflow-hidden transition-all duration-300 mr-0 lg:mr-64">
+    <header class="bg-brand-blue text-white shadow-md px-6 py-4 flex justify-between items-center z-10 border-b-4 border-brand-yellow">
+      <div>
+        <h1 class="text-xl font-bold">ระบบงานหลักสูตร</h1>
+        <p class="text-xs text-blue-200">จัดการข้อมูลและเอกสารหลักสูตรของสถานศึกษา</p>
       </div>
-      
-      <form id="curriculum-form" class="space-y-3" onsubmit="event.preventDefault();">
-        
-        <!-- กล่องสำหรับแสดง Error สีแดง (ตัวปัญหาคือขาดแท็กนี้ไปครับ) -->
-        <div id="curriculum-error-msg" class="hidden bg-red-50 text-red-600 border border-red-200 text-xs p-2 rounded text-center font-bold"></div>
-        
-        <input type="hidden" id="curriculum-id">
-        <div>
-          <label class="block text-xs font-semibold mb-1">รหัสสถานศึกษา <span class="text-slate-400 font-normal">(ดึงอัตโนมัติ)</span></label>
-          <input type="text" id="curriculum-school-id" class="w-full border border-slate-200 rounded px-3 py-1.5 text-xs bg-slate-100 text-slate-500 cursor-not-allowed" readonly>
-        </div>
-        <div>
-          <label class="block text-xs font-semibold mb-1">ชื่อหลักสูตร</label>
-          <input type="text" id="curriculum-title" class="w-full border rounded px-3 py-1.5 text-xs focus:ring-2 focus:ring-brand-blue" required>
-        </div>
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-semibold mb-1">ระดับการศึกษา</label>
-            <select id="curriculum-level" class="w-full border rounded px-3 py-1.5 text-xs focus:ring-2 focus:ring-brand-blue bg-white" required>
-              <option value="" disabled selected>เลือก...</option>
-              <option value="ปฐมวัย">ปฐมวัย</option>
-              <option value="ประถมศึกษา">ประถมศึกษา</option>
-              <option value="มัธยมศึกษา">มัธยมศึกษา</option>
-            </select>
+      <div class="flex items-center space-x-4">
+        <button id="auth-btn" onclick="toggleAuthModal()" class="bg-brand-green hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm shadow">เข้าสู่ระบบ</button>
+        <button onclick="toggleSidebar()" class="lg:hidden p-2 bg-blue-800 rounded"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
+      </div>
+    </header>
+
+    <main class="flex-1 overflow-y-auto p-6 bg-slate-100">
+      <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex justify-between items-center mb-6">
+        <div><h2 class="text-lg font-bold text-brand-blue">รายการหลักสูตร</h2></div>
+        <button id="btn-add-curr" onclick="CurriculumSystem.openForm()" class="hidden px-4 py-2 bg-brand-blue text-white rounded-lg text-sm shadow-sm">+ เพิ่มหลักสูตร</button>
+      </div>
+      <!-- กล่องแสดงรายการ -->
+      <div id="curriculum-container" class="space-y-3"></div>
+    </main>
+  </div>
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar" class="w-64 bg-slate-900 text-white fixed right-0 top-0 h-full shadow-2xl flex flex-col z-40 transform translate-x-full lg:translate-x-0 transition-transform">
+    <div class="p-4 border-b border-slate-800 flex justify-center"><img src="SV_logo.png" alt="Logo" class="h-16 object-contain"></div>
+    <nav class="flex-1 p-3 space-y-2 overflow-y-auto text-sm">
+      <a href="index.html" class="block px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">หน้าแรก</a>
+      <a href="curriculum.html" class="block px-3 py-2 rounded-md font-medium bg-brand-blue text-white transition">ระบบงานหลักสูตร</a>
+    </nav>
+  </aside>
+
+  <!-- MODALS -->
+  <div id="global-loader" class="fixed inset-0 bg-slate-900 bg-opacity-40 flex items-center justify-center z-[100]"><div class="bg-white px-6 py-4 rounded-xl shadow-xl"><span class="text-xs font-bold text-slate-700">กำลังโหลด...</span></div></div>
+  <div id="login-modal" class="fixed inset-0 bg-slate-900 bg-opacity-60 hidden items-center justify-center z-50"><div class="bg-white rounded-lg p-6 w-80"><h3 class="font-bold mb-4">เข้าสู่ระบบ</h3><input type="text" id="login-username" class="w-full border p-2 text-sm mb-2" placeholder="Username"><input type="password" id="login-password" class="w-full border p-2 text-sm mb-4" placeholder="Password"><div id="login-error" class="text-xs text-red-500 hidden mb-2"></div><div class="flex justify-end gap-2"><button onclick="toggleAuthModal()" class="px-3 py-1 border rounded text-xs">ยกเลิก</button><button onclick="performLogin()" class="px-3 py-1 bg-brand-blue text-white rounded text-xs">ตกลง</button></div></div></div>
+
+  <!-- MODAL: ฟอร์มหลักสูตร (Native Iframe) -->
+  <div id="curriculum-form-modal" class="fixed inset-0 bg-slate-900 bg-opacity-70 hidden items-center justify-center z-[55]">
+    <div class="bg-white rounded-lg p-6 w-full max-w-md shadow-2xl">
+      <div class="flex justify-between items-center border-b pb-2 mb-4">
+        <h3 id="curriculum-form-header" class="font-bold">เพิ่ม/แก้ไข หลักสูตร</h3>
+        <button onclick="CurriculumSystem.closeForm()" class="font-bold text-slate-400">X</button>
+      </div>
+
+      <form id="curriculum-native-form" method="POST" target="curriculum-iframe" enctype="multipart/form-data" onsubmit="CurriculumSystem.prepareSubmit()">
+        <input type="hidden" name="action" id="curriculum-action" value="saveCurriculumForm">
+        <input type="hidden" name="id" id="curriculum-id">
+        <input type="hidden" name="rowObj" id="curriculum-rowObj">
+
+        <div class="space-y-3">
+          <input type="text" id="curriculum-school-id" class="w-full border p-2 text-xs bg-slate-100" readonly>
+          <input type="text" id="curriculum-title" class="w-full border p-2 text-xs" placeholder="ชื่อหลักสูตร" required>
+          <div class="flex gap-2">
+            <select id="curriculum-level" class="w-full border p-2 text-xs" required><option value="">ระดับ...</option><option value="ปฐมวัย">ปฐมวัย</option><option value="ประถมศึกษา">ประถมศึกษา</option><option value="มัธยมศึกษา">มัธยมศึกษา</option></select>
+            <input type="number" id="curriculum-year" class="w-full border p-2 text-xs" placeholder="ปีการศึกษา" required>
           </div>
-          <div>
-            <label class="block text-xs font-semibold mb-1">ปีการศึกษา</label>
-            <input type="number" id="curriculum-year" class="w-full border rounded px-3 py-1.5 text-xs focus:ring-2 focus:ring-brand-blue" min="2500" max="2600" required>
-          </div>
+          <input type="file" name="file" id="curriculum-file" accept="application/pdf" class="w-full border p-2 text-xs">
         </div>
-        <div class="pt-2">
-          <label class="block text-xs font-semibold mb-1">เอกสารหลักสูตร (PDF เท่านั้น)</label>
-          <input type="file" id="curriculum-file" accept="application/pdf" class="w-full border rounded px-3 py-1.5 text-xs file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-[10px] file:font-semibold file:bg-blue-50 file:text-brand-blue hover:file:bg-blue-100">
-          <p id="curriculum-file-hint" class="text-[10px] text-slate-400 mt-1 hidden">มีไฟล์แนบเดิมอยู่แล้ว หากไม่ต้องการเปลี่ยน ไม่ต้องเลือกไฟล์ใหม่</p>
+        <div class="flex justify-end mt-4 pt-4 border-t gap-2">
+          <button type="button" onclick="CurriculumSystem.closeForm()" class="px-4 py-2 border rounded text-xs font-bold">ยกเลิก</button>
+          <button type="submit" id="curriculum-save-btn" class="px-4 py-2 bg-brand-blue text-white rounded text-xs font-bold">บันทึกข้อมูล</button>
         </div>
       </form>
-      <div class="flex justify-end space-x-2 pt-4 border-t mt-4">
-        <button onclick="CurriculumSystem.closeForm()" class="px-3 py-1.5 border rounded text-xs hover:bg-slate-100 font-semibold">ยกเลิก</button>
-        <button onclick="CurriculumSystem.saveData(this)" class="px-4 py-1.5 bg-brand-blue text-white rounded text-xs hover:bg-blue-800 font-semibold transition shadow-sm">บันทึกข้อมูล</button>
-      </div>
+      <iframe name="curriculum-iframe" id="curriculum-iframe" class="hidden" onload="if(window.CurriculumSystem) CurriculumSystem.onIframeLoad()"></iframe>
     </div>
   </div>
 
-  <!-- MODAL: ยืนยันการลบ -->
-  <div id="curr-confirm-modal" class="fixed inset-0 bg-slate-900 bg-opacity-75 hidden items-center justify-center z-[60]">
-    <div class="bg-white rounded-lg p-6 w-80 shadow-2xl space-y-4 border-t-4 border-red-500 text-center">
-      <div class="text-red-500 mb-2">
-        <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-      </div>
-      <h3 class="text-base font-bold text-slate-800">ยืนยันการลบหลักสูตร?</h3>
-      <p class="text-[11px] text-slate-500" id="curr-confirm-delete-text">คุณต้องการลบหลักสูตรนี้ใช่หรือไม่</p>
-      <div class="flex justify-center space-x-3 pt-4">
-        <button onclick="CurriculumSystem.closeConfirm()" class="px-5 py-2 border rounded-md text-xs font-semibold hover:bg-slate-100">ยกเลิก</button>
-        <button id="curr-btn-confirm-delete" onclick="CurriculumSystem.executeDelete()" class="px-5 py-2 bg-red-600 text-white rounded-md text-xs font-semibold hover:bg-red-700 transition shadow-sm">ยืนยันลบ</button>
-      </div>
-    </div>
-  </div>
+  <div id="curr-confirm-modal" class="fixed inset-0 bg-slate-900 bg-opacity-75 hidden items-center justify-center z-[60]"><div class="bg-white rounded-lg p-6 w-80 text-center"><h3 class="font-bold mb-4">ยืนยันการลบ?</h3><div class="flex justify-center gap-2"><button onclick="CurriculumSystem.closeConfirm()" class="px-4 py-2 border rounded text-xs">ยกเลิก</button><button id="curr-btn-confirm-delete" onclick="CurriculumSystem.executeDelete()" class="px-4 py-2 bg-red-600 text-white rounded text-xs">ลบข้อมูล</button></div></div></div>
 
-</div>
+  <script>
+    const GAS_API_URL = "https://script.google.com/macros/s/AKfycbyUbL4Aq6p4CP2u4KdWurx42-r75eSzAZeLVhAeL8xBBblseSv7IOUEZ31b8XVHtqA/exec";
+    let dbData = {}; let currentUser = null;
+
+    window.onload = () => {
+      const savedUser = localStorage.getItem('supervision_user');
+      if (savedUser) try { currentUser = JSON.parse(savedUser); } catch(e){}
+      updateAuthUI(); fetchData();
+    };
+
+    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('translate-x-full'); document.getElementById('sidebar-overlay').classList.toggle('hidden'); }
+    
+    function toggleAuthModal() { 
+      if (currentUser) { currentUser=null; localStorage.removeItem('supervision_user'); window.location.href = 'index.html'; } 
+      else { document.getElementById('login-modal').classList.toggle('hidden'); document.getElementById('login-modal').classList.toggle('flex'); } 
+    }
+    
+    function updateAuthUI() { document.getElementById('auth-btn').innerText = currentUser ? 'ออกจากระบบ' : 'เข้าสู่ระบบ'; }
+    
+    function performLogin() {
+      const u = document.getElementById('login-username').value; const p = document.getElementById('login-password').value;
+      document.getElementById('global-loader').classList.replace('hidden', 'flex');
+      fetch(GAS_API_URL, { method: 'POST', body: JSON.stringify({ action: 'login', username: u, password: p }) })
+      .then(res => res.json()).then(res => {
+        document.getElementById('global-loader').classList.replace('flex', 'hidden');
+        if (res.status === 'success') { currentUser = res.user; localStorage.setItem('supervision_user', JSON.stringify(currentUser)); toggleAuthModal(); updateAuthUI(); fetchData(); }
+        else { document.getElementById('login-error').innerText = res.message; document.getElementById('login-error').classList.remove('hidden'); }
+      });
+    }
+
+    function fetchData() {
+      document.getElementById('global-loader').classList.replace('hidden', 'flex');
+      fetch(GAS_API_URL + "?action=getAllData").then(res => res.json()).then(data => {
+        if (data.status === 'success') { dbData = data; CurriculumSystem.renderCards(); }
+        document.getElementById('global-loader').classList.replace('flex', 'hidden');
+      });
+    }
+
+    const CurriculumSystem = {
+      isSubmitting: false,
+      targetDeleteId: null,
+
+      renderCards: function() {
+        const container = document.getElementById('curriculum-container');
+        if (!currentUser) { container.innerHTML = '<p class="p-4 text-center text-gray-500 bg-white rounded-lg">กรุณาเข้าสู่ระบบเพื่อดูข้อมูล</p>'; return; }
+        
+        let perm = (dbData.permissions||[]).find(p => p['ระบบงาน'] === 'curriculum' && p['ระดับสิทธิ์'] === currentUser.role);
+        if (perm && String(perm['C_Active']).toLowerCase() === 'true') document.getElementById('btn-add-curr').classList.remove('hidden');
+
+        let data = (dbData.curriculum||[]).filter(c => String(c['รหัสสถานศึกษา']) === String(currentUser.unitId));
+        if(data.length === 0) { container.innerHTML = '<p class="p-4 text-center text-gray-500 bg-white rounded-lg">ยังไม่มีข้อมูล</p>'; return; }
+
+        container.innerHTML = data.map(item => `
+          <div class="bg-white p-4 rounded-xl border flex justify-between items-center shadow-sm" id="row-${item['ลำดับ']}">
+            <div>
+              <p class="font-bold text-brand-blue">${item['ชื่อหลักสูตร']}</p>
+              <p class="text-xs text-gray-500 mt-1">${item['ระดับการศึกษา']} | ปีการศึกษา ${item['ปีการศึกษา']}</p>
+            </div>
+            <div class="flex items-center gap-2">
+              ${item['เอกสารหลักสูตร'] ? `<a href="${item['เอกสารหลักสูตร']}" target="_blank" class="text-[10px] font-bold text-red-600 border border-red-200 bg-red-50 p-1.5 rounded">PDF</a>` : ''}
+              <button onclick="CurriculumSystem.openForm('${item['ลำดับ']}')" class="text-[10px] font-bold text-amber-600 border border-amber-200 bg-amber-50 p-1.5 rounded">แก้ไข</button>
+              <button onclick="CurriculumSystem.confirmDelete('${item['ลำดับ']}')" class="text-[10px] font-bold text-red-600 border border-red-200 bg-red-50 p-1.5 rounded">ลบ</button>
+            </div>
+          </div>
+        `).join('');
+      },
+
+      openForm: function(id=null) {
+        document.getElementById('curriculum-native-form').action = GAS_API_URL;
+        document.getElementById('curriculum-native-form').reset();
+        document.getElementById('curriculum-id').value = id || '';
+        document.getElementById('curriculum-school-id').value = currentUser.unitId;
+        if(id) { 
+          const item=dbData.curriculum.find(c=>c['ลำดับ']==id); 
+          if(item) { 
+            document.getElementById('curriculum-title').value=item['ชื่อหลักสูตร']; 
+            document.getElementById('curriculum-level').value=item['ระดับการศึกษา']; 
+            document.getElementById('curriculum-year').value=item['ปีการศึกษา']; 
+          } 
+        }
+        document.getElementById('curriculum-form-modal').classList.replace('hidden', 'flex');
+      },
+      closeForm: function() { 
+        document.getElementById('curriculum-form-modal').classList.replace('flex', 'hidden'); 
+        document.getElementById('curriculum-save-btn').innerText = 'บันทึกข้อมูล';
+        document.getElementById('curriculum-save-btn').disabled = false;
+        this.isSubmitting = false;
+      },
+      prepareSubmit: function() {
+        this.isSubmitting = true;
+        document.getElementById('curriculum-action').value = document.getElementById('curriculum-id').value ? 'updateCurriculumForm' : 'saveCurriculumForm';
+        document.getElementById('curriculum-rowObj').value = JSON.stringify({'รหัสสถานศึกษา': document.getElementById('curriculum-school-id').value, 'ชื่อหลักสูตร': document.getElementById('curriculum-title').value, 'ระดับการศึกษา': document.getElementById('curriculum-level').value, 'ปีการศึกษา': document.getElementById('curriculum-year').value});
+        document.getElementById('curriculum-save-btn').innerText = 'กำลังอัปโหลด...';
+        document.getElementById('curriculum-save-btn').disabled = true;
+      },
+      onIframeLoad: function() {
+        if (!this.isSubmitting) return;
+        this.closeForm();
+        fetchData(); 
+      },
+      
+      confirmDelete: function(id) { this.targetDeleteId=id; document.getElementById('curr-confirm-modal').classList.replace('hidden','flex'); },
+      closeConfirm: function() { this.targetDeleteId=null; document.getElementById('curr-confirm-modal').classList.replace('flex','hidden'); },
+      executeDelete: function() {
+        const id=this.targetDeleteId; document.getElementById('curr-btn-confirm-delete').disabled=true;
+        fetch(GAS_API_URL, {method:'POST', body:JSON.stringify({action:'deleteCurriculum', id:id})}).then(()=>fetchData()).finally(()=>{this.closeConfirm(); document.getElementById('curr-btn-confirm-delete').disabled=false;});
+      }
+    };
+  </script>
+</body>
+</html>
