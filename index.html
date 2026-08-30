@@ -3,88 +3,46 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SuperVision+ | เทศบาลนครระยอง</title>
-  
-  <!-- Tailwind CSS CDN -->
+  <title>SuperVision+ | หน้าแรก</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Google Fonts: Sarabun -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
-  
-  <!-- Chart.js -->
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- Plugin สำหรับแสดงตัวเลขบน Chart -->
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
-  
   <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: { sans: ['Sarabun', 'sans-serif'] },
-          colors: {
-            brand: {
-              blue: '#1e3a8a',
-              lightblue: '#2563eb',
-              green: '#15803d',
-              lightgreen: '#22c55e',
-              yellow: '#eab308',
-              accentyellow: '#fde047'
-            }
-          }
-        }
-      }
-    }
+    tailwind.config = { theme: { extend: { fontFamily: { sans: ['Sarabun', 'sans-serif'] }, colors: { brand: { blue: '#1e3a8a', green: '#15803d', yellow: '#eab308' } } } } }
   </script>
-  <style>
-    body { font-family: 'Sarabun', sans-serif; background-color: #f8fafc; }
-  </style>
+  <style>body { font-family: 'Sarabun', sans-serif; background-color: #f8fafc; }</style>
 </head>
-<body class="bg-slate-50 text-slate-800 flex h-screen overflow-hidden">
+<body class="flex h-screen overflow-hidden text-slate-800">
 
-  <!-- MAIN CONTAINER AREA -->
-  <!-- เปลี่ยนจาก mr-64 เป็น mr-0 lg:mr-64 เพื่อให้มือถือขยายเต็มจอ -->
+  <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900 bg-opacity-50 z-30 hidden lg:hidden transition-opacity"></div>
+
+  <!-- MAIN CONTENT -->
   <div class="flex-1 flex flex-col h-full overflow-hidden transition-all duration-300 mr-0 lg:mr-64">
-    
-    <!-- TOP HEADER -->
-    <header class="bg-brand-blue text-white shadow-md px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center z-10 border-b-4 border-brand-yellow">
-      <div class="flex-1 min-w-0 pr-2">
-        <h1 id="header-title" class="text-lg sm:text-2xl font-bold tracking-tight truncate">ยินดีต้อนรับ</h1>
-        <p class="text-[10px] sm:text-xs text-blue-200 truncate">SuperVision+ ระบบสารสนเทศเพื่อการบริหารงานศึกษานิเทศ เทศบาลนครระยอง</p>
+    <header class="bg-brand-blue text-white shadow-md px-6 py-4 flex justify-between items-center z-10 border-b-4 border-brand-yellow">
+      <div>
+        <h1 class="text-xl font-bold">หน้าแรก</h1>
+        <p class="text-xs text-blue-200">SuperVision+ ระบบสารสนเทศเพื่อการบริหารงานศึกษานิเทศ</p>
       </div>
-      <div class="flex items-center space-x-2 sm:space-x-4 flex-shrink-0">
+      <div class="flex items-center space-x-4">
         <div id="user-info-display" class="text-right hidden">
-          <div id="user-name" class="font-semibold text-xs sm:text-sm text-brand-accentyellow"></div>
-          <div id="user-role" class="text-[9px] sm:text-xs text-slate-200"></div>
+          <div id="user-name" class="font-semibold text-sm text-yellow-300"></div>
+          <div id="user-role" class="text-xs text-slate-200"></div>
         </div>
-        <button id="auth-btn" onclick="toggleAuthModal()" class="bg-brand-green hover:bg-emerald-600 text-white font-medium px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm transition shadow whitespace-nowrap">
-          เข้าสู่ระบบ
-        </button>
-        <!-- ปุ่มแฮมเบอร์เกอร์สำหรับมือถือ (ซ่อนในจอใหญ่) -->
-        <button onclick="toggleSidebar()" class="lg:hidden p-1.5 sm:p-2 bg-blue-800 text-white rounded hover:bg-blue-900 transition border border-blue-700">
-          <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-        </button>
+        <button id="auth-btn" onclick="toggleAuthModal()" class="bg-brand-green hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm shadow font-bold">เข้าสู่ระบบ</button>
+        <button onclick="toggleSidebar()" class="lg:hidden p-2 bg-blue-800 rounded"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
       </div>
     </header>
 
-    <!-- DYNAMIC MAIN CONTENT VIEW (DEFAULT: HOME DASHBOARD) -->
-    <main class="flex-1 overflow-y-auto p-6 bg-slate-100" id="main-content">
+    <main class="flex-1 overflow-y-auto p-6 bg-slate-100">
       <div class="space-y-6">
         
-        <!-- SECTION 1: ข่าวประชาสัมพันธ์ (บนสุด) -->
-        <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+        <!-- ข่าวประชาสัมพันธ์ -->
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
           <div class="flex justify-between items-center mb-3">
-            <h3 class="text-base font-bold text-brand-blue flex items-center">
-              <span class="w-2 h-2 bg-red-500 rounded-full mr-2 animate-pulse"></span>
-              ข่าวประชาสัมพันธ์ล่าสุด
-            </h3>
-            <span class="text-xs text-slate-400">เรียงตามลำดับวันที่ล่าสุด</span>
+            <h3 class="text-base font-bold text-brand-blue flex items-center"><span class="w-2 h-2 bg-red-500 rounded-full mr-2 animate-pulse"></span>ข่าวประชาสัมพันธ์ล่าสุด</h3>
           </div>
-          
-          <div id="news-container" class="flex space-x-4 overflow-x-auto pb-2">
-            <p class="text-xs text-slate-400 p-2">กำลังโหลดข่าวประชาสัมพันธ์...</p>
-          </div>
+          <div id="news-container" class="flex space-x-4 overflow-x-auto pb-2"><p class="text-xs text-slate-400">กำลังโหลด...</p></div>
         </div>
 
         <!-- แบ่งหน้าจอ 2 ฝั่ง (ซ้าย: Dashboard | ขวา: คู่มือ) -->
@@ -158,7 +116,7 @@
               </div>
             </div>
 
-            <!-- SECTION 3: กราฟสถิติแท่ง คงเดิม (เรียงซ้อนกันบนล่าง) -->
+            <!-- SECTION 3: กราฟสถิติแท่ง -->
             <div class="pt-2 mt-auto">
               <div class="flex justify-between items-center mb-4 pb-2 border-b border-slate-100">
                 <span id="selected-school-label" class="text-[11px] text-brand-blue font-semibold bg-blue-50 px-2 py-1 rounded border border-blue-100 inline-block text-center">ภาพรวมสถานศึกษา</span>
@@ -177,7 +135,7 @@
             </div>
           </div>
 
-          <!-- ฝั่งขวา: คู่มือและเอกสารวิชาการ (กล่องใหม่) -->
+          <!-- ฝั่งขวา: คู่มือและเอกสารวิชาการ -->
           <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col h-full">
             <div class="flex justify-between items-center mb-5 pb-4 border-b border-slate-100">
               <h2 class="text-lg font-bold text-brand-blue tracking-tight">คู่มือและเอกสารวิชาการ</h2>
@@ -191,107 +149,40 @@
           </div>
 
         </div>
+      </div>
     </main>
   </div>
 
-  
-  <!-- RIGHT SIDEBAR FIXED -->
-  <!-- ฉากหลังดำๆ เวลากดเปิดเมนูในมือถือ (คลิกเพื่อปิดได้) -->
-  <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900 bg-opacity-50 z-30 hidden lg:hidden transition-opacity"></div>
-
-  <!-- RIGHT SIDEBAR FIXED -->
-  <!-- เพิ่ม transform translate-x-full (ซ่อนขวา) และ lg:translate-x-0 (แสดงจอใหญ่) -->
-  <aside id="sidebar" class="w-64 bg-slate-900 text-white fixed right-0 top-0 h-full shadow-2xl flex flex-col z-40 border-l border-slate-700 transform translate-x-full lg:translate-x-0 transition-transform duration-300">
-    <div class="p-4 border-b border-slate-800 bg-slate-900 flex justify-between items-center">
-      <img src="SV_logo.png" alt="SuperVision+ Logo" class="h-auto w-auto object-contain">         
-    </div>
-
-    <nav class="flex-1 p-3 space-y-4 overflow-y-auto text-sm">
-      <div class="space-y-1">
-        <button onclick="loadPage('home')" class="nav-btn w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-white transition bg-brand-blue">
-          <span>หน้าแรก</span>
-        </button>
-        <button onclick="loadPage('executives')" class="nav-btn w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">
-          <span>ผู้บริหารเทศบาลนครระยอง</span>
-        </button>
-        <button onclick="loadPage('working-team')" class="nav-btn w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">
-          <span>คณะทำงาน</span>
-        </button>
+  <!-- SIDEBAR -->
+  <aside id="sidebar" class="w-64 bg-slate-900 text-white fixed right-0 top-0 h-full shadow-2xl flex flex-col z-40 transform translate-x-full lg:translate-x-0 transition-transform">
+    <div class="p-4 border-b border-slate-800 flex justify-center"><img src="SV_logo.png" alt="Logo" class="h-16 object-contain"></div>
+    <nav class="flex-1 p-3 space-y-1 overflow-y-auto text-sm">
+      <a href="index.html" class="block px-3 py-2 rounded-md font-medium bg-brand-blue text-white transition">หน้าแรก</a>
+      <a href="pages/executives.html" class="block px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">ผู้บริหารเทศบาลนครระยอง</a>
+      <a href="pages/working-team.html" class="block px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">คณะทำงาน</a>
+      
+      <div class="px-3 pt-4 pb-1 text-[11px] font-semibold text-slate-400 uppercase tracking-wider border-t border-slate-800 mt-2">
+        ระบบงานหลัก
       </div>
+      <a href="#" class="block px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">ระบบงานนิเทศ</a>
+      <a href="pages/curriculum.html" class="block px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">ระบบงานหลักสูตร</a>
+      <a href="#" class="block px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">ระบบประกันคุณภาพการศึกษา</a>
+      <a href="#" class="block px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">ระบบวัดและประเมินผล</a>
+      <a href="#" class="block px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">ระบบสื่อและเทคโนโลยี</a>
 
-      <div class="space-y-1 border-t border-slate-800 pt-3">
-        <div class="px-3 pb-1 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-          ระบบงานหลัก
-        </div>
-        <button onclick="loadPage('supervision')" class="nav-btn w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">
-          <span>ระบบงานนิเทศ</span>
-        </button>
-        <button onclick="loadPage('curriculum')" class="nav-btn w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">
-          <span>ระบบงานหลักสูตร</span>
-        </button>
-        <button onclick="loadPage('qa')" class="nav-btn w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">
-          <span>ระบบงานประกันคุณภาพการศึกษา</span>
-        </button>
-        <button onclick="loadPage('evaluation')" class="nav-btn w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">
-          <span>ระบบงานวัดและประเมินผล</span>
-        </button>
-        <button onclick="loadPage('media-tech')" class="nav-btn w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">
-          <span>ระบบงานสื่อและเทคโนโลยี</span>
-        </button>
-      </div>
-
-      <div class="space-y-1 border-t border-slate-800 pt-3">
-        <button id="menu-news" onclick="NewsSystem.openList()" class="nav-btn hidden w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-amber-400 transition">
-          <span>ข่าวประชาสัมพันธ์ (ผู้ดูแล)</span>
-        </button>
-        <button onclick="loadPage('about')" class="nav-btn w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">
-          <span>เกี่ยวกับเรา</span>
-        </button>
-        <button id="menu-settings" onclick="loadPage('settings')" class="nav-btn hidden w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-amber-400 transition">
-          <span>ตั้งค่าการใช้งาน</span>
-        </button>
+      <div class="border-t border-slate-800 pt-2 mt-2 space-y-1">
+        <button id="menu-news" onclick="NewsSystem.openList()" class="hidden w-full text-left px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-amber-400 transition">จัดการข่าวประชาสัมพันธ์</button>
+        <a href="#" class="block px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-slate-300 transition">เกี่ยวกับเรา</a>
+        <a href="pages/settings.html" id="menu-settings" class="hidden block px-3 py-2 rounded-md font-medium hover:bg-slate-800 text-amber-400 transition">ตั้งค่าการใช้งาน</a>
       </div>
     </nav>
-
-    <div class="p-3 border-t border-slate-800 text-[11px] text-slate-400 text-center">
-      งานศึกษานิเทศ กองการศึกษา<br>เทศบาลนครระยอง &copy; 2026
-    </div>
   </aside>
-  
-<!-- GLOBAL LOADING SPINNER -->
-  <div id="global-loader" class="fixed inset-0 bg-slate-900 bg-opacity-40 hidden items-center justify-center z-[100]">
-    <div class="bg-white px-6 py-4 rounded-xl shadow-xl flex flex-col items-center border-t-4 border-brand-blue">
-      <svg class="animate-spin h-8 w-8 text-brand-blue mb-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-      </svg>
-      <span class="text-xs font-bold text-slate-700 tracking-wide">กำลังโหลดข้อมูล...</span>
-    </div>
-  </div>
-  
-  <!-- LOGIN MODAL -->
-  <div id="login-modal" class="fixed inset-0 bg-slate-900 bg-opacity-60 hidden items-center justify-center z-50">
-    <div class="bg-white rounded-lg p-6 w-80 shadow-2xl space-y-4 border-t-4 border-brand-blue">
-      <h3 class="text-base font-bold text-slate-800">เข้าสู่ระบบภายใน</h3>
-      <div>
-        <label class="block text-xs font-semibold mb-1">Username</label>
-        <input type="text" id="login-username" class="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue">
-      </div>
-      <div>
-        <label class="block text-xs font-semibold mb-1">Password</label>
-        <input type="password" id="login-password" class="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue" onkeyup="if(event.key === 'Enter') performLogin()">
-      </div>
-      <div id="login-error" class="text-xs text-red-500 hidden"></div>
-      <div class="flex justify-end space-x-2 pt-2">
-        <button onclick="toggleAuthModal()" class="px-3 py-1.5 border rounded text-xs hover:bg-slate-100">ยกเลิก</button>
-        <button onclick="performLogin()" class="px-3 py-1.5 bg-brand-blue text-white rounded text-xs hover:bg-blue-800">ตกลง</button>
-      </div>
-    </div>
-  </div>
 
-  <!-- MODALS ระบบข่าวประชาสัมพันธ์แบบใหม่ -->
-  
-  <!-- NEWS MODALS (เวอร์ชัน 5 ภาพ แบบ Base64) -->
+  <!-- LOADING & AUTH MODALS -->
+  <div id="global-loader" class="fixed inset-0 bg-slate-900 bg-opacity-40 flex items-center justify-center z-[100]"><div class="bg-white px-6 py-4 rounded-xl shadow-xl"><span class="text-xs font-bold text-slate-700">กำลังโหลด...</span></div></div>
+  <div id="login-modal" class="fixed inset-0 bg-slate-900 bg-opacity-60 hidden items-center justify-center z-50"><div class="bg-white rounded-lg p-6 w-80"><h3 class="font-bold mb-4">เข้าสู่ระบบ</h3><input type="text" id="login-username" class="w-full border p-2 text-sm mb-2 focus:ring-1 focus:ring-brand-blue" placeholder="Username"><input type="password" id="login-password" class="w-full border p-2 text-sm mb-4 focus:ring-1 focus:ring-brand-blue" placeholder="Password"><div id="login-error" class="text-xs text-red-500 hidden mb-2"></div><div class="flex justify-end gap-2"><button onclick="toggleAuthModal()" class="px-4 py-1.5 border rounded text-xs font-bold">ยกเลิก</button><button onclick="performLogin()" class="px-4 py-1.5 bg-brand-blue text-white rounded text-xs font-bold">ตกลง</button></div></div></div>
+
+  <!-- NEWS MODALS (เวอร์ชัน 5 ภาพ แบบ Base64 + บีบอัดภาพ) -->
   
   <!-- Modal 1: ดูรายละเอียดข่าว (ปรับเลย์เอาต์แบ่งครึ่ง ซ้าย-รูป 5 ภาพ / ขวา-ข้อความ) -->
   <div id="news-detail-modal" class="fixed inset-0 bg-slate-900 bg-opacity-70 hidden items-center justify-center z-[60]">
@@ -333,7 +224,7 @@
     </div>
   </div>
 
-  <!-- Modal 3: ฟอร์มเพิ่ม/แก้ไขข่าว (แบบ Base64) -->
+  <!-- Modal 3: ฟอร์มเพิ่ม/แก้ไขข่าว -->
   <div id="news-form-modal" class="fixed inset-0 bg-slate-900 bg-opacity-70 hidden items-center justify-center z-[55]">
     <div class="bg-white rounded-lg p-6 w-full max-w-xl shadow-2xl space-y-4 border-t-4 border-amber-500 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-2">
@@ -341,7 +232,6 @@
         <button onclick="NewsSystem.closeForm()" class="text-slate-400 hover:text-slate-600 font-bold text-lg">×</button>
       </div>
       
-      <!-- ใช้ Form ธรรมดา ส่งผ่าน fetch -->
       <form id="news-form" class="space-y-3" onsubmit="event.preventDefault(); NewsSystem.saveData(document.getElementById('news-save-btn'));">
         <input type="hidden" id="news-id">
 
@@ -387,950 +277,144 @@
   </div>
 
   <div id="news-confirm-modal" class="fixed inset-0 bg-slate-900 bg-opacity-75 hidden items-center justify-center z-[65]"><div class="bg-white rounded-lg p-6 w-80 text-center"><h3 class="font-bold mb-4">ยืนยันการลบ?</h3><div class="flex justify-center gap-2"><button onclick="NewsSystem.closeConfirm()" class="px-4 py-2 border rounded text-xs font-bold">ยกเลิก</button><button id="btn-confirm-delete" onclick="NewsSystem.executeDelete()" class="px-4 py-2 bg-red-600 text-white rounded text-xs font-bold">ลบข้อมูล</button></div></div></div>
-  <!-- 4. MODAL: ยืนยันการลบข่าว (เฉพาะผู้ดูแลระบบ) -->
-  <div id="news-confirm-modal" class="fixed inset-0 bg-slate-900 bg-opacity-75 hidden items-center justify-center z-[60]">
-    <div class="bg-white rounded-lg p-6 w-80 shadow-2xl space-y-4 border-t-4 border-red-500 text-center">
-      <div class="text-red-500 mb-2">
-        <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-      </div>
-      <h3 class="text-base font-bold text-slate-800">ยืนยันการลบข่าว?</h3>
-      <p class="text-[11px] text-slate-500" id="confirm-delete-text">คุณต้องการลบข่าวนี้ใช่หรือไม่ (ไม่สามารถกู้คืนได้)</p>
-      <div class="flex justify-center space-x-3 pt-4">
-        <button onclick="NewsSystem.closeConfirm()" class="px-5 py-2 border rounded-md text-xs font-semibold hover:bg-slate-100">ยกเลิก</button>
-        <button id="btn-confirm-delete" onclick="NewsSystem.executeDelete()" class="px-5 py-2 bg-red-600 text-white rounded-md text-xs font-semibold hover:bg-red-700 transition shadow-sm">ยืนยันลบ</button>
-      </div>
-    </div>
-  </div>
 
-
-  <!-- JAVASCRIPT APPLICATION LOGIC -->
   <script>
     const GAS_API_URL = "https://script.google.com/macros/s/AKfycbyUbL4Aq6p4CP2u4KdWurx42-r75eSzAZeLVhAeL8xBBblseSv7IOUEZ31b8XVHtqA/exec";
-
-    let dbData = { users: [], units: [], students: [], personnel: [], news: [] };
+    let dbData = { units: [], students: [], personnel: [], news: [] };
     let currentUser = null;
-    let levelChartInstances = {};
-    let currentPage = 'home';
-    let defaultHomeHTML = '';
 
-    // ฟังก์ชันเปิด/ปิด Sidebar บนมือถือ
-    function toggleSidebar() {
-      const sidebar = document.getElementById('sidebar');
-      const overlay = document.getElementById('sidebar-overlay');
-      
-      if (sidebar.classList.contains('translate-x-full')) {
-        // เปิดเมนู
-        sidebar.classList.remove('translate-x-full');
-        overlay.classList.remove('hidden');
-      } else {
-        // ปิดเมนู
-        sidebar.classList.add('translate-x-full');
-        overlay.classList.add('hidden');
-      }
-    }
-
-    const pageTitles = {
-      'home': 'หน้าแรก',
-      'executives': 'ผู้บริหารเทศบาลนครระยอง',
-      'working-team': 'คณะทำงาน',
-      'supervision': 'ระบบงานนิเทศ',
-      'curriculum': 'ระบบงานหลักสูตร',
-      'qa': 'ระบบงานประกันคุณภาพการศึกษา',
-      'evaluation': 'ระบบงานวัดและประเมินผล',
-      'media-tech': 'ระบบงานสื่อและเทคโนโลยี',
-      'about': 'เกี่ยวกับเรา',
-      'settings': 'ตั้งค่าการใช้งาน'
-    };
-
-    window.onload = function() {
-      defaultHomeHTML = document.getElementById('main-content').innerHTML;
+    window.onload = () => {
       const savedUser = localStorage.getItem('supervision_user');
-      if (savedUser) {
-        try { currentUser = JSON.parse(savedUser); } 
-        catch(e) { localStorage.removeItem('supervision_user'); }
-      }
+      if (savedUser) try { currentUser = JSON.parse(savedUser); } catch(e){}
       updateAuthUI();
       fetchData();
+      if(typeof ChartDataLabels !== 'undefined') Chart.register(ChartDataLabels);
     };
 
-    // 1. ฟังก์ชัน loadPage
-    function loadPage(pageName) {
-      // โค้ดเพิ่มใหม่: เช็คว่าถ้าจอเล็ก (มือถือ) ให้ปิดเมนูหลังจากกดเลือก
-      if (window.innerWidth < 1024) { 
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebar-overlay');
-        if (sidebar && !sidebar.classList.contains('translate-x-full')) {
-          sidebar.classList.add('translate-x-full');
-          overlay.classList.add('hidden');
-        }
-      }
-      currentPage = pageName;
-      document.getElementById('header-title').innerText = pageTitles[pageName] || 'SuperVision+';
-
-      if (pageName === 'home') {
-        document.getElementById('main-content').innerHTML = defaultHomeHTML;
-        renderDashboard();
-        NewsSystem.renderCards();
-        return;
-      }
-
-      fetch(`pages/${pageName}.html`)
-        .then(res => {
-          if (!res.ok) throw new Error('File not found');
-          return res.text();
-        })
-        .then(html => { 
-          document.getElementById('main-content').innerHTML = html; 
-          
-          // เพิ่มคำสั่ง: ถ้าเปิดหน้าหลักสูตร ให้วาดการ์ดข้อมูลจริงจากฐานข้อมูล
-          if (pageName === 'curriculum') {
-            CurriculumSystem.renderCards();
-          }
-          if (pageName === 'settings') {
-            SettingsSystem.attachEvents();
-            SettingsSystem.loadSettingsToUI();
-          }
-        })
-        .catch(err => {
-          document.getElementById('main-content').innerHTML = `
-            <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200 text-center">
-              <p class="text-slate-600 font-semibold">อยู่ระหว่างการพัฒนาหน้า pages/${pageName}.html</p>
-            </div>
-          `;
-        });
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('translate-x-full');
+      document.getElementById('sidebar-overlay').classList.toggle('hidden');
     }
 
-    // ฟังก์ชันควบคุมหน้าจอโหลดข้อมูล (อัปเดตให้เปลี่ยนข้อความได้)
-    function showGlobalLoader(msg = 'กำลังโหลดข้อมูล...') {
-      const loader = document.getElementById('global-loader');
-      if(loader) {
-        // หา tag span เพื่อเปลี่ยนข้อความ
-        const span = loader.querySelector('span');
-        if (span) span.innerText = msg;
-        
-        loader.classList.remove('hidden');
-        loader.classList.add('flex');
-      }
-    }
-
-    function hideGlobalLoader() {
-      const loader = document.getElementById('global-loader');
-      if(loader) {
-        loader.classList.add('hidden');
-        loader.classList.remove('flex');
-      }
-    }
-
-    // 2. ฟังก์ชัน fetchData
-    function fetchData() {
-      showGlobalLoader('กำลังโหลดข้อมูล...'); 
-      
-      fetch(GAS_API_URL + "?action=getAllData")
-        .then(res => res.json())
-        .then(data => {
-          if (data.status === 'success') {
-            dbData = data;
-            
-            // อัปเดตหน้า Dashboard
-            if (currentPage === 'home') {
-              renderDashboard();
-              NewsSystem.renderCards(); // <--- แก้เป็นอันนี้
-            }
-            
-            // อัปเดตหน้าหลักสูตร
-            if (currentPage === 'curriculum') {
-              CurriculumSystem.renderCards(); // <--- แก้เป็นอันนี้
-            }
-            
-            if (currentPage === 'settings') {
-              SettingsSystem.loadSettingsToUI();
-            }
-            // อัปเดตตารางจัดการข่าวถ้าเปิดอยู่
-            const newsModal = document.getElementById('news-list-modal');
-            if (newsModal && !newsModal.classList.contains('hidden')) {
-              NewsSystem.renderTable();
-            }
-          }
-          hideGlobalLoader(); 
-        })
-        .catch(err => {
-          console.error("Error fetching data:", err);
-          hideGlobalLoader(); 
-        });
-    }
-
-    // ==========================================
-    // MODULE: ระบบข่าวประชาสัมพันธ์ (NewsSystem)
-    // ==========================================
-    const THAI_MONTHS = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
-
-    // -- NEWS LOGIC (อัปเดตใหม่ 5 ภาพ แบบ Base64) --
-    // -- NEWS LOGIC (อัปเดตใหม่ 5 ภาพ แบบ Base64) --
-    const NewsSystem = {
-      targetDeleteId: null,
-      isoToThai: iso => iso ? `${parseInt(iso.split('-')[2])} ${['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'][parseInt(iso.split('-')[1])-1]} ${parseInt(iso.split('-')[0])<2500 ? parseInt(iso.split('-')[0])+543 : parseInt(iso.split('-')[0])}` : '',
-      thaiToIso: th => { if(!th||th.includes('-')) return th; const p=th.split(' '); return `${parseInt(p[2])<2500?parseInt(p[2])+543:parseInt(p[2])-543}-${String(['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'].indexOf(p[1])+1).padStart(2,'0')}-${p[0].padStart(2,'0')}`;},
-      
-      // ฟังก์ชันแปลงลิงก์ Google Drive ให้แสดงผลเป็นรูปภาพได้ 100%
-      getImgUrl: function(url) {
-        if (!url || url.trim() === '') return '';
-        
-        // 1. ถ้าเป็นลิงก์แบบเก่า (file/d/ID/view)
-        let match = url.match(/\/d\/(.*?)\//);
-        if (match && match[1]) {
-          return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w1000`;
-        }
-        
-        // 2. ถ้าเป็นลิงก์แบบที่สอง (uc?export=view&id=ID)
-        match = url.match(/id=([a-zA-Z0-9_-]+)/);
-        if (url.includes('uc?export=view') && match && match[1]) {
-          return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w1000`;
-        }
-        
-        // 3. ถ้าเป็นลิงก์ Thumbnail อยู่แล้ว หรือเป็นลิงก์ภายนอก ให้คืนค่าเดิมกลับไป
-        return url;
-      },
-
-      renderCards: function() {
-        const c = document.getElementById('news-container');
-        c.innerHTML = (dbData.news||[]).sort((a,b)=>new Date(this.thaiToIso(b['วันที่']))-new Date(this.thaiToIso(a['วันที่']))).map(n => {
-          const mainImg = this.getImgUrl(n['ภาพข่าว 1']) || 'SV_logo.png';
-          return `
-          <div class="min-w-[280px] max-w-[280px] bg-white rounded-lg border border-slate-200 p-3 cursor-pointer shadow-sm hover:shadow-md transition" onclick="NewsSystem.openDetail('${n['ลำดับ']}')">
-            <div class="flex h-16">
-              <img src="${mainImg}" class="w-16 h-16 object-cover bg-gray-100 rounded border border-slate-100 mr-3" onerror="this.src='SV_logo.png'">
-              <div class="flex-1 overflow-hidden">
-                <span class="text-[10px] text-blue-500 font-semibold">${n['วันที่']}</span>
-                <h4 class="font-bold text-xs truncate text-slate-800">${n['พาดหัวข่าว']}</h4>
-                <p class="text-[10px] text-gray-500 line-clamp-1 mt-0.5">${n['เนื้อหาข่าว']}</p>
-              </div>
-            </div>
-          </div>`
-        }).join('');
-      },
-
-      openDetail: function(id) { 
-        const n = dbData.news.find(x=>x['ลำดับ']==id); 
-        if(!n) return;
-        document.getElementById('detail-news-title').innerText = n['พาดหัวข่าว']; 
-        document.getElementById('detail-news-date').innerText = 'ประกาศเมื่อ: ' + n['วันที่']; 
-        document.getElementById('detail-news-content').innerText = n['เนื้อหาข่าว']; 
-        
-        // จัดการ Grid รูปภาพ (แปลงลิงก์ก่อน)
-        const rawImgs = [n['ภาพข่าว 1'], n['ภาพข่าว 2'], n['ภาพข่าว 3'], n['ภาพข่าว 4'], n['ภาพข่าว 5']];
-        const imgs = rawImgs.map(url => this.getImgUrl(url)).filter(url => url !== '');
-
-        let imgHtml = '<div class="grid grid-cols-2 gap-2 h-full content-start">';
-        if(imgs.length > 0) {
-          imgHtml += `<div class="col-span-2"><a href="${imgs[0]}" target="_blank"><img src="${imgs[0]}" class="w-full h-48 sm:h-64 object-cover rounded-lg border border-slate-200 hover:opacity-90 transition"></a></div>`;
-          for(let i=1; i<imgs.length; i++) {
-            imgHtml += `<div><a href="${imgs[i]}" target="_blank"><img src="${imgs[i]}" class="w-full h-24 sm:h-32 object-cover rounded-lg border border-slate-200 hover:opacity-90 transition"></a></div>`;
-          }
-        } else {
-          imgHtml += `<div class="col-span-2 h-48 bg-slate-100 rounded-lg flex items-center justify-center border border-slate-200"><img src="SV_logo.png" class="h-20 opacity-50"></div>`;
-        }
-        imgHtml += '</div>';
-        
-        document.getElementById('detail-news-image-grid').innerHTML = imgHtml; 
-        document.getElementById('news-detail-modal').classList.replace('hidden','flex'); 
-      },
-      closeDetail: () => document.getElementById('news-detail-modal').classList.replace('flex','hidden'),
-      
-      openList: function(){ this.renderTable(); document.getElementById('news-list-modal').classList.replace('hidden','flex'); },
-      closeList: () => document.getElementById('news-list-modal').classList.replace('flex','hidden'),
-      
-      renderTable: function() { 
-        document.getElementById('admin-news-table-body').innerHTML = (dbData.news||[]).sort((a,b)=>new Date(this.thaiToIso(b['วันที่']))-new Date(this.thaiToIso(a['วันที่']))).map(n=>`<tr><td class="p-2 border-b border-slate-100">${n['วันที่']}</td><td class="p-2 border-b border-slate-100 font-medium text-brand-blue">${n['พาดหัวข่าว']}</td><td class="p-2 border-b border-slate-100 text-right"><button onclick="NewsSystem.openForm('${n['ลำดับ']}')" class="text-amber-500 font-bold mr-3">แก้ไข</button><button onclick="NewsSystem.confirmDelete('${n['ลำดับ']}')" class="text-red-500 font-bold">ลบ</button></td></tr>`).join(''); 
-      },
-      
-      openForm: function(id=null) { 
-        document.getElementById('news-form').reset(); 
-        document.getElementById('news-id').value = id || ''; 
-        document.getElementById('news-form-header').innerText = id ? 'แก้ไขข่าวประชาสัมพันธ์' : 'เพิ่มข่าวใหม่';
-        if(id){ 
-          const n = dbData.news.find(x=>x['ลำดับ']==id); 
-          document.getElementById('news-title').value = n['พาดหัวข่าว']; 
-          document.getElementById('news-content').value = n['เนื้อหาข่าว']; 
-          document.getElementById('news-date').value = this.thaiToIso(n['วันที่']); 
-        } 
-        document.getElementById('news-form-modal').classList.replace('hidden','flex'); 
-        this.closeList(); 
-      },
-      closeForm: function() { 
-        document.getElementById('news-form-modal').classList.replace('flex','hidden'); 
-        this.openList(); 
-      },
-      
-      saveData: async function(btn) {
-        const id = document.getElementById('news-id').value;
-        const title = document.getElementById('news-title').value;
-        const content = document.getElementById('news-content').value;
-        const dateIso = document.getElementById('news-date').value;
-
-        if(!title || !dateIso) return alert('กรุณากรอกข้อมูลให้ครบถ้วน');
-
-        const rowObj = { 'พาดหัวข่าว': title, 'เนื้อหาข่าว': content, 'วันที่': this.isoToThai(dateIso) };
-
-        const originalText = btn.innerText;
-        btn.innerText = 'กำลังอัปโหลด (อาจใช้เวลา 1-2 นาที)...';
-        btn.disabled = true;
-        btn.classList.add('opacity-70', 'cursor-not-allowed');
-
-        const getBase64 = (file) => new Promise((resolve, reject) => {
-          if (!file) return resolve(null);
-          const reader = new FileReader();
-          reader.onload = () => resolve({ base64: reader.result, mimeType: file.type, filename: file.name });
-          reader.onerror = error => reject(error);
-          reader.readAsDataURL(file);
-        });
-
-        try {
-          for (let i = 1; i <= 5; i++) {
-            const fileInput = document.getElementById('news-file' + i);
-            if (fileInput && fileInput.files && fileInput.files[0]) {
-               rowObj['fileData' + i] = await getBase64(fileInput.files[0]);
-            }
-          }
-
-          const res = await fetch(GAS_API_URL, {
-            method: 'POST',
-            body: JSON.stringify({ action: id ? 'updateNews' : 'saveNews', id: id, rowObj: rowObj })
-          }).then(r => r.json());
-
-          if (res.status === 'success') {
-            this.closeForm();
-            fetchData();
-          } else {
-            alert('Error: ' + res.message);
-          }
-        } catch (err) {
-          alert('เกิดข้อผิดพลาด: ' + err.message);
-        } finally {
-          btn.innerText = originalText;
-          btn.disabled = false;
-          btn.classList.remove('opacity-70', 'cursor-not-allowed');
-        }
-      },
-
-      confirmDelete: function(id) { this.targetDeleteId=id; document.getElementById('news-confirm-modal').classList.replace('hidden','flex'); },
-      closeConfirm: function() { this.targetDeleteId=null; document.getElementById('news-confirm-modal').classList.replace('flex','hidden'); },
-      executeDelete: function() {
-        const id=this.targetDeleteId; document.getElementById('btn-confirm-delete').disabled=true;
-        fetch(GAS_API_URL, {method:'POST', body:JSON.stringify({action:'deleteNews', id:id})}).then(()=>fetchData()).finally(()=>{this.closeConfirm(); document.getElementById('btn-confirm-delete').disabled=false;});
-      }
-    };
-    // ==========================================
-
-    // ==========================================
-    // MODULE: ระบบงานหลักสูตร (CurriculumSystem)
-    // ==========================================
-    const CurriculumSystem = {
-      targetDeleteId: null,
-
-      
-      renderCards: function() {
-        const container = document.getElementById('curriculum-container');
-        if (!container) return;
-
-        let currData = dbData.curriculum || [];
-        
-        // 1. ดึงสิทธิ์
-        const currentRole = currentUser ? currentUser.role : 'บุคคลภายนอก'; 
-        let perm = null;
-        if (dbData.permissions) {
-          perm = dbData.permissions.find(p => p['ระบบงาน'] === 'curriculum' && p['ระดับสิทธิ์'] === currentRole);
-        }
-
-        // 2. จัดการปุ่ม "เพิ่มหลักสูตร"
-        const addBtn = document.querySelector('button[onclick="CurriculumSystem.openForm()"]');
-        if (addBtn) {
-          if (perm && String(perm['C_Active']).toLowerCase() === 'true') {
-            addBtn.classList.remove('hidden');
-            addBtn.classList.add('flex');
-          } else {
-            addBtn.classList.add('hidden');
-            addBtn.classList.remove('flex');
-          }
-        }
-
-        // 3. ตรวจสอบสิทธิ์ R (Read)
-        if (!perm || String(perm['R_Active']).toLowerCase() !== 'true') {
-          container.innerHTML = '<div class="p-8 text-center text-slate-500 bg-white rounded-xl shadow-sm border border-slate-200">คุณไม่มีสิทธิ์ในการดูข้อมูลรายการหลักสูตร</div>';
-          return;
-        }
-
-        // 4. กรองข้อมูลตามสิทธิ์ R_Scope (Visibility)
-        const readScope = perm['R_Scope'];
-        const userUnitId = currentUser ? String(currentUser.unitId) : 'NO_UNIT';
-        
-        if (readScope === 'UNIT') {
-          currData = currData.filter(c => String(c['รหัสสถานศึกษา']) === userUnitId);
-        } else if (readScope === 'OWN') {
-          currData = currData.filter(c => String(c['รหัสสถานศึกษา']) === userUnitId); 
-        }
-
-        if (currData.length === 0) {
-          container.innerHTML = '<div class="p-8 text-center text-slate-500 bg-white rounded-xl shadow-sm border border-slate-200">ยังไม่มีข้อมูลหลักสูตรที่ตรงกับสิทธิ์ของคุณ</div>';
-          return;
-        }
-
-        // 5. เตรียมสิทธิ์พื้นฐาน Update / Delete
-        const baseCanUpdate = perm && String(perm['U_Active']).toLowerCase() === 'true';
-        const baseCanDelete = perm && String(perm['D_Active']).toLowerCase() === 'true';
-        const uScope = perm ? perm['U_Scope'] : '';
-        const dScope = perm ? perm['D_Scope'] : '';
-
-        // เตรียมข้อมูลอ้างอิงชื่อหน่วยงาน
-        const unitsData = dbData.units || [];
-
-        let html = '';
-        currData.forEach(item => {
-          let levelColor = 'bg-slate-400';
-          if (item['ระดับการศึกษา'] === 'ปฐมวัย') levelColor = 'bg-pink-500';
-          else if (item['ระดับการศึกษา'] === 'ประถมศึกษา') levelColor = 'bg-green-500';
-          else if (item['ระดับการศึกษา'] === 'มัธยมศึกษา') levelColor = 'bg-purple-500';
-
-          // หาชื่อหน่วยงานจากรหัส
-          const unitObj = unitsData.find(u => String(u['รหัสหน่วยงาน']) === String(item['รหัสสถานศึกษา']));
-          const unitName = unitObj ? unitObj['ชื่อหน่วยงาน'] : item['รหัสสถานศึกษา'];
-
-          const pdfUrl = item['เอกสารหลักสูตร'] || '#';
-          
-          // ปรับปุ่มเปิดไฟล์ให้เป็นคำว่า PDF สีแดง
-          const btnPdfHtml = item['เอกสารหลักสูตร'] 
-            ? `<a href="${pdfUrl}" target="_blank" class="px-2.5 py-1 text-red-600 font-bold bg-red-50 hover:bg-red-100 border border-red-200 rounded text-xs transition" title="เปิดไฟล์หลักสูตร">
-                 PDF
-               </a>` 
-            : `<span class="text-[10px] text-slate-400">ไม่มีไฟล์แนบ</span>`;
-
-          // 6. เช็คสิทธิ์การแสดงปุ่ม Edit/Delete ของการ์ดใบนี้โดยเฉพาะ
-          let showUpdateBtn = false;
-          let showDeleteBtn = false;
-          
-          if (baseCanUpdate) {
-            if (uScope === 'ALL') showUpdateBtn = true;
-            else if ((uScope === 'UNIT' || uScope === 'OWN') && String(item['รหัสสถานศึกษา']) === userUnitId) showUpdateBtn = true;
-          }
-          
-          if (baseCanDelete) {
-            if (dScope === 'ALL') showDeleteBtn = true;
-            else if ((dScope === 'UNIT' || dScope === 'OWN') && String(item['รหัสสถานศึกษา']) === userUnitId) showDeleteBtn = true;
-          }
-
-          let actionBtns = '';
-          if (showUpdateBtn) {
-            actionBtns += `<button onclick="CurriculumSystem.openForm('${item['ลำดับ']}')" class="p-1.5 bg-amber-50 text-amber-600 rounded hover:bg-amber-100 transition" title="แก้ไข">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
-                </button>`;
-          }
-          if (showDeleteBtn) {
-            actionBtns += `<button onclick="CurriculumSystem.confirmDelete('${item['ลำดับ']}', '${item['ชื่อหลักสูตร']}')" class="p-1.5 bg-red-50 text-red-600 rounded hover:bg-red-100 transition" title="ลบ">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                </button>`;
-          }
-
-          html += `
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-col sm:flex-row justify-between items-center gap-4 hover:shadow-md transition" id="curr-row-${item['ลำดับ']}">
-              <div class="flex items-center gap-4 w-full">
-                <div class="w-12 h-12 rounded-full bg-blue-50 text-brand-blue flex items-center justify-center flex-shrink-0">
-                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
-                </div>
-                <div class="flex-1">
-                  <h4 class="text-sm font-bold text-slate-800">${item['ชื่อหลักสูตร']}</h4>
-                  <div class="flex flex-wrap gap-4 mt-1 text-[11px] text-slate-500 font-medium">
-                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full ${levelColor}"></span> ${item['ระดับการศึกษา']}</span>
-                    <span class="flex items-center gap-1"><svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> ปีการศึกษา ${item['ปีการศึกษา']}</span>
-                    <span class="flex items-center gap-1"><svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg> ${unitName}</span>
-                  </div>
-                </div>
-              </div>
-              <div class="flex items-center gap-2 w-full sm:w-auto justify-end border-t sm:border-t-0 pt-3 sm:pt-0 mt-3 sm:mt-0">
-                ${btnPdfHtml}
-                ${actionBtns}
-              </div>
-            </div>`;
-        });
-        container.innerHTML = html;
-      },
-
-      openForm: function(id = null) {
-        document.getElementById('curriculum-error-msg').classList.add('hidden');
-        document.getElementById('curriculum-form').reset();
-        document.getElementById('curriculum-id').value = id || '';
-        document.getElementById('curriculum-school-id').value = currentUser ? currentUser.unitId : '';
-        const fileHint = document.getElementById('curriculum-file-hint');
-        
-        if (id) {
-          document.getElementById('curriculum-form-header').innerText = 'แก้ไขข้อมูลหลักสูตร';
-          const item = dbData.curriculum.find(c => String(c['ลำดับ']) === String(id));
-          if (item) {
-            document.getElementById('curriculum-title').value = item['ชื่อหลักสูตร'] || '';
-            document.getElementById('curriculum-level').value = item['ระดับการศึกษา'] || '';
-            document.getElementById('curriculum-year').value = item['ปีการศึกษา'] || '';
-            if(item['เอกสารหลักสูตร']) {
-               fileHint.classList.remove('hidden');
-            } else {
-               fileHint.classList.add('hidden');
-            }
-          }
-        } else {
-          document.getElementById('curriculum-form-header').innerText = 'เพิ่มหลักสูตรใหม่';
-          if(fileHint) fileHint.classList.add('hidden');
-        }
-        document.getElementById('curriculum-form-modal').classList.replace('hidden', 'flex');
-      },
-
-      closeForm: function() {
-        document.getElementById('curriculum-form-modal').classList.replace('flex', 'hidden');
-      },
-      // ------------------------------------------------
-
-      saveData: function(btn) {
-        const id = document.getElementById('curriculum-id').value;
-        const schoolId = document.getElementById('curriculum-school-id').value;
-        const title = document.getElementById('curriculum-title').value;
-        const level = document.getElementById('curriculum-level').value;
-        const year = document.getElementById('curriculum-year').value;
-        const fileInput = document.getElementById('curriculum-file');
-        
-        const errMsg = document.getElementById('curriculum-error-msg');
-        errMsg.classList.add('hidden'); 
-
-        if (!title || !level || !year) {
-           errMsg.innerText = 'กรุณากรอกข้อมูลให้ครบถ้วน';
-           errMsg.classList.remove('hidden');
-           return;
-        }
-
-        const originalText = btn.innerText;
-        btn.innerText = 'กำลังบันทึก (อาจใช้เวลาอัปโหลด PDF สักครู่)...';
-        btn.disabled = true;
-        btn.classList.add('opacity-70', 'cursor-not-allowed');
-
-        const executeSave = (fileData) => {
-          const rowObj = {
-            'รหัสสถานศึกษา': schoolId,
-            'ชื่อหลักสูตร': title,
-            'ระดับการศึกษา': level,
-            'ปีการศึกษา': year
-          };
-
-          fetch(GAS_API_URL, {
-            method: 'POST',
-            body: JSON.stringify({ 
-              action: id ? 'updateCurriculum' : 'saveCurriculum', 
-              id: id, 
-              rowObj: rowObj,
-              fileData: fileData
-            })
-          }).then(res => res.json()).then(res => {
-            if (res.status === 'success') {
-              CurriculumSystem.closeForm(); // <--- เปลี่ยนจาก this.closeForm()
-              fetchData(); 
-            } else {
-              errMsg.innerText = 'Error: ' + res.message;
-              errMsg.classList.remove('hidden');
-            }
-            btn.innerText = originalText;
-            btn.disabled = false;
-            btn.classList.remove('opacity-70', 'cursor-not-allowed');
-          }).catch((err) => {
-            errMsg.innerText = 'เกิดข้อผิดพลาดในการเชื่อมต่อ: ' + err.toString();
-            errMsg.classList.remove('hidden');
-            btn.innerText = originalText;
-            btn.disabled = false;
-            btn.classList.remove('opacity-70', 'cursor-not-allowed');
-          });
-        };
-
-        if (fileInput.files && fileInput.files[0]) {
-          const file = fileInput.files[0];
-          
-          const maxSizeMB = 10; 
-          if (file.size > maxSizeMB * 1024 * 1024) {
-             errMsg.innerText = `ขนาดไฟล์เกินกำหนด (สูงสุด ${maxSizeMB} MB)`;
-             errMsg.classList.remove('hidden');
-             btn.innerText = originalText;
-             btn.disabled = false;
-             btn.classList.remove('opacity-70', 'cursor-not-allowed');
-             return; 
-          }
-
-          const reader = new FileReader();
-          reader.onload = e => executeSave({
-            base64: e.target.result,
-            filename: file.name,
-            mimeType: file.type
-          });
-          reader.readAsDataURL(file);
-        } else {
-          executeSave(null);
-        }
-      },
-
-      confirmDelete: function(id, title) {
-        this.targetDeleteId = id;
-        document.getElementById('curr-confirm-delete-text').innerText = `หลักสูตร: "${title}"`;
-        document.getElementById('curr-confirm-modal').classList.replace('hidden', 'flex');
-      },
-      closeConfirm: function() {
-        this.targetDeleteId = null;
-        document.getElementById('curr-confirm-modal').classList.replace('flex', 'hidden');
-      },
-      executeDelete: function() {
-        if (!this.targetDeleteId) return;
-        const id = this.targetDeleteId;
-        const btn = document.getElementById('curr-btn-confirm-delete');
-        
-        btn.innerText = 'กำลังลบ...';
-        btn.disabled = true;
-
-        const row = document.getElementById('curr-row-' + id);
-        if(row) row.style.display = 'none';
-        dbData.curriculum = dbData.curriculum.filter(n => String(n['ลำดับ']) !== String(id));
-
-        fetch(GAS_API_URL, {
-          method: 'POST',
-          body: JSON.stringify({ action: 'deleteCurriculum', id: id })
-        }).then(res => res.json()).then(res => {
-          this.closeConfirm();
-          fetchData(); 
-          btn.innerText = 'ยืนยันลบ';
-          btn.disabled = false;
-        }).catch(() => { this.closeConfirm(); fetchData(); });
-      }
-    };
-
-
-    // ==========================================
-    // MODULE: ระบบตั้งค่าสิทธิ์ (SettingsSystem)
-    // ==========================================
-    const SettingsSystem = {
-      roles: ['ผู้ดูแลระบบ', 'ผู้กำกับดูแล', 'สถานศึกษา', 'ครูและบุคลากรทางการศึกษา', 'บุคคลภายนอก'],
-      
-      attachEvents: function() {
-        const tbody = document.querySelector('tbody');
-        if (!tbody) return;
-        tbody.querySelectorAll('input[type="checkbox"]').forEach(chk => {
-          chk.onchange = (e) => {
-            const td = e.target.closest('td');
-            const sel = td.querySelector('select');
-            const span = td.querySelector('span');
-            let cClass = td.cellIndex===1 ? 'text-green-600' : td.cellIndex===2 ? 'text-blue-600' : td.cellIndex===3 ? 'text-amber-500' : 'text-red-600';
-            
-            if (chk.checked) {
-              sel.disabled = false;
-              sel.classList.replace('bg-slate-100', 'bg-white');
-              sel.classList.replace('text-slate-400', 'text-slate-600');
-              span.innerText = 'เปิดใช้งาน';
-              span.className = `font-bold ${cClass}`;
-            } else {
-              sel.disabled = true;
-              sel.classList.replace('bg-white', 'bg-slate-100');
-              sel.classList.replace('text-slate-600', 'text-slate-400');
-              span.innerText = 'ปิดใช้งาน';
-              span.className = 'font-bold text-slate-400';
-            }
-          };
-        });
-      },
-
-      loadSettingsToUI: function() {
-        if (!dbData || !dbData.permissions) return;
-        const tbody = document.querySelector('tbody');
-        if (!tbody) return;
-        
-        tbody.querySelectorAll('tr').forEach((row, index) => {
-          const role = this.roles[index];
-          const perm = dbData.permissions.find(p => p['ระบบงาน'] === 'curriculum' && String(p['ระดับสิทธิ์']) === role);
-          if (perm) {
-            const tds = row.querySelectorAll('td');
-            const setCell = (td, active, scope, cClass) => {
-              if(!td) return;
-              const chk = td.querySelector('input[type="checkbox"]');
-              const sel = td.querySelector('select');
-              chk.checked = (String(active).toLowerCase() === 'true');
-              sel.value = scope || 'ALL';
-              chk.dispatchEvent(new Event('change')); // กระตุ้น UI ให้เปลี่ยนสี
-            };
-            setCell(tds[1], perm['C_Active'], perm['C_Scope'], 'text-green-600');
-            setCell(tds[2], perm['R_Active'], perm['R_Scope'], 'text-blue-600');
-            setCell(tds[3], perm['U_Active'], perm['U_Scope'], 'text-amber-500');
-            setCell(tds[4], perm['D_Active'], perm['D_Scope'], 'text-red-600');
-          }
-        });
-      },
-
-      saveAll: function(btn) {
-        const tbody = document.querySelector('tbody');
-        if (!tbody) return;
-        let settingsData = [];
-
-        tbody.querySelectorAll('tr').forEach((row, index) => {
-          const tds = row.querySelectorAll('td');
-          const getCell = (td) => ({ active: td.querySelector('input').checked, scope: td.querySelector('select').value });
-          const c = getCell(tds[1]), r = getCell(tds[2]), u = getCell(tds[3]), d = getCell(tds[4]);
-
-          settingsData.push({
-            'ระบบงาน': 'curriculum', 'ระดับสิทธิ์': this.roles[index],
-            'C_Active': c.active, 'C_Scope': c.scope, 'R_Active': r.active, 'R_Scope': r.scope,
-            'U_Active': u.active, 'U_Scope': u.scope, 'D_Active': d.active, 'D_Scope': d.scope
-          });
-        });
-
-        const origText = btn.innerHTML;
-        btn.innerHTML = 'กำลังบันทึก...';
-        btn.disabled = true;
-
-        fetch(GAS_API_URL, { method: 'POST', body: JSON.stringify({ action: 'saveSettings', settingsData: settingsData }) })
-        .then(res => res.json()).then(res => {
-          if (res.status === 'success') { showGlobalLoader('บันทึกสำเร็จ อัปเดตข้อมูล...'); fetchData(); } 
-          else alert('Error: ' + res.message);
-          btn.innerHTML = origText; btn.disabled = false;
-        }).catch(err => { alert('การเชื่อมต่อล้มเหลว'); btn.innerHTML = origText; btn.disabled = false; });
-      }
-    };
-    
-    // ฟังก์ชันออกจากระบบ และเปิดหน้าต่างล็อกอิน
     function toggleAuthModal() {
       if (currentUser) {
-        // กรณีออกจากระบบ: แสดงวงแหวนโหลด
-        showGlobalLoader('กำลังออกจากระบบ...');
-        
-        // จำลองการหน่วงเวลาสัก 0.8 วินาที เพื่อความลื่นไหล (เพราะลบข้อมูลในเครื่องมันเร็วจนมองไม่ทัน)
-        setTimeout(() => {
-          currentUser = null;
-          localStorage.removeItem('supervision_user');
-          updateAuthUI();
-          loadPage('home');
-          hideGlobalLoader(); // ปิดวงแหวน
-        }, 800);
-        
+        currentUser = null; localStorage.removeItem('supervision_user');
+        updateAuthUI(); window.location.reload();
       } else {
-        // กรณีเปิดหน้าต่างล็อกอิน: ให้ล้างข้อมูลเดิมในช่องกรอกก่อน
-        document.getElementById('login-username').value = '';
-        document.getElementById('login-password').value = '';
-        document.getElementById('login-error').classList.add('hidden');
-        
-        document.getElementById('login-modal').classList.remove('hidden');
-        document.getElementById('login-modal').classList.add('flex');
+        document.getElementById('login-modal').classList.toggle('hidden');
+        document.getElementById('login-modal').classList.toggle('flex');
       }
     }
 
-    // ฟังก์ชันเข้าสู่ระบบ
     function performLogin() {
       const u = document.getElementById('login-username').value;
       const p = document.getElementById('login-password').value;
-
-      // ปิดกล่อง error เก่า (ถ้ามี) และแสดงวงแหวนโหลด
-      document.getElementById('login-error').classList.add('hidden');
-      showGlobalLoader('กำลังตรวจสอบสิทธิ์...'); 
-
-      fetch(GAS_API_URL, {
-        method: 'POST',
-        body: JSON.stringify({ action: 'login', username: u, password: p })
-      })
-      .then(res => res.json())
-      .then(res => {
-        hideGlobalLoader(); // ปิดวงแหวนโหลดเมื่อได้รับข้อมูลกลับมา
-        
+      document.getElementById('global-loader').classList.replace('hidden', 'flex');
+      fetch(GAS_API_URL, { method: 'POST', body: JSON.stringify({ action: 'login', username: u, password: p }) })
+      .then(res => res.json()).then(res => {
+        document.getElementById('global-loader').classList.replace('flex', 'hidden');
         if (res.status === 'success') {
-          currentUser = res.user;
-          localStorage.setItem('supervision_user', JSON.stringify(currentUser));
-          document.getElementById('login-modal').classList.add('hidden');
-          document.getElementById('login-modal').classList.remove('flex');
-          updateAuthUI();
+          currentUser = res.user; localStorage.setItem('supervision_user', JSON.stringify(currentUser));
+          toggleAuthModal(); updateAuthUI(); fetchData();
         } else {
-          // แจ้งเตือนกรณีรหัสผิด
-          const errDiv = document.getElementById('login-error');
-          errDiv.innerText = res.message;
-          errDiv.classList.remove('hidden');
+          document.getElementById('login-error').innerText = res.message;
+          document.getElementById('login-error').classList.remove('hidden');
         }
-      })
-      .catch(err => {
-        hideGlobalLoader(); // ปิดวงแหวนโหลดถ้าเกิดข้อผิดพลาด
-        const errDiv = document.getElementById('login-error');
-        errDiv.innerText = 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้';
-        errDiv.classList.remove('hidden');
       });
     }
 
     function updateAuthUI() {
       const btn = document.getElementById('auth-btn');
       const info = document.getElementById('user-info-display');
-      const settingsMenu = document.getElementById('menu-settings');
-      const newsMenu = document.getElementById('menu-news');
-
       if (currentUser) {
-        btn.innerText = 'ออกจากระบบ';
-        btn.classList.replace('bg-brand-green', 'bg-red-600');
+        btn.innerText = 'ออกจากระบบ'; btn.classList.replace('bg-brand-green', 'bg-red-600');
         info.classList.remove('hidden');
         document.getElementById('user-name').innerText = currentUser.name;
-        
-        // เช็คว่ามีข้อมูลหน่วยงานส่งมาไหม ถ้ามีให้เอามาต่อท้าย ถ้าไม่มีก็ไม่แสดง
-        let unitText = currentUser.unit ? ` ${currentUser.unit}` : '';
-        document.getElementById('user-role').innerText = `${currentUser.position}${unitText} (${currentUser.role})`;
-
-        if (currentUser.role === 'ผู้ดูแลระบบ') {
-          if (settingsMenu) settingsMenu.classList.remove('hidden');
-          if (newsMenu) newsMenu.classList.remove('hidden');
-        } else {
-          if (settingsMenu) settingsMenu.classList.add('hidden');
-          if (newsMenu) newsMenu.classList.add('hidden');
+        document.getElementById('user-role').innerText = currentUser.role;
+        if(currentUser.role === 'ผู้ดูแลระบบ') {
+          document.getElementById('menu-news').classList.remove('hidden');
+          document.getElementById('menu-settings').classList.remove('hidden');
         }
       } else {
-        btn.innerText = 'เข้าสู่ระบบ';
-        btn.classList.replace('bg-red-600', 'bg-brand-green');
+        btn.innerText = 'เข้าสู่ระบบ'; btn.classList.replace('bg-red-600', 'bg-brand-green');
         info.classList.add('hidden');
-        if (settingsMenu) settingsMenu.classList.add('hidden');
-        if (newsMenu) newsMenu.classList.add('hidden');
+        document.getElementById('menu-news').classList.add('hidden');
+        document.getElementById('menu-settings').classList.add('hidden');
       }
     }
 
-    if (typeof ChartDataLabels !== 'undefined') {
-      Chart.register(ChartDataLabels);
+    function fetchData() {
+      document.getElementById('global-loader').classList.replace('hidden', 'flex');
+      fetch(GAS_API_URL + "?action=getAllData").then(res => res.json()).then(data => {
+        if (data.status === 'success') { dbData = data; renderDashboard(); NewsSystem.renderCards(); }
+        document.getElementById('global-loader').classList.replace('flex', 'hidden');
+      });
     }
 
+    // -- DASHBOARD LOGIC --
     function renderSchoolDropdown() {
       const select = document.getElementById('school-filter');
-      if (!select) return;
-
-      let html = '<option value="ALL">ภาพรวมสถานศึกษา (ท.1-ท.6 และ ศพด.)</option>';
-      const unitData = dbData['ข้อมูลหน่วยงาน'] || dbData.units || [];
-
-      unitData.forEach(item => {
-        const unitId = item['รหัสหน่วยงาน'] || '';
-        const unitName = item['ชื่อหน่วยงาน'] || '';
-        
-        // เช็คว่าชื่อหน่วยงานมีคำที่บ่งบอกว่าเป็นสถานศึกษาหรือไม่ (คัดกรอง ท.1-ท.6 และ ศพด.)
-        const isSchool = unitName.includes('โรงเรียน') || 
-                         unitName.includes('ท.') || 
-                         unitName.includes('ศพด') || 
-                         unitName.includes('ศูนย์พัฒนา');
-
-        // แสดงใน Dropdown เฉพาะหน่วยงานที่ผ่านเงื่อนไขสถานศึกษา
-        if (unitId.trim() !== '' && unitName.trim() !== '' && isSchool) {
-          html += `<option value="${unitId.trim()}">${unitName.trim()}</option>`;
-        }
+      let html = '<option value="ALL">ภาพรวมสถานศึกษา</option>';
+      (dbData.units || []).forEach(u => {
+        if (u['ชื่อหน่วยงาน'].includes('โรงเรียน') || u['ชื่อหน่วยงาน'].includes('ศูนย์')) html += `<option value="${u['รหัสหน่วยงาน']}">${u['ชื่อหน่วยงาน']}</option>`;
       });
       select.innerHTML = html;
     }
 
     function renderDashboard() {
-      if (!document.getElementById('card1-total')) return;
-
-      const schoolSelect = document.getElementById('school-filter');
-      if (schoolSelect && schoolSelect.options.length <= 1) {
-        renderSchoolDropdown();
+      const select = document.getElementById('school-filter');
+      if (select.options.length <= 1) renderSchoolDropdown();
+      const val = select.value;
+      
+      if(val === 'ALL') document.getElementById('selected-school-label').innerText = 'ภาพรวมสถานศึกษา';
+      else {
+        const u = (dbData.units||[]).find(x=>x['รหัสหน่วยงาน'] === val);
+        if(u) document.getElementById('selected-school-label').innerText = u['ชื่อหน่วยงาน'];
       }
 
-      const selectedSchoolId = schoolSelect ? schoolSelect.value : 'ALL';
-      const schoolLabel = document.getElementById('selected-school-label');
-      if (schoolLabel) {
-        schoolLabel.innerText = selectedSchoolId === 'ALL' 
-          ? 'ภาพรวมสถานศึกษา (ท.1-ท.6 และ ศพด.)' 
-          : schoolSelect.options[schoolSelect.selectedIndex].text;
-      }
+      const f = d => val === 'ALL' ? (d['รหัสหน่วยงาน'] && (dbData.units.find(u=>u['รหัสหน่วยงาน']===d['รหัสหน่วยงาน']&&u['ชื่อหน่วยงาน'].includes('โรงเรียน')))) : d['รหัสหน่วยงาน'] === val;
+      
+      const std = (dbData.students || []).filter(f);
+      const psn = (dbData.personnel || []).filter(f);
 
-      // ดึงรหัสหน่วยงานที่จัดว่าเป็น "สถานศึกษา" (ท.1-ท.6 และ ศพด.) เก็บไว้เป็นลิสต์
-      const unitData = dbData['ข้อมูลหน่วยงาน'] || dbData.units || [];
-      const validSchoolIds = [];
-      unitData.forEach(item => {
-        const unitId = String(item['รหัสหน่วยงาน'] || '').trim();
-        const unitName = String(item['ชื่อหน่วยงาน'] || '').trim();
-        const isSchool = unitName.includes('โรงเรียน') || 
-                         unitName.includes('ท.') || 
-                         unitName.includes('ศพด') || 
-                         unitName.includes('ศูนย์พัฒนา');
-                         
-        if (unitId && isSchool) {
-          validSchoolIds.push(unitId);
-        }
-      });
-
-      // ฟังก์ชันตัวกรองข้อมูล
-      const filterData = (item) => {
-        const itemId = String(item['รหัสหน่วยงาน'] || '').trim();
-        if (selectedSchoolId === 'ALL') {
-          // ถ้าเลือกภาพรวม ให้นับสถิติ "เฉพาะ" รหัสหน่วยงานที่เป็นสถานศึกษาเท่านั้น
-          return validSchoolIds.includes(itemId);
-        }
-        return itemId === String(selectedSchoolId).trim();
+      const calcCard = (arr, cond) => {
+        let m=0, fm=0;
+        arr.filter(cond).forEach(x => {
+          const c = Number(x['จำนวน']||0);
+          if(x['เพศ']==='ชาย') m+=c; else if(x['เพศ']==='หญิง') fm+=c;
+        });
+        return {m, fm, t: m+fm};
       };
+      
+      const c1 = calcCard(std, ()=>true);
+      document.getElementById('card1-total').innerText = c1.t.toLocaleString();
+      document.getElementById('card1-male').innerText = c1.m.toLocaleString();
+      document.getElementById('card1-female').innerText = c1.fm.toLocaleString();
 
-      const filteredStudents = (dbData.students || dbData['ข้อมูลนักเรียน'] || []).filter(filterData);
-      const filteredPersonnel = (dbData.personnel || dbData['ข้อมูลบุคลากร'] || []).filter(filterData);
+      const c2 = calcCard(psn, p=>['ผู้อำนวยการสถานศึกษา','รองผู้อำนวยการสถานศึกษา'].includes(p['ตำแหน่ง']));
+      document.getElementById('card2-total').innerText = c2.t.toLocaleString();
+      document.getElementById('card2-male').innerText = c2.m.toLocaleString();
+      document.getElementById('card2-female').innerText = c2.fm.toLocaleString();
 
-      // Card 1: นักเรียน
-      let studentMale = 0, studentFemale = 0;
-      filteredStudents.forEach(s => {
-        let count = Number(s['จำนวน'] || 0);
-        if (s['เพศ'] === 'ชาย') studentMale += count;
-        else if (s['เพศ'] === 'หญิง') studentFemale += count;
-      });
-      document.getElementById('card1-total').innerText = (studentMale + studentFemale).toLocaleString();
-      document.getElementById('card1-male').innerText = studentMale.toLocaleString();
-      document.getElementById('card1-female').innerText = studentFemale.toLocaleString();
+      const c3 = calcCard(psn, p=>['ครู','ครูผู้ช่วย'].includes(p['ตำแหน่ง']));
+      document.getElementById('card3-total').innerText = c3.t.toLocaleString();
+      document.getElementById('card3-male').innerText = c3.m.toLocaleString();
+      document.getElementById('card3-female').innerText = c3.fm.toLocaleString();
 
-      // Card 2: ผู้บริหาร
-      const execPositions = ['ผู้อำนวยการสถานศึกษา', 'รองผู้อำนวยการสถานศึกษา'];
-      let execMale = 0, execFemale = 0;
-      filteredPersonnel.forEach(p => {
-        if (execPositions.includes(p['ตำแหน่ง'])) {
-          let count = Number(p['จำนวน'] || 0);
-          if (p['เพศ'] === 'ชาย') execMale += count;
-          else if (p['เพศ'] === 'หญิง') execFemale += count;
-        }
-      });
-      document.getElementById('card2-total').innerText = (execMale + execFemale).toLocaleString();
-      document.getElementById('card2-male').innerText = execMale.toLocaleString();
-      document.getElementById('card2-female').innerText = execFemale.toLocaleString();
+      const c4 = calcCard(psn, p=>!['ผู้อำนวยการสถานศึกษา','รองผู้อำนวยการสถานศึกษา','ครู','ครูผู้ช่วย'].includes(p['ตำแหน่ง']));
+      document.getElementById('card4-total').innerText = c4.t.toLocaleString();
+      document.getElementById('card4-male').innerText = c4.m.toLocaleString();
+      document.getElementById('card4-female').innerText = c4.fm.toLocaleString();
 
-      // Card 3: พนักงานครู
-      const teacherPositions = ['ครู', 'ครูผู้ช่วย'];
-      let teacherMale = 0, teacherFemale = 0;
-      filteredPersonnel.forEach(p => {
-        if (teacherPositions.includes(p['ตำแหน่ง'])) {
-          let count = Number(p['จำนวน'] || 0);
-          if (p['เพศ'] === 'ชาย') teacherMale += count;
-          else if (p['เพศ'] === 'หญิง') teacherFemale += count;
-        }
-      });
-      document.getElementById('card3-total').innerText = (teacherMale + teacherFemale).toLocaleString();
-      document.getElementById('card3-male').innerText = teacherMale.toLocaleString();
-      document.getElementById('card3-female').innerText = teacherFemale.toLocaleString();
+      // วิทยฐานะ
+      const getPosCount = (level) => psn.filter(p=>p['วิทยฐานะ']===level).reduce((acc,curr)=>acc+Number(curr['จำนวน']||0),0);
+      document.getElementById('card5-expert').innerText = getPosCount('เชี่ยวชาญ').toLocaleString();
+      document.getElementById('card5-snr-adv').innerText = getPosCount('ชำนาญการพิเศษ').toLocaleString();
+      document.getElementById('card5-adv').innerText = getPosCount('ชำนาญการ').toLocaleString();
+      document.getElementById('card5-none').innerText = getPosCount('ไม่มีวิทยฐานะ').toLocaleString();
 
-      // Card 4: บุคลากรทางการศึกษา
-      const eduStaffPositions = ['บุคลากร', 'ผู้ช่วยครูผู้ช่วย', 'ผู้ช่วยเจ้าพนักงานธุรการ'];
-      let staffMale = 0, staffFemale = 0;
-      filteredPersonnel.forEach(p => {
-        if (eduStaffPositions.includes(p['ตำแหน่ง'])) {
-          let count = Number(p['จำนวน'] || 0);
-          if (p['เพศ'] === 'ชาย') staffMale += count;
-          else if (p['เพศ'] === 'หญิง') staffFemale += count;
-        }
-      });
-      document.getElementById('card4-total').innerText = (staffMale + staffFemale).toLocaleString();
-      document.getElementById('card4-male').innerText = staffMale.toLocaleString();
-      document.getElementById('card4-female').innerText = staffFemale.toLocaleString();
-
-      // Card 5: วิทยฐานะ
-      let expert = 0, snrAdv = 0, adv = 0, none = 0;
-      filteredPersonnel.forEach(p => {
-        let academic = p['วิทยฐานะ'] || '';
-        let count = Number(p['จำนวน'] || 0);
-        if (academic.includes('เชี่ยวชาญ')) expert += count;
-        else if (academic.includes('ชำนาญการพิเศษ')) snrAdv += count;
-        else if (academic.includes('ชำนาญการ')) adv += count;
-        else none += count;
-      });
-      document.getElementById('card5-expert').innerText = expert;
-      document.getElementById('card5-snr-adv').innerText = snrAdv;
-      document.getElementById('card5-adv').innerText = adv;
-      document.getElementById('card5-none').innerText = none;
-
-      renderStudentLevelCharts(filteredStudents);
-      renderPersonnelBarChart(filteredPersonnel);
+      renderStudentLevelCharts(std);
+      renderPersonnelBarChart(psn);
     }
 
     function renderStudentLevelCharts(studentList) {
@@ -1387,78 +471,206 @@
       }
     }
 
-    // ฟังก์ชันใหม่ วาดกราฟแท่งบุคลากร
     function renderPersonnelBarChart(personnelList) {
-      const barCtx = document.getElementById('personnelBarChart');
-      if (!barCtx) return;
-
-      let oldBarChart = Chart.getChart('personnelBarChart');
-      if (oldBarChart) oldBarChart.destroy();
-
-      // จัดกลุ่มบุคลากรตามตำแหน่ง
-      const positionGroup = {};
+      let oldBarChart = Chart.getChart('personnelBarChart'); if (oldBarChart) oldBarChart.destroy();
+      const posGroup = {};
       personnelList.forEach(p => {
-        let pos = p['ตำแหน่ง'] || 'ไม่ระบุ';
-        let count = Number(p['จำนวน'] || 0);
-        let gender = p['เพศ'];
-
-        if (!positionGroup[pos]) {
-          positionGroup[pos] = { male: 0, female: 0 };
-        }
-        if (gender === 'ชาย') positionGroup[pos].male += count;
-        else if (gender === 'หญิง') positionGroup[pos].female += count;
+        let pos = p['ตำแหน่ง'] || 'ไม่ระบุ'; let count = Number(p['จำนวน'] || 0); let gender = p['เพศ'];
+        if (!posGroup[pos]) posGroup[pos] = { male: 0, female: 0 };
+        if (gender === 'ชาย') posGroup[pos].male += count; else if (gender === 'หญิง') posGroup[pos].female += count;
       });
+      const posKeys = Object.keys(posGroup);
+      if (posKeys.length === 0) return;
 
-      const positions = Object.keys(positionGroup);
-      if (positions.length === 0) return;
-
-      const maleData = positions.map(pos => positionGroup[pos].male);
-      const femaleData = positions.map(pos => positionGroup[pos].female);
-
-      new Chart(barCtx, {
+      new Chart(document.getElementById('personnelBarChart'), {
         type: 'bar',
-        data: {
-          labels: positions,
-          datasets: [
-            {
-              label: 'ชาย',
-              data: maleData,
-              backgroundColor: '#3b82f6',
-              borderRadius: 4
-            },
-            {
-              label: 'หญิง',
-              data: femaleData,
-              backgroundColor: '#ec4899',
-              borderRadius: 4
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              position: 'top',
-              labels: { font: { family: 'Sarabun', size: 12, weight: 'bold' } }
-            },
-            datalabels: {
-              color: '#ffffff',
-              anchor: 'center',
-              align: 'center',
-              font: { weight: 'bold', size: 10 },
-              formatter: function(value) {
-                return value > 0 ? value.toLocaleString() : '';
-              }
-            }
-          },
-          scales: {
-            x: { ticks: { font: { family: 'Sarabun', size: 11 } } },
-            y: { beginAtZero: true, ticks: { font: { family: 'Sarabun' } } }
-          }
-        }
+        data: { labels: posKeys, datasets: [{ label: 'ชาย', data: posKeys.map(k=>posGroup[k].male), backgroundColor: '#3b82f6', borderRadius: 4 }, { label: 'หญิง', data: posKeys.map(k=>posGroup[k].female), backgroundColor: '#ec4899', borderRadius: 4 }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top', labels: { font: { family: 'Sarabun', size: 11, weight: 'bold' } } }, datalabels: { color: '#fff', font: {size:9, weight: 'bold'}, formatter: v=>v>0?v:'' } }, scales: { x: { ticks: { font: { family: 'Sarabun', size: 10 } } }, y: { beginAtZero: true, ticks: { font: { family: 'Sarabun' } } } } }
       });
     }
+
+    // -- NEWS LOGIC (อัปเดตใหม่ 5 ภาพ มีระบบบีบอัดภาพก่อนส่ง) --
+    const NewsSystem = {
+      targetDeleteId: null,
+      isoToThai: iso => iso ? `${parseInt(iso.split('-')[2])} ${['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'][parseInt(iso.split('-')[1])-1]} ${parseInt(iso.split('-')[0])<2500 ? parseInt(iso.split('-')[0])+543 : parseInt(iso.split('-')[0])}` : '',
+      thaiToIso: th => { if(!th||th.includes('-')) return th; const p=th.split(' '); return `${parseInt(p[2])<2500?parseInt(p[2])+543:parseInt(p[2])-543}-${String(['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'].indexOf(p[1])+1).padStart(2,'0')}-${p[0].padStart(2,'0')}`;},
+      
+      // ฟังก์ชันดึง ID จากลิงก์ Drive มาสร้าง Thumbnail
+      getImgUrl: function(url) {
+        if (!url || typeof url !== 'string' || url.trim() === '') return '';
+        if (url.includes('drive.google.com')) {
+          const matchId = url.match(/[-\w]{25,}/);
+          if (matchId && matchId[0]) {
+            return `https://drive.google.com/thumbnail?id=${matchId[0]}&sz=w1000`;
+          }
+        }
+        return url; 
+      },
+
+      renderCards: function() {
+        const c = document.getElementById('news-container');
+        c.innerHTML = (dbData.news||[]).sort((a,b)=>new Date(this.thaiToIso(b['วันที่']))-new Date(this.thaiToIso(a['วันที่']))).map(n => {
+          const mainImg = this.getImgUrl(n['ภาพข่าว 1']) || 'SV_logo.png';
+          return `
+          <div class="min-w-[280px] max-w-[280px] bg-white rounded-lg border border-slate-200 p-3 cursor-pointer shadow-sm hover:shadow-md transition" onclick="NewsSystem.openDetail('${n['ลำดับ']}')">
+            <div class="flex h-16">
+              <img src="${mainImg}" class="w-16 h-16 object-cover bg-gray-100 rounded border border-slate-100 mr-3" onerror="this.src='SV_logo.png'">
+              <div class="flex-1 overflow-hidden">
+                <span class="text-[10px] text-blue-500 font-semibold">${n['วันที่']}</span>
+                <h4 class="font-bold text-xs truncate text-slate-800">${n['พาดหัวข่าว']}</h4>
+                <p class="text-[10px] text-gray-500 line-clamp-1 mt-0.5">${n['เนื้อหาข่าว']}</p>
+              </div>
+            </div>
+          </div>`;
+        }).join('');
+      },
+
+      openDetail: function(id) { 
+        const n = dbData.news.find(x=>x['ลำดับ']==id); 
+        if(!n) return;
+        document.getElementById('detail-news-title').innerText = n['พาดหัวข่าว']; 
+        document.getElementById('detail-news-date').innerText = 'ประกาศเมื่อ: ' + n['วันที่']; 
+        document.getElementById('detail-news-content').innerText = n['เนื้อหาข่าว']; 
+        
+        // ดึงรูปลิงก์จริง และกรองช่องว่างทิ้ง
+        const rawImgs = [n['ภาพข่าว 1'], n['ภาพข่าว 2'], n['ภาพข่าว 3'], n['ภาพข่าว 4'], n['ภาพข่าว 5']];
+        const imgs = rawImgs.map(url => this.getImgUrl(url)).filter(url => url !== '');
+
+        let imgHtml = '<div class="grid grid-cols-2 gap-2 h-full content-start">';
+        if(imgs.length > 0) {
+          imgHtml += `<div class="col-span-2"><a href="${imgs[0]}" target="_blank"><img src="${imgs[0]}" class="w-full h-48 sm:h-64 object-cover rounded-lg border border-slate-200 hover:opacity-90 transition" onerror="this.style.display='none'"></a></div>`;
+          for(let i=1; i<imgs.length; i++) {
+            imgHtml += `<div><a href="${imgs[i]}" target="_blank"><img src="${imgs[i]}" class="w-full h-24 sm:h-32 object-cover rounded-lg border border-slate-200 hover:opacity-90 transition" onerror="this.style.display='none'"></a></div>`;
+          }
+        } else {
+          imgHtml += `<div class="col-span-2 h-48 bg-slate-100 rounded-lg flex items-center justify-center border border-slate-200"><img src="SV_logo.png" class="h-20 opacity-50"></div>`;
+        }
+        imgHtml += '</div>';
+        
+        document.getElementById('detail-news-image-grid').innerHTML = imgHtml; 
+        document.getElementById('news-detail-modal').classList.replace('hidden','flex'); 
+      },
+      closeDetail: () => document.getElementById('news-detail-modal').classList.replace('flex','hidden'),
+      
+      openList: function(){ this.renderTable(); document.getElementById('news-list-modal').classList.replace('hidden','flex'); },
+      closeList: () => document.getElementById('news-list-modal').classList.replace('flex','hidden'),
+      
+      renderTable: function() { 
+        document.getElementById('admin-news-table-body').innerHTML = (dbData.news||[]).sort((a,b)=>new Date(this.thaiToIso(b['วันที่']))-new Date(this.thaiToIso(a['วันที่']))).map(n=>`<tr><td class="p-2 border-b border-slate-100">${n['วันที่']}</td><td class="p-2 border-b border-slate-100 font-medium text-brand-blue">${n['พาดหัวข่าว']}</td><td class="p-2 border-b border-slate-100 text-right"><button onclick="NewsSystem.openForm('${n['ลำดับ']}')" class="text-amber-500 font-bold mr-3">แก้ไข</button><button onclick="NewsSystem.confirmDelete('${n['ลำดับ']}')" class="text-red-500 font-bold">ลบ</button></td></tr>`).join(''); 
+      },
+      
+      openForm: function(id=null) { 
+        document.getElementById('news-form').reset(); 
+        document.getElementById('news-id').value = id || ''; 
+        document.getElementById('news-form-header').innerText = id ? 'แก้ไขข่าวประชาสัมพันธ์' : 'เพิ่มข่าวใหม่';
+        if(id){ 
+          const n = dbData.news.find(x=>x['ลำดับ']==id); 
+          document.getElementById('news-title').value = n['พาดหัวข่าว']; 
+          document.getElementById('news-content').value = n['เนื้อหาข่าว']; 
+          document.getElementById('news-date').value = this.thaiToIso(n['วันที่']); 
+        } 
+        document.getElementById('news-form-modal').classList.replace('hidden','flex'); 
+        this.closeList(); 
+      },
+      closeForm: function() { 
+        document.getElementById('news-form-modal').classList.replace('flex','hidden'); 
+        this.openList(); 
+      },
+      
+      saveData: async function(btn) {
+        const id = document.getElementById('news-id').value;
+        const title = document.getElementById('news-title').value;
+        const content = document.getElementById('news-content').value;
+        const dateIso = document.getElementById('news-date').value;
+
+        if(!title || !dateIso) return alert('กรุณากรอกข้อมูลให้ครบถ้วน');
+
+        const rowObj = { 'พาดหัวข่าว': title, 'เนื้อหาข่าว': content, 'วันที่': this.isoToThai(dateIso) };
+
+        const originalText = btn.innerText;
+        btn.innerText = 'กำลังบีบอัดและอัปโหลด...';
+        btn.disabled = true;
+        btn.classList.add('opacity-70', 'cursor-not-allowed');
+
+        // ฟังก์ชันบีบอัดภาพ (แก้ปัญหารอนาน/อัปโหลดไม่ผ่าน)
+        const compressImage = (file) => new Promise((resolve, reject) => {
+          if (!file) return resolve(null);
+          // ถ้าไม่ใช่ภาพ ให้ส่งตามปกติ
+          if (!file.type.startsWith('image/')) {
+             const reader = new FileReader();
+             reader.onload = () => resolve({ base64: reader.result, mimeType: file.type, filename: file.name });
+             reader.readAsDataURL(file);
+             return;
+          }
+          
+          const reader = new FileReader();
+          reader.onload = event => {
+            const img = new Image();
+            img.onload = () => {
+              const canvas = document.createElement('canvas');
+              const MAX_WIDTH = 1000;
+              const MAX_HEIGHT = 1000;
+              let width = img.width;
+              let height = img.height;
+
+              // คำนวณอัตราส่วนเพื่อย่อขนาด
+              if (width > height) {
+                if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
+              } else {
+                if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; }
+              }
+              
+              canvas.width = width;
+              canvas.height = height;
+              const ctx = canvas.getContext('2d');
+              ctx.drawImage(img, 0, 0, width, height);
+              
+              // บีบอัดภาพคุณภาพ 70%
+              const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+              resolve({ base64: dataUrl, mimeType: 'image/jpeg', filename: file.name });
+            };
+            img.src = event.target.result;
+          };
+          reader.onerror = error => reject(error);
+          reader.readAsDataURL(file);
+        });
+
+        try {
+          // อ่านและบีบอัดไฟล์ทั้ง 5 ช่อง
+          for (let i = 1; i <= 5; i++) {
+            const fileInput = document.getElementById('news-file' + i);
+            if (fileInput && fileInput.files && fileInput.files[0]) {
+               rowObj['fileData' + i] = await compressImage(fileInput.files[0]);
+            }
+          }
+
+          const res = await fetch(GAS_API_URL, {
+            method: 'POST',
+            body: JSON.stringify({ action: id ? 'updateNews' : 'saveNews', id: id, rowObj: rowObj })
+          }).then(r => r.json());
+
+          if (res.status === 'success') {
+            this.closeForm();
+            fetchData();
+          } else {
+            alert('Error: ' + res.message);
+          }
+        } catch (err) {
+          alert('เกิดข้อผิดพลาด: ' + err.message);
+        } finally {
+          btn.innerText = originalText;
+          btn.disabled = false;
+          btn.classList.remove('opacity-70', 'cursor-not-allowed');
+        }
+      },
+
+      confirmDelete: function(id) { this.targetDeleteId=id; document.getElementById('news-confirm-modal').classList.replace('hidden','flex'); },
+      closeConfirm: function() { this.targetDeleteId=null; document.getElementById('news-confirm-modal').classList.replace('flex','hidden'); },
+      executeDelete: function() {
+        const id=this.targetDeleteId; document.getElementById('btn-confirm-delete').disabled=true;
+        fetch(GAS_API_URL, {method:'POST', body:JSON.stringify({action:'deleteNews', id:id})}).then(()=>fetchData()).finally(()=>{this.closeConfirm(); document.getElementById('btn-confirm-delete').disabled=false;});
+      }
+    };
   </script>
 </body>
 </html>
