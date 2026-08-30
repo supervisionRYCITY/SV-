@@ -1,21 +1,32 @@
 <div class="space-y-6 pb-10">
   
-  <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col sm:flex-row justify-between sm:items-center gap-4 border-l-4 border-brand-blue">
-    <div>
-      <h2 class="text-xl font-bold text-brand-blue tracking-tight">ข้อมูลหลักสูตรสถานศึกษา</h2>
-      <p class="text-xs text-slate-500 mt-1">จัดการข้อมูลและเอกสารหลักสูตรของสถานศึกษา</p>
+  <!-- การ์ดที่ 1: ข้อมูลหลักสูตรสถานศึกษา (รวบ Header และ Container ไว้ในกล่องเดียว) -->
+  <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+    
+    <!-- ส่วน Header และปุ่มเพิ่ม -->
+    <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 border-b border-slate-100 pb-5 mb-5">
+      <div class="border-l-4 border-brand-blue pl-3">
+        <h2 class="text-xl font-bold text-brand-blue tracking-tight">ข้อมูลหลักสูตรสถานศึกษา</h2>
+        <p class="text-xs text-slate-500 mt-1">จัดการข้อมูลและเอกสารหลักสูตรของสถานศึกษา</p>
+      </div>
+      <div>
+        <button onclick="CurriculumSystem.openForm()" class="px-4 py-2 bg-brand-blue text-white rounded-lg text-sm hover:bg-blue-800 font-semibold shadow-sm transition w-full sm:w-auto flex items-center justify-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+          เพิ่มหลักสูตร
+        </button>
+      </div>
     </div>
-    <div>
-      <button onclick="CurriculumSystem.openForm()" class="px-4 py-2 bg-brand-blue text-white rounded-lg text-sm hover:bg-blue-800 font-semibold shadow-sm transition w-full sm:w-auto flex items-center justify-center gap-2">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-        เพิ่มหลักสูตร
-      </button>
-    </div>
-  </div>
 
-  <div id="curriculum-container" class="space-y-3">
-    <!-- การ์ดจะถูกสร้างด้วย JavaScript -->
+    <!-- ส่วนที่ JavaScript จะนำข้อมูลมาแสดง -->
+    <div id="curriculum-container" class="space-y-3">
+      <!-- การ์ดจะถูกสร้างด้วย JavaScript -->
+    </div>
+
   </div>
+  <!-- จบการ์ดที่ 1 -->
+
+  <!-- พื้นที่สำหรับใส่การ์ดระบบงานอื่นๆ ในอนาคต สามารถนำมาต่อตรงนี้ได้เลย -->
+
 
   <!-- MODAL: ฟอร์มเพิ่ม/แก้ไข หลักสูตร -->
   <div id="curriculum-form-modal" class="fixed inset-0 bg-slate-900 bg-opacity-70 hidden items-center justify-center z-[55]">
@@ -27,7 +38,7 @@
       
       <form id="curriculum-form" class="space-y-3" onsubmit="event.preventDefault();">
         
-        <!-- กล่องสำหรับแสดง Error สีแดง (ตัวปัญหาคือขาดแท็กนี้ไปครับ) -->
+        <!-- กล่องสำหรับแสดง Error สีแดง -->
         <div id="curriculum-error-msg" class="hidden bg-red-50 text-red-600 border border-red-200 text-xs p-2 rounded text-center font-bold"></div>
         
         <input type="hidden" id="curriculum-id">
