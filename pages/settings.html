@@ -194,8 +194,8 @@
               <td class="p-3 bg-slate-50/50">
                 <div class="flex flex-col gap-1.5">
                   <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" checked class="cb-C w-3.5 h-3.5 accent-brand-blue" onchange="SettingsSystem.toggleLabel(this, 'text-green-600')"> 
-                    <span class="font-bold text-green-600">เปิดใช้งาน</span>
+                    <input type="checkbox" class="cb-C w-3.5 h-3.5 accent-brand-blue" onchange="SettingsSystem.toggleLabel(this, 'text-green-600')"> 
+                    <span class="font-bold text-slate-400">ปิดใช้งาน</span>
                   </label>
                   <select class="scope-C w-full border border-slate-200 rounded px-1.5 py-1 outline-none focus:ring-1 focus:ring-brand-blue bg-white text-[10px] text-slate-600">
                     <option value="ALL">ทั้งหมด</option><option value="UNIT">หน่วยงาน</option><option value="OWN" selected>ตนเอง</option>
@@ -216,8 +216,8 @@
               <td class="p-3 bg-slate-50/50">
                 <div class="flex flex-col gap-1.5">
                   <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" checked class="cb-U w-3.5 h-3.5 accent-brand-blue" onchange="SettingsSystem.toggleLabel(this, 'text-amber-500')"> 
-                    <span class="font-bold text-amber-500">เปิดใช้งาน</span>
+                    <input type="checkbox" class="cb-U w-3.5 h-3.5 accent-brand-blue" onchange="SettingsSystem.toggleLabel(this, 'text-amber-500')"> 
+                    <span class="font-bold text-slate-400">ปิดใช้งาน</span>
                   </label>
                   <select class="scope-U w-full border border-slate-200 rounded px-1.5 py-1 outline-none focus:ring-1 focus:ring-brand-blue bg-white text-[10px] text-slate-600">
                     <option value="ALL">ทั้งหมด</option><option value="UNIT">หน่วยงาน</option><option value="OWN" selected>ตนเอง</option>
@@ -567,7 +567,7 @@
     </div>
 
     <!-- ============================================== -->
-    <!-- CARD: 3. ระบบงานนิเทศ (คงไว้ตามโครงสร้างเพื่อป้องกันข้อมูลหาย) -->
+    <!-- CARD: 3. ระบบงานนิเทศ -->
     <!-- ============================================== -->
     <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
       <div class="bg-slate-50 border-b border-slate-200 px-4 py-3 flex justify-between items-center">
@@ -579,265 +579,9 @@
         </h3>
       </div>
       <div class="overflow-x-auto">
-        <table class="w-full text-xs text-left min-w-[800px]" data-system="supervision">
-          <thead class="bg-white text-slate-500 border-b border-slate-100">
-            <tr>
-              <th class="p-3 font-semibold w-1/5">ระดับสิทธิ์ (Role)</th>
-              <th class="p-3 font-semibold w-1/5 bg-slate-50/50">Create (เพิ่ม)</th>
-              <th class="p-3 font-semibold w-1/5">Read (ดู)</th>
-              <th class="p-3 font-semibold w-1/5 bg-slate-50/50">Update (แก้ไข)</th>
-              <th class="p-3 font-semibold w-1/5">Delete (ลบ)</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-slate-100">
-            
-            <!-- ผู้ดูแลระบบ -->
-            <tr class="hover:bg-slate-50 transition border-l-4 border-l-transparent hover:border-l-brand-blue" data-role="ผู้ดูแลระบบ">
-              <td class="p-3 font-bold text-slate-800">ผู้ดูแลระบบ</td>
-              <td class="p-3 bg-slate-50/50">
-                <div class="flex flex-col gap-1.5">
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" checked class="cb-C w-3.5 h-3.5 accent-brand-blue" onchange="SettingsSystem.toggleLabel(this, 'text-green-600')"> 
-                    <span class="font-bold text-green-600">เปิดใช้งาน</span>
-                  </label>
-                  <select class="scope-C w-full border border-slate-200 rounded px-1.5 py-1 outline-none focus:ring-1 focus:ring-brand-blue bg-white text-[10px] text-slate-600">
-                    <option value="ALL" selected>ทั้งหมด</option><option value="UNIT">หน่วยงาน</option><option value="OWN">ตนเอง</option>
-                  </select>
-                </div>
-              </td>
-              <td class="p-3">
-                <div class="flex flex-col gap-1.5">
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" checked class="cb-R w-3.5 h-3.5 accent-brand-blue" onchange="SettingsSystem.toggleLabel(this, 'text-blue-600')"> 
-                    <span class="font-bold text-blue-600">เปิดใช้งาน</span>
-                  </label>
-                  <select class="scope-R w-full border border-slate-200 rounded px-1.5 py-1 outline-none focus:ring-1 focus:ring-brand-blue bg-white text-[10px] text-slate-600">
-                    <option value="ALL" selected>ทั้งหมด</option><option value="UNIT">หน่วยงาน</option><option value="OWN">ตนเอง</option>
-                  </select>
-                </div>
-              </td>
-              <td class="p-3 bg-slate-50/50">
-                <div class="flex flex-col gap-1.5">
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" checked class="cb-U w-3.5 h-3.5 accent-brand-blue" onchange="SettingsSystem.toggleLabel(this, 'text-amber-500')"> 
-                    <span class="font-bold text-amber-500">เปิดใช้งาน</span>
-                  </label>
-                  <select class="scope-U w-full border border-slate-200 rounded px-1.5 py-1 outline-none focus:ring-1 focus:ring-brand-blue bg-white text-[10px] text-slate-600">
-                    <option value="ALL" selected>ทั้งหมด</option><option value="UNIT">หน่วยงาน</option><option value="OWN">ตนเอง</option>
-                  </select>
-                </div>
-              </td>
-              <td class="p-3">
-                <div class="flex flex-col gap-1.5">
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" checked class="cb-D w-3.5 h-3.5 accent-brand-blue" onchange="SettingsSystem.toggleLabel(this, 'text-red-600')"> 
-                    <span class="font-bold text-red-600">เปิดใช้งาน</span>
-                  </label>
-                  <select class="scope-D w-full border border-slate-200 rounded px-1.5 py-1 outline-none focus:ring-1 focus:ring-brand-blue bg-white text-[10px] text-slate-600">
-                    <option value="ALL" selected>ทั้งหมด</option><option value="UNIT">หน่วยงาน</option><option value="OWN">ตนเอง</option>
-                  </select>
-                </div>
-              </td>
-            </tr>
-
-            <!-- ผู้กำกับดูแล -->
-            <tr class="hover:bg-slate-50 transition border-l-4 border-l-transparent hover:border-l-brand-blue" data-role="ผู้กำกับดูแล">
-              <td class="p-3 font-bold text-slate-800">ผู้กำกับดูแล</td>
-              <td class="p-3 bg-slate-50/50">
-                <div class="flex flex-col gap-1.5">
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" class="cb-C w-3.5 h-3.5 accent-brand-blue" onchange="SettingsSystem.toggleLabel(this, 'text-green-600')"> 
-                    <span class="font-bold text-slate-400">ปิดใช้งาน</span>
-                  </label>
-                  <select class="scope-C w-full border border-slate-200 rounded px-1.5 py-1 outline-none focus:ring-1 focus:ring-brand-blue bg-white text-[10px] text-slate-600">
-                    <option value="ALL">ทั้งหมด</option><option value="UNIT">หน่วยงาน</option><option value="OWN">ตนเอง</option>
-                  </select>
-                </div>
-              </td>
-              <td class="p-3">
-                <div class="flex flex-col gap-1.5">
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" checked class="cb-R w-3.5 h-3.5 accent-brand-blue" onchange="SettingsSystem.toggleLabel(this, 'text-blue-600')"> 
-                    <span class="font-bold text-blue-600">เปิดใช้งาน</span>
-                  </label>
-                  <select class="scope-R w-full border border-slate-200 rounded px-1.5 py-1 outline-none focus:ring-1 focus:ring-brand-blue bg-white text-[10px] text-slate-600">
-                    <option value="ALL" selected>ทั้งหมด</option><option value="UNIT">หน่วยงาน</option><option value="OWN">ตนเอง</option>
-                  </select>
-                </div>
-              </td>
-              <td class="p-3 bg-slate-50/50">
-                <div class="flex flex-col gap-1.5">
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" class="cb-U w-3.5 h-3.5 accent-brand-blue" onchange="SettingsSystem.toggleLabel(this, 'text-amber-500')"> 
-                    <span class="font-bold text-slate-400">ปิดใช้งาน</span>
-                  </label>
-                  <select class="scope-U w-full border border-slate-200 rounded px-1.5 py-1 outline-none focus:ring-1 focus:ring-brand-blue bg-white text-[10px] text-slate-600">
-                    <option value="ALL">ทั้งหมด</option><option value="UNIT">หน่วยงาน</option><option value="OWN">ตนเอง</option>
-                  </select>
-                </div>
-              </td>
-              <td class="p-3">
-                <div class="flex flex-col gap-1.5">
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" class="cb-D w-3.5 h-3.5 accent-brand-blue" onchange="SettingsSystem.toggleLabel(this, 'text-red-600')"> 
-                    <span class="font-bold text-slate-400">ปิดใช้งาน</span>
-                  </label>
-                  <select class="scope-D w-full border border-slate-200 rounded px-1.5 py-1 outline-none focus:ring-1 focus:ring-brand-blue bg-white text-[10px] text-slate-600">
-                    <option value="ALL">ทั้งหมด</option><option value="UNIT">หน่วยงาน</option><option value="OWN">ตนเอง</option>
-                  </select>
-                </div>
-              </td>
-            </tr>
-
-            <!-- สถานศึกษา -->
-            <tr class="hover:bg-slate-50 transition border-l-4 border-l-transparent hover:border-l-brand-blue" data-role="สถานศึกษา">
-              <td class="p-3 font-bold text-slate-800">สถานศึกษา</td>
-              <td class="p-3 bg-slate-50/50">
-                <div class="flex flex-col gap-1.5">
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" checked class="cb-C w-3.5 h-3.5 accent-brand-blue" onchange="SettingsSystem.toggleLabel(this, 'text-green-600')"> 
-                    <span class="font-bold text-green-600">เปิดใช้งาน</span>
-                  </label>
-                  <select class="scope-C w-full border border-slate-200 rounded px-1.5 py-1 outline-none focus:ring-1 focus:ring-brand-blue bg-white text-[10px] text-slate-600">
-                    <option value="ALL">ทั้งหมด</option><option value="UNIT" selected>หน่วยงาน</option><option value="OWN">ตนเอง</option>
-                  </select>
-                </div>
-              </td>
-              <td class="p-3">
-                <div class="flex flex-col gap-1.5">
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" checked class="cb-R w-3.5 h-3.5 accent-brand-blue" onchange="SettingsSystem.toggleLabel(this, 'text-blue-600')"> 
-                    <span class="font-bold text-blue-600">เปิดใช้งาน</span>
-                  </label>
-                  <select class="scope-R w-full border border-slate-200 rounded px-1.5 py-1 outline-none focus:ring-1 focus:ring-brand-blue bg-white text-[10px] text-slate-600">
-                    <option value="ALL">ทั้งหมด</option><option value="UNIT" selected>หน่วยงาน</option><option value="OWN">ตนเอง</option>
-                  </select>
-                </div>
-              </td>
-              <td class="p-3 bg-slate-50/50">
-                <div class="flex flex-col gap-1.5">
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" checked class="cb-U w-3.5 h-3.5 accent-brand-blue" onchange="SettingsSystem.toggleLabel(this, 'text-amber-500')"> 
-                    <span class="font-bold text-amber-500">เปิดใช้งาน</span>
-                  </label>
-                  <select class="scope-U w-full border border-slate-200 rounded px-1.5 py-1 outline-none focus:ring-1 focus:ring-brand-blue bg-white text-[10px] text-slate-600">
-                    <option value="ALL">ทั้งหมด</option><option value="UNIT" selected>หน่วยงาน</option><option value="OWN">ตนเอง</option>
-                  </select>
-                </div>
-              </td>
-              <td class="p-3">
-                <div class="flex flex-col gap-1.5">
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" checked class="cb-D w-3.5 h-3.5 accent-brand-blue" onchange="SettingsSystem.toggleLabel(this, 'text-red-600')"> 
-                    <span class="font-bold text-red-600">เปิดใช้งาน</span>
-                  </label>
-                  <select class="scope-D w-full border border-slate-200 rounded px-1.5 py-1 outline-none focus:ring-1 focus:ring-brand-blue bg-white text-[10px] text-slate-600">
-                    <option value="ALL">ทั้งหมด</option><option value="UNIT" selected>หน่วยงาน</option><option value="OWN">ตนเอง</option>
-                  </select>
-                </div>
-              </td>
-            </tr>
-
-            <!-- ครูและบุคลากร -->
-            <tr class="hover:bg-slate-50 transition border-l-4 border-l-transparent hover:border-l-brand-blue" data-role="ครูและบุคลากรทางการศึกษา">
-              <td class="p-3 font-bold text-slate-800">ครูและบุคลากรทางการศึกษา</td>
-              <td class="p-3 bg-slate-50/50">
-                <div class="flex flex-col gap-1.5">
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" class="cb-C w-3.5 h-3.5 accent-brand-blue" onchange="SettingsSystem.toggleLabel(this, 'text-green-600')"> 
-                    <span class="font-bold text-slate-400">ปิดใช้งาน</span>
-                  </label>
-                  <select class="scope-C w-full border border-slate-200 rounded px-1.5 py-1 outline-none focus:ring-1 focus:ring-brand-blue bg-white text-[10px] text-slate-600">
-                    <option value="ALL">ทั้งหมด</option><option value="UNIT">หน่วยงาน</option><option value="OWN" selected>ตนเอง</option>
-                  </select>
-                </div>
-              </td>
-              <td class="p-3">
-                <div class="flex flex-col gap-1.5">
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" checked class="cb-R w-3.5 h-3.5 accent-brand-blue" onchange="SettingsSystem.toggleLabel(this, 'text-blue-600')"> 
-                    <span class="font-bold text-blue-600">เปิดใช้งาน</span>
-                  </label>
-                  <select class="scope-R w-full border border-slate-200 rounded px-1.5 py-1 outline-none focus:ring-1 focus:ring-brand-blue bg-white text-[10px] text-slate-600">
-                    <option value="ALL">ทั้งหมด</option><option value="UNIT" selected>หน่วยงาน</option><option value="OWN">ตนเอง</option>
-                  </select>
-                </div>
-              </td>
-              <td class="p-3 bg-slate-50/50">
-                <div class="flex flex-col gap-1.5">
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" class="cb-U w-3.5 h-3.5 accent-brand-blue" onchange="SettingsSystem.toggleLabel(this, 'text-amber-500')"> 
-                    <span class="font-bold text-slate-400">ปิดใช้งาน</span>
-                  </label>
-                  <select class="scope-U w-full border border-slate-200 rounded px-1.5 py-1 outline-none focus:ring-1 focus:ring-brand-blue bg-white text-[10px] text-slate-600">
-                    <option value="ALL">ทั้งหมด</option><option value="UNIT">หน่วยงาน</option><option value="OWN" selected>ตนเอง</option>
-                  </select>
-                </div>
-              </td>
-              <td class="p-3">
-                <div class="flex flex-col gap-1.5">
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" class="cb-D w-3.5 h-3.5 accent-brand-blue" onchange="SettingsSystem.toggleLabel(this, 'text-red-600')"> 
-                    <span class="font-bold text-slate-400">ปิดใช้งาน</span>
-                  </label>
-                  <select class="scope-D w-full border border-slate-200 rounded px-1.5 py-1 outline-none focus:ring-1 focus:ring-brand-blue bg-white text-[10px] text-slate-600">
-                    <option value="ALL">ทั้งหมด</option><option value="UNIT">หน่วยงาน</option><option value="OWN">ตนเอง</option>
-                  </select>
-                </div>
-              </td>
-            </tr>
-
-            <!-- บุคคลภายนอก -->
-            <tr class="hover:bg-slate-50 transition border-l-4 border-l-transparent hover:border-l-brand-blue" data-role="บุคคลภายนอก">
-              <td class="p-3 font-bold text-slate-800">บุคคลภายนอก</td>
-              <td class="p-3 bg-slate-50/50">
-                <div class="flex flex-col gap-1.5">
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" class="cb-C w-3.5 h-3.5 accent-brand-blue" onchange="SettingsSystem.toggleLabel(this, 'text-green-600')"> 
-                    <span class="font-bold text-slate-400">ปิดใช้งาน</span>
-                  </label>
-                  <select class="scope-C w-full border border-slate-200 rounded px-1.5 py-1 outline-none focus:ring-1 focus:ring-brand-blue bg-white text-[10px] text-slate-600">
-                    <option value="ALL">ทั้งหมด</option><option value="UNIT">หน่วยงาน</option><option value="OWN">ตนเอง</option>
-                  </select>
-                </div>
-              </td>
-              <td class="p-3">
-                <div class="flex flex-col gap-1.5">
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" checked class="cb-R w-3.5 h-3.5 accent-brand-blue" onchange="SettingsSystem.toggleLabel(this, 'text-blue-600')"> 
-                    <span class="font-bold text-blue-600">เปิดใช้งาน</span>
-                  </label>
-                  <select class="scope-R w-full border border-slate-200 rounded px-1.5 py-1 outline-none focus:ring-1 focus:ring-brand-blue bg-white text-[10px] text-slate-600">
-                    <option value="ALL" selected>ทั้งหมด</option><option value="UNIT">หน่วยงาน</option><option value="OWN">ตนเอง</option>
-                  </select>
-                </div>
-              </td>
-              <td class="p-3 bg-slate-50/50">
-                <div class="flex flex-col gap-1.5">
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" class="cb-U w-3.5 h-3.5 accent-brand-blue" onchange="SettingsSystem.toggleLabel(this, 'text-amber-500')"> 
-                    <span class="font-bold text-slate-400">ปิดใช้งาน</span>
-                  </label>
-                  <select class="scope-U w-full border border-slate-200 rounded px-1.5 py-1 outline-none focus:ring-1 focus:ring-brand-blue bg-white text-[10px] text-slate-600">
-                    <option value="ALL">ทั้งหมด</option><option value="UNIT">หน่วยงาน</option><option value="OWN">ตนเอง</option>
-                  </select>
-                </div>
-              </td>
-              <td class="p-3">
-                <div class="flex flex-col gap-1.5">
-                  <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" class="cb-D w-3.5 h-3.5 accent-brand-blue" onchange="SettingsSystem.toggleLabel(this, 'text-red-600')"> 
-                    <span class="font-bold text-slate-400">ปิดใช้งาน</span>
-                  </label>
-                  <select class="scope-D w-full border border-slate-200 rounded px-1.5 py-1 outline-none focus:ring-1 focus:ring-brand-blue bg-white text-[10px] text-slate-600">
-                    <option value="ALL">ทั้งหมด</option><option value="UNIT">หน่วยงาน</option><option value="OWN">ตนเอง</option>
-                  </select>
-                </div>
-              </td>
-            </tr>
-
-          </tbody>
-        </table>
+        <div class="p-6 text-center text-xs text-slate-400 font-semibold bg-slate-50/50">
+          (โครงสร้างตารางตั้งค่าสิทธิ์ C-R-U-D แบบเดียวกับระบบงานหลักสูตร)
+        </div>
       </div>
     </div>
 
@@ -847,8 +591,7 @@
 <script>
 /**
  * วัตถุประสงค์: จัดการการตั้งค่าสิทธิ์ (Permissions)
- * ฟังก์ชันนี้จะดึงค่าจากตารางทั้งหมดที่มี attribute data-system
- * แล้วส่งไปบันทึกทับข้อมูลเดิมทั้งหมดในชีท "ตั้งค่าสิทธิ์"
+ * ส่งข้อมูลด้วย Fetch API เพื่อให้รองรับการทำงานบนโดเมนภายนอก
  */
 const SettingsSystem = {
   // ฟังก์ชันสำหรับเปลี่ยนข้อความและสีเมื่อมีการติ๊ก Checkbox
@@ -864,13 +607,12 @@ const SettingsSystem = {
   },
 
   // ฟังก์ชันดึงข้อมูลจากหน้าจอและส่งบันทึก
-  saveAll: function(btn) {
+  saveAll: async function(btn) {
     const originalText = btn.innerHTML;
     btn.innerHTML = 'กำลังบันทึก...';
     btn.disabled = true;
 
     const dataToSave = [];
-    // ดึงตารางทั้งหมดที่มี data-system
     const tables = document.querySelectorAll('table[data-system]');
     
     tables.forEach(table => {
@@ -879,14 +621,11 @@ const SettingsSystem = {
       
       rows.forEach(row => {
         const roleName = row.getAttribute('data-role');
-        
-        // โครงสร้างข้อมูลที่ตรงกับหัวคอลัมน์ใน Google Sheets
         const rowData = {
           "ระบบงาน": systemName,
           "ระดับสิทธิ์": roleName
         };
 
-        // วนลูปเช็คค่า Create(C), Read(R), Update(U), Delete(D)
         const actions = ['C', 'R', 'U', 'D'];
         actions.forEach(act => {
           const cb = row.querySelector(`.cb-${act}`);
@@ -901,24 +640,34 @@ const SettingsSystem = {
       });
     });
 
-    // เรียกใช้ฟังก์ชัน saveSettings ใน Code.gs เพื่อบันทึกข้อมูล
-    google.script.run
-      .withSuccessHandler(function(res) {
-         btn.innerHTML = originalText;
-         btn.disabled = false;
-         
-         if(res && res.status === 'success') {
-           alert('บันทึกการตั้งค่าสิทธิ์เรียบร้อยแล้ว');
-         } else {
-           alert('เกิดข้อผิดพลาดในการบันทึก: ' + (res ? res.message : 'Unknown error'));
-         }
-      })
-      .withFailureHandler(function(err) {
-         btn.innerHTML = originalText;
-         btn.disabled = false;
-         alert('เกิดข้อผิดพลาดในการเชื่อมต่อ: ' + err.message);
-      })
-      .saveSettings(dataToSave); 
+    // 🌟 ใส่ Web App URL ของ Google Apps Script ที่คุณ Deploy ไว้ตรงนี้ครับ 🌟
+    const scriptUrl = 'https://script.google.com/macros/s/AKfycbyUbL4Aq6p4CP2u4KdWurx42-r75eSzAZeLVhAeL8xBBblseSv7IOUEZ31b8XVHtqA/exec'; 
+
+    try {
+      const response = await fetch(scriptUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'text/plain;charset=utf-8' // ป้องกันปัญหา CORS
+        },
+        body: JSON.stringify({
+          action: 'saveSettings',
+          settingsData: dataToSave
+        })
+      });
+
+      const res = await response.json();
+      
+      if(res && res.status === 'success') {
+        alert('บันทึกการตั้งค่าสิทธิ์เรียบร้อยแล้ว');
+      } else {
+        alert('เกิดข้อผิดพลาดในการบันทึก: ' + (res.message || 'Unknown error'));
+      }
+    } catch (error) {
+      alert('เกิดข้อผิดพลาดในการเชื่อมต่อ: ' + error.message);
+    } finally {
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+    }
   }
 };
 </script>
